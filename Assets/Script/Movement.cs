@@ -9,30 +9,54 @@ public class Movement : MonoBehaviour {
     private bool rightDirection;
     private Vector3 direction;
     private Vector3 facingPosition;
+    public float force = 10.0f;
+    private bool onFlight;
 
-	// Use this for initialization
-	void Start () {
+    public bool OnFlight
+    {
+        get
+        {
+            return onFlight;
+        }
+        set
+        {
+            onFlight = value;
+        }
+
+    }
+
+    // Use this for initialization
+    void Start () {
 		tankVehicle = GetComponent<Rigidbody2D>();
+        rightDirection = true;
     }
 	
 	// Update is called once per frame
-	void FixedUpdate () {
-
+	void FixedUpdate ()
+    {
         if (Input.GetAxis("Horizontal") != 0 && GetComponent<FreefallController>().Controllable)
-        //if (Input.GetAxis("Horizontal") != 0)
         {
+            tankVehicle.drag = 10;
             //change orientation of tank in respect to last directional command
             if ((Input.GetAxis("Horizontal") > 0))
             {
+                if (!rightDirection)
+                {
+                    tankVehicle.transform.localScale = new Vector3(1, 1, 1);
+                }
                 rightDirection = true;
-                tankVehicle.GetComponent<SpriteRenderer>().flipX = false;
+
                 facingPosition = transform.GetChild(0).position;
                 hit = Physics2D.Raycast(facingPosition, transform.right, 0.5f);
             }
             else
             {
+                if (rightDirection)
+                {
+                    tankVehicle.transform.localScale = new Vector3(-1, 1, 1);
+                }
                 rightDirection = false;
-                tankVehicle.GetComponent<SpriteRenderer>().flipX = true;
+
                 facingPosition = transform.GetChild(1).position;
                 hit = Physics2D.Raycast(facingPosition, -transform.right, 0.5f);
             }
@@ -52,13 +76,14 @@ public class Movement : MonoBehaviour {
             {
                 direction = direction + transform.up;
             }
-
             //move depending on calculated direction
             tankVehicle.velocity = velocity * direction;
         }
         else
         {
-            tankVehicle.velocity = Vector3.zero; //if there is no directional input, set velocity to 0
+            tankVehicle.velocity = Vector2.zero;
+            tankVehicle.drag = 1000000;
+            //if there is no directional input, set velocity to 0
         }
     }
 }
