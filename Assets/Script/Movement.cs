@@ -10,31 +10,32 @@ public class Movement : MonoBehaviour {
     private Vector3 direction;
     private Vector3 facingPosition;
     public float force = 10.0f;
-    private bool onFlight;
+    private bool movable; //checks if vehicle is movable. is triggered by CannonController. if doing a shot, movement is not possible.
 
-    public bool OnFlight
+    public bool Movable
     {
         get
         {
-            return onFlight;
-        }
-        set
-        {
-            onFlight = value;
+            return movable;
         }
 
+        set
+        {
+            movable = value;
+        }
     }
 
     // Use this for initialization
     void Start () {
 		tankVehicle = GetComponent<Rigidbody2D>();
         rightDirection = true;
+        Movable = true;
     }
 	
 	// Update is called once per frame
 	void FixedUpdate ()
     {
-        if (Input.GetAxis("Horizontal") != 0 && GetComponent<FreefallController>().Controllable)
+        if (Input.GetAxis("Horizontal") != 0 && GetComponent<FreefallController>().Controllable && Movable)
         {
             tankVehicle.drag = 10;
             //change orientation of tank in respect to last directional command
@@ -89,6 +90,7 @@ public class Movement : MonoBehaviour {
         }
     }
 
+    //rotates wheels during movement
     void RotateWheels()
     {
         foreach (Transform t in tankVehicle.transform.GetChild(3))
