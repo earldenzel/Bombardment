@@ -40,6 +40,7 @@ public class Movement : MonoBehaviour {
             //change orientation of tank in respect to last directional command
             if ((Input.GetAxis("Horizontal") > 0))
             {
+                RotateWheels();
                 if (!rightDirection)
                 {
                     tankVehicle.transform.localScale = new Vector3(1, 1, 1);
@@ -51,6 +52,7 @@ public class Movement : MonoBehaviour {
             }
             else
             {
+                RotateWheels();                
                 if (rightDirection)
                 {
                     tankVehicle.transform.localScale = new Vector3(-1, 1, 1);
@@ -84,6 +86,17 @@ public class Movement : MonoBehaviour {
             tankVehicle.velocity = Vector2.zero;
             tankVehicle.drag = 1000000;
             //if there is no directional input, set velocity to 0
+        }
+    }
+
+    void RotateWheels()
+    {
+        foreach (Transform t in tankVehicle.transform.GetChild(3))
+        {
+            if (t.GetComponent<SpriteRenderer>().tag == "Wheels")
+            {
+                t.Rotate(new Vector3(0, 0, -10f));
+            }
         }
     }
 }
