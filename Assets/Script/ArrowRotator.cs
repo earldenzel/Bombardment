@@ -20,7 +20,7 @@ public class ArrowRotator : MonoBehaviour {
             rb2d.freezeRotation = true;
             angle = FindDegree(rb2d.velocity.y, rb2d.velocity.x);
 
-            Debug.Log(rb2d.velocity.x + " " + rb2d.velocity.y + " " + angle);
+     //       Debug.Log(rb2d.velocity.x + " " + rb2d.velocity.y + " " + angle);
 
             Vector3 currentRotation = transform.rotation.eulerAngles;
             currentRotation.z = angle;

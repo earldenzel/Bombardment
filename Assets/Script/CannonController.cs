@@ -23,11 +23,17 @@ public class CannonController : MonoBehaviour {
     private GameObject currentProjectile;
     private Quaternion spawnRotation;
 
+    private CameraController cameraController;
+
 	// Use this for initialization
 	void Start () {
         onShot = false;
         shot1 = true;
         yourTurn = true;
+        if (Camera.main.GetComponent<CameraController>() != null)
+        {
+            cameraController = Camera.main.GetComponent<CameraController>();
+        }
     }
 	
 	// Update is called once per frame
@@ -85,6 +91,14 @@ public class CannonController : MonoBehaviour {
         if (currentProjectile.tag == "Arrow")
         {
             currentProjectile.transform.GetChild(0).GetComponent<Rigidbody2D>().gravityScale = 1;
+        }
+
+        //Change the target state for the camera
+        if(cameraController != null)
+        {
+            cameraController.projectile = currentProjectile;
+            cameraController.targetState = CameraController.Target.Projectile;
+            cameraController.cameraConfig.State = CameraConfig.CameraState.ZoomIn;
         }
     }
 
