@@ -9,30 +9,57 @@ public class Movement : MonoBehaviour {
     private bool rightDirection;
     private Vector3 direction;
     private Vector3 facingPosition;
+    public float force = 10.0f;
+    private bool movable; //checks if vehicle is movable. is triggered by CannonController. if doing a shot, movement is not possible.
 
-	// Use this for initialization
-	void Start () {
+    public bool Movable
+    {
+        get
+        {
+            return movable;
+        }
+
+        set
+        {
+            movable = value;
+        }
+    }
+
+    // Use this for initialization
+    void Start () {
 		tankVehicle = GetComponent<Rigidbody2D>();
+        rightDirection = true;
+        Movable = true;
     }
 	
 	// Update is called once per frame
-	void FixedUpdate () {
-
-        if (Input.GetAxis("Horizontal") != 0 && GetComponent<FreefallController>().Controllable)
-        //if (Input.GetAxis("Horizontal") != 0)
+	void FixedUpdate ()
+    {
+        if (Input.GetAxis("Horizontal") != 0 && GetComponent<FreefallController>().Controllable && Movable)
         {
+            tankVehicle.drag = 10;
             //change orientation of tank in respect to last directional command
             if ((Input.GetAxis("Horizontal") > 0))
             {
+                RotateWheels();
+                if (!rightDirection)
+                {
+                    tankVehicle.transform.localScale = new Vector3(1, 1, 1);
+                }
                 rightDirection = true;
-                tankVehicle.GetComponent<SpriteRenderer>().flipX = false;
+
                 facingPosition = transform.GetChild(0).position;
                 hit = Physics2D.Raycast(facingPosition, transform.right, 0.5f);
             }
             else
             {
+                RotateWheels();                
+                if (rightDirection)
+                {
+                    tankVehicle.transform.localScale = new Vector3(-1, 1, 1);
+                }
                 rightDirection = false;
-                tankVehicle.GetComponent<SpriteRenderer>().flipX = true;
+
                 facingPosition = transform.GetChild(1).position;
                 hit = Physics2D.Raycast(facingPosition, -transform.right, 0.5f);
             }
@@ -52,13 +79,26 @@ public class Movement : MonoBehaviour {
             {
                 direction = direction + transform.up;
             }
-
             //move depending on calculated direction
             tankVehicle.velocity = velocity * direction;
         }
         else
         {
-            tankVehicle.velocity = Vector3.zero; //if there is no directional input, set velocity to 0
+            tankVehicle.velocity = Vector2.zero;
+            tankVehicle.drag = 1000000;
+            //if there is no directional input, set velocity to 0
+        }
+    }
+
+    //rotates wheels during movement
+    void RotateWheels()
+    {
+        foreach (Transform t in tankVehicle.transform.GetChild(3))
+        {
+            if (t.GetComponent<SpriteRenderer>().tag == "Wheels")
+            {
+                t.Rotate(new Vector3(0, 0, -10f));
+            }
         }
     }
 }
