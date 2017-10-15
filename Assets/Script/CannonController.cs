@@ -19,7 +19,7 @@ public class CannonController : MonoBehaviour {
     private float parentAngle;
     private bool onShot; //tells if the player is currently taking a shot.
     private bool shot1; // tells if the current shot is shot1. if shot1 = false, then shot2
-    private bool yourTurn; //tells if it's the current player's turn. for now, it will be set to true.
+    //private bool yourTurn; //tells if it's the current player's turn. for now, it will be set to true.
     private GameObject currentProjectile;
     private Quaternion spawnRotation;
 
@@ -27,7 +27,7 @@ public class CannonController : MonoBehaviour {
 	void Start () {
         onShot = false;
         shot1 = true;
-        yourTurn = true;
+        //yourTurn = true;
     }
 	
 	// Update is called once per frame
@@ -82,10 +82,6 @@ public class CannonController : MonoBehaviour {
         forceVec *= cannon.launchSpeed;
         currentProjectile.GetComponent<Rigidbody2D>().AddForce(forceVec, ForceMode2D.Impulse);
         currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 1;
-        if (currentProjectile.tag == "Arrow")
-        {
-            currentProjectile.transform.GetChild(0).GetComponent<Rigidbody2D>().gravityScale = 1;
-        }
     }
 
     private void LoadShotOne(bool shot1)
@@ -112,9 +108,5 @@ public class CannonController : MonoBehaviour {
         }
 
         currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 0;
-        if (currentProjectile.tag == "Arrow")
-        {
-            currentProjectile.transform.GetChild(0).GetComponent<Rigidbody2D>().gravityScale = 0;
-        }
     }
 }
