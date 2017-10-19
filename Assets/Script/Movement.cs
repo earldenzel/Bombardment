@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour {
     private Rigidbody2D tankVehicle;
+    //private RaycastHit2D[] hit;
     private RaycastHit2D hit;
+    //private int numberHit;
     public float velocity = 2.0f;
     private bool rightDirection;
     private Vector3 direction;
@@ -38,10 +40,10 @@ public class Movement : MonoBehaviour {
         if (Input.GetAxis("Horizontal") != 0 && GetComponent<FreefallController>().Controllable && Movable)
         {
             tankVehicle.drag = 10;
+            RotateWheels();
             //change orientation of tank in respect to last directional command
             if ((Input.GetAxis("Horizontal") > 0))
             {
-                RotateWheels();
                 if (!rightDirection)
                 {
                     tankVehicle.transform.localScale = new Vector3(1, 1, 1);
@@ -49,11 +51,11 @@ public class Movement : MonoBehaviour {
                 rightDirection = true;
 
                 facingPosition = transform.GetChild(0).position;
-                hit = Physics2D.Raycast(facingPosition, transform.right, 0.5f);
+                hit = Physics2D.Raycast(facingPosition, transform.right, 0.1f);
+                //numberHit = GetComponent<BoxCollider2D>().Raycast(transform.right, hit, 1f);
             }
             else
-            {
-                RotateWheels();                
+            {              
                 if (rightDirection)
                 {
                     tankVehicle.transform.localScale = new Vector3(-1, 1, 1);
@@ -61,23 +63,38 @@ public class Movement : MonoBehaviour {
                 rightDirection = false;
 
                 facingPosition = transform.GetChild(1).position;
-                hit = Physics2D.Raycast(facingPosition, -transform.right, 0.5f);
+                hit = Physics2D.Raycast(facingPosition, -transform.right, 0.1f);
+                //numberHit = GetComponent<BoxCollider2D>().Raycast(-transform.right, hit, 1);
             }
 
             //set direction for tank depending on where it's facing
             if (rightDirection)
             {
-                direction = new Vector3(Input.GetAxis("Horizontal"), 0, 0) + transform.right - 0.5f * transform.up;
+                //direction = new Vector3(Input.GetAxis("Horizontal"), 0, 0) + transform.right - 0.5f * transform.up;
+                direction = new Vector3(Input.GetAxis("Horizontal"), 0, 0) + transform.right;
             }
             else
             {
-                direction = new Vector3(Input.GetAxis("Horizontal"), 0, 0) - transform.right - 0.5f * transform.up;
+                //direction = new Vector3(Input.GetAxis("Horizontal"), 0, 0) - transform.right - 0.5f * transform.up;
+                direction = new Vector3(Input.GetAxis("Horizontal"), 0, 0) - transform.right;
             }
 
             //if there is a terrain collider in front of the tank, try to change direction upwards
+            //Debug.Log("Number Hit" + numberHit);
             if (hit.collider != null && hit.collider.tag == "Terrain")
             {
-                direction = direction + transform.up;
+                //if (rightDirection)
+                //{
+                //    //GetComponent<Rigidbody2D>().AddTorque(100f * Time.deltaTime);
+                //}
+                //else
+                //{
+                //    //GetComponent<Rigidbody2D>().AddTorque(-100f * Time.deltaTime);
+                //}
+                //direction = direction + transform.up;
+                
+                tankVehicle.angularVelocity = (rightDirection) ? 1 : -1;
+                tankVehicle.transform.Rotate(0, 0, 15f);
             }
             //move depending on calculated direction
             tankVehicle.velocity = velocity * direction;
@@ -85,7 +102,8 @@ public class Movement : MonoBehaviour {
         else
         {
             tankVehicle.velocity = Vector2.zero;
-            tankVehicle.drag = 1000000;
+            tankVehicle.AddForce(10f*-transform.up);
+            //tankVehicle.drag = 1000000;
             //if there is no directional input, set velocity to 0
         }
     }

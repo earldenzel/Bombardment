@@ -60,7 +60,7 @@ public class CannonController : MonoBehaviour {
                 
                 Debug.Log("Shot ends");
                 ShootProjectile();
-                transform.root.GetComponent<Movement>().Movable = true;
+                transform.root.GetComponent<PlayerController>().Movable = true;
                 onShot = false;
             }
             else
@@ -87,7 +87,7 @@ public class CannonController : MonoBehaviour {
     private void LoadShotOne(bool shot1)
     {
         //tank does not move when loading shot
-        transform.root.GetComponent<Movement>().Movable = false;
+        transform.root.GetComponent<PlayerController>().Movable = false;
         //whole block checks orientation first of the tank before attempting to create projectile object
         if (transform.root.transform.localScale.x > 0)
         {

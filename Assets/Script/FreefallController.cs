@@ -25,14 +25,14 @@ public class FreefallController : MonoBehaviour {
     private void FixedUpdate()
     {
 
-        hit1 = Physics2D.Raycast(new Vector3(transform.GetChild(0).position.x, transform.GetChild(0).position.y - 0.5f), -transform.up, 0.01f);
-        hit2 = Physics2D.Raycast(new Vector3(transform.GetChild(1).position.x, transform.GetChild(1).position.y - 0.5f), -transform.up, 0.01f);
+        hit1 = Physics2D.Raycast(new Vector3(transform.GetChild(0).position.x, transform.GetChild(0).position.y), -transform.up, 0.01f);
+        hit2 = Physics2D.Raycast(new Vector3(transform.GetChild(1).position.x, transform.GetChild(1).position.y), -transform.up, 0.01f);
         hit3 = Physics2D.Raycast(new Vector3(transform.GetChild(2).position.x, transform.GetChild(2).position.y), -transform.up, 0.01f);
         //hit1 = Physics2D.Raycast(new Vector3(transform.GetChild(0).position.x, transform.GetChild(0).position.y - 0.5f), new Vector3(0, -1, 0), 0.05f);
         //hit2 = Physics2D.Raycast(new Vector3(transform.GetChild(1).position.x, transform.GetChild(1).position.y - 0.5f), new Vector3(0, -1, 0), 0.05f);
         //hit3 = Physics2D.Raycast(new Vector3(transform.GetChild(2).position.x, transform.GetChild(2).position.y), new Vector3(0, -1, 0), 0.05f);
-        Debug.DrawRay(new Vector3(transform.GetChild(0).position.x, transform.GetChild(0).position.y - 0.5f), -transform.up, Color.green);
-        Debug.DrawRay(new Vector3(transform.GetChild(1).position.x, transform.GetChild(1).position.y - 0.5f), -transform.up, Color.green);
+        Debug.DrawRay(new Vector3(transform.GetChild(0).position.x, transform.GetChild(0).position.y), -transform.up, Color.green);
+        Debug.DrawRay(new Vector3(transform.GetChild(1).position.x, transform.GetChild(1).position.y), -transform.up, Color.green);
         Debug.DrawRay(new Vector3(transform.GetChild(2).position.x, transform.GetChild(2).position.y), -transform.up, Color.green);
         if (Input.GetKeyDown(KeyCode.RightControl))
         {
