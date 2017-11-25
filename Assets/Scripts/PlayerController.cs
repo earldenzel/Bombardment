@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        movable = true;
+        Movable = true;
         rightDirection = true;
         tankBody = GetComponent<Rigidbody2D>();
 	}    
@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour {
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl) && movable)
+        if (Input.GetKeyDown(KeyCode.LeftControl) && Movable)
         {
             if (rightDirection)
             {
@@ -64,12 +64,19 @@ public class PlayerController : MonoBehaviour {
             {
                 tankBody.AddForce(Vector2.right * Input.GetAxis("Horizontal") * velocity);
             }
-            movable = false;
+            Movable = false;
         }
         else if (Input.GetAxis("Horizontal") == 0 && !GetComponent<OrientationChecker>().Freefall)
         {
             tankBody.gravityScale = 0;
-            movable = true;
+            if (transform.GetChild(0).GetChild(0).GetComponent<CannonController>().OnShot)
+            {
+                Movable = false;
+            }
+            else
+            {
+                Movable = true;
+            }
         }
         else if (Input.GetAxis("Horizontal") != 0 && Movable)
         {
@@ -86,6 +93,7 @@ public class PlayerController : MonoBehaviour {
             }
             else
             {
+                tankBody.velocity = Vector2.zero;
                 if (rightDirection)
                 {
                     //flip

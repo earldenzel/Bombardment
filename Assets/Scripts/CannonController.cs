@@ -23,9 +23,22 @@ public class CannonController : MonoBehaviour {
     private GameObject currentProjectile;
     private Quaternion spawnRotation;
 
-	// Use this for initialization
-	void Start () {
-        onShot = false;
+    public bool OnShot
+    {
+        get
+        {
+            return onShot;
+        }
+
+        set
+        {
+            onShot = value;
+        }
+    }
+
+    // Use this for initialization
+    void Start () {
+        OnShot = false;
         shot1 = true;
         //yourTurn = true;
     }
@@ -37,7 +50,7 @@ public class CannonController : MonoBehaviour {
             //SetShotToShot1(!shot1);
             shot1 = !shot1;
         }
-        if (Input.GetAxis("Vertical") != 0 && !onShot)
+        if (Input.GetAxis("Vertical") != 0 && !OnShot)
         {
             transform.Rotate(new Vector3(0, 0, Input.GetAxis("Vertical")));
 
@@ -53,7 +66,7 @@ public class CannonController : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (onShot)
+            if (OnShot)
             {
                 //here's where I put the code to stop increase of the bar when user presses space again. 
                 //bar end strength = shotStrength, then it's not onShot anymore
@@ -61,14 +74,14 @@ public class CannonController : MonoBehaviour {
                 Debug.Log("Shot ends");
                 ShootProjectile();
                 transform.root.GetComponent<PlayerController>().Movable = true;
-                onShot = false;
+                OnShot = false;
             }
             else
             {
                 //here's where I put the code to increase bar.
                 Debug.Log("Shot begins");
                 LoadShotOne(shot1);
-                onShot = true;
+                OnShot = true;
             }
         }
         //here, i will put an if statement that tells me that when the user doesn't hit space after a while, shot ends
@@ -108,5 +121,6 @@ public class CannonController : MonoBehaviour {
         }
 
         currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 0;
+        currentProjectile.GetComponent<ProjectileController>().cannon = this; 
     }
 }
