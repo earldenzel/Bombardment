@@ -7,6 +7,7 @@ public class WindSpawner : MonoBehaviour {
     private Vector3 wind;
     private float windPower;
     private float windAngle;
+    public int maxWindPower;
 
     public Vector3 Wind
     {
@@ -19,7 +20,7 @@ public class WindSpawner : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        windPower = Random.Range(1, 10);
+        windPower = Random.Range(0, maxWindPower);
         wind = Random.onUnitSphere * windPower;
         windAngle = FindDegree(Wind.y, Wind.x);
         Debug.Log("Wind Power: " + windPower + " Wind Angle: " + windAngle);

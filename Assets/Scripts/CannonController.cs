@@ -22,6 +22,12 @@ public class CannonController : MonoBehaviour {
     //private bool yourTurn; //tells if it's the current player's turn. for now, it will be set to true.
     private GameObject currentProjectile;
     private Quaternion spawnRotation;
+    private SpriteRenderer powerBar;
+    public AnimationCurve powerCurve;
+    private Vector3 originalScale;
+    private Vector3 originalPosition;
+    private float myTime;
+    private CameraController cameraController;
 
     public bool OnShot
     {
@@ -41,10 +47,25 @@ public class CannonController : MonoBehaviour {
         OnShot = false;
         shot1 = true;
         //yourTurn = true;
+        powerBar = transform.GetChild(1).GetComponent<SpriteRenderer>();
+        originalScale = powerBar.transform.localScale;
+        originalPosition = powerBar.transform.localPosition;
+        powerBar.enabled = false;
+
+        if (Camera.main.GetComponent<CameraController>() != null)
+        {
+            cameraController = Camera.main.GetComponent<CameraController>();
+        }
     }
 	
 	// Update is called once per frame
 	void Update () {
+        if (onShot)
+        {
+            myTime += Time.deltaTime;
+            powerBar.transform.localScale = new Vector3(originalScale.x + 2f*powerCurve.Evaluate(myTime), originalScale.y, originalScale.z);
+            powerBar.transform.localPosition = new Vector3(originalPosition.x + 0.5f*powerCurve.Evaluate(myTime), 0, 0);
+        }
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             //SetShotToShot1(!shot1);
@@ -66,39 +87,55 @@ public class CannonController : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            transform.root.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+            Debug.Log(transform.root.GetComponent<Rigidbody2D>().velocity.magnitude);
             if (OnShot)
             {
-                //here's where I put the code to stop increase of the bar when user presses space again. 
-                //bar end strength = shotStrength, then it's not onShot anymore
-                
                 Debug.Log("Shot ends");
                 ShootProjectile();
                 transform.root.GetComponent<PlayerController>().Movable = true;
                 OnShot = false;
+                StartCoroutine(ShowLastPower());
             }
             else
             {
-                //here's where I put the code to increase bar.
-                Debug.Log("Shot begins");
+                //here's where I put the code to increase bar
+                myTime = 0.0f;
                 LoadShotOne(shot1);
                 OnShot = true;
             }
         }
-        //here, i will put an if statement that tells me that when the user doesn't hit space after a while, shot ends
-        //and bar restarts again
+    }
 
+    private IEnumerator ShowLastPower()
+    {
+        yield return new WaitForSeconds(1.0f);
+        powerBar.enabled = false;
     }
 
     private void ShootProjectile()
     {
-        Vector2 forceVec = transform.GetChild(0).position - this.transform.position;
-        forceVec *= cannon.launchSpeed;
+        Vector2 forceVec = (transform.GetChild(0).position - this.transform.position).normalized;
+        forceVec *= (cannon.launchSpeed * (powerBar.transform.localScale.x - 1));
+        Debug.Log("Power: " + cannon.launchSpeed + " x " + (powerBar.transform.localScale.x-1));
         currentProjectile.GetComponent<Rigidbody2D>().AddForce(forceVec, ForceMode2D.Impulse);
         currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 1;
+
+        //Change the target state for the camera
+        if (cameraController != null)
+        {
+            cameraController.projectile = currentProjectile;
+            cameraController.targetState = CameraController.Target.Projectile;
+            cameraController.cameraConfig.State = CameraConfig.CameraState.ZoomIn;
+        }
     }
 
     private void LoadShotOne(bool shot1)
     {
+        //spawn powerbar gauge
+        powerBar.transform.localScale = originalScale;
+        powerBar.transform.localPosition = originalPosition;
+        powerBar.enabled = true;
         //tank does not move when loading shot
         transform.root.GetComponent<PlayerController>().Movable = false;
         //whole block checks orientation first of the tank before attempting to create projectile object
