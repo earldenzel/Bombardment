@@ -23,9 +23,14 @@ public class ChangeFocusByContact : MonoBehaviour
     {
         if (!landed)
         {
-            Camera.main.GetComponent<CameraController>().targetState = CameraController.Target.Player;
-            Camera.main.GetComponent<CameraController>().cameraConfig.State = CameraConfig.CameraState.Fixed;
-            landed = true;
+            ChangeFocus();
         }
+    }
+
+    public void ChangeFocus()
+    {
+        Camera.main.GetComponent<CameraController>().targetState = CameraController.Target.Player;
+        Camera.main.GetComponent<CameraController>().cameraConfig.State = CameraConfig.CameraState.Fixed;
+        landed = true;
     }
 }

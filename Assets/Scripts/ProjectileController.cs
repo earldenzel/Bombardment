@@ -13,6 +13,7 @@ public class ProjectileController : MonoBehaviour {
 
     public float windEffect;
     public int collateralDamageSize;
+    public int baseDamage;
     //public GameObject projectileExplosion;
 
 	// Use this for initialization
@@ -20,7 +21,7 @@ public class ProjectileController : MonoBehaviour {
         rb2d = GetComponent<Rigidbody2D>();
         wind = GameObject.FindGameObjectWithTag("Environment");
         currentMap = GameObject.FindGameObjectWithTag("Terrain").GetComponent<Tilemap>();
-	}
+    }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
@@ -53,7 +54,6 @@ public class ProjectileController : MonoBehaviour {
                 }
             }
             Destroy(this.gameObject);
-        }
-        
+        }        
     }
 }

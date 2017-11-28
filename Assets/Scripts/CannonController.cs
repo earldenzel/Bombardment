@@ -10,6 +10,7 @@ public class CannonConfig
     public float maxAngle;
     public GameObject shot1;
     public GameObject shot2;
+    public GameObject shot3;
     public float launchSpeed;
 }
 
@@ -66,9 +67,8 @@ public class CannonController : MonoBehaviour {
             powerBar.transform.localScale = new Vector3(originalScale.x + 2f*powerCurve.Evaluate(myTime), originalScale.y, originalScale.z);
             powerBar.transform.localPosition = new Vector3(originalPosition.x + 0.5f*powerCurve.Evaluate(myTime), 0, 0);
         }
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab) && !OnShot)
         {
-            //SetShotToShot1(!shot1);
             shot1 = !shot1;
         }
         if (Input.GetAxis("Vertical") != 0 && !OnShot)
@@ -91,15 +91,15 @@ public class CannonController : MonoBehaviour {
             Debug.Log(transform.root.GetComponent<Rigidbody2D>().velocity.magnitude);
             if (OnShot)
             {
-                Debug.Log("Shot ends");
+                //shot ends
                 ShootProjectile();
                 transform.root.GetComponent<PlayerController>().Movable = true;
-                OnShot = false;
                 StartCoroutine(ShowLastPower());
+                OnShot = false;
             }
             else
             {
-                //here's where I put the code to increase bar
+                //shot begins
                 myTime = 0.0f;
                 LoadShotOne(shot1);
                 OnShot = true;
@@ -121,6 +121,11 @@ public class CannonController : MonoBehaviour {
         currentProjectile.GetComponent<Rigidbody2D>().AddForce(forceVec, ForceMode2D.Impulse);
         currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 1;
 
+        if(currentProjectile.tag == "Arrow")
+        {
+            StartCoroutine(TwoMoreShots(forceVec));
+        }
+
         //Change the target state for the camera
         if (cameraController != null)
         {
@@ -128,6 +133,20 @@ public class CannonController : MonoBehaviour {
             cameraController.targetState = CameraController.Target.Projectile;
             cameraController.cameraConfig.State = CameraConfig.CameraState.ZoomIn;
         }
+    }
+
+    private IEnumerator TwoMoreShots(Vector2 shotStrength)
+    {
+        yield return new WaitForSeconds(0.3f);
+        GameObject secondShot = Instantiate(cannon.shot1, transform.GetChild(0).position, spawnRotation) as GameObject;
+        secondShot.GetComponent<ProjectileController>().cannon = this;
+        secondShot.GetComponent<Rigidbody2D>().AddForce(shotStrength, ForceMode2D.Impulse);
+        yield return new WaitForSeconds(0.3f);
+        GameObject thirdShot = Instantiate(cannon.shot3, transform.GetChild(0).position, spawnRotation) as GameObject;
+        thirdShot.GetComponent<ProjectileController>().cannon = this;
+        thirdShot.GetComponent<Rigidbody2D>().AddForce(shotStrength, ForceMode2D.Impulse);
+        yield return new WaitForSeconds(0.3f);
+        OnShot = false;
     }
 
     private void LoadShotOne(bool shot1)
