@@ -116,7 +116,7 @@ public class CannonController : MonoBehaviour {
     private void ShootProjectile()
     {
         Vector2 forceVec = (transform.GetChild(0).position - this.transform.position).normalized;
-        forceVec *= (cannon.launchSpeed * (powerBar.transform.localScale.x - 1));
+        forceVec *= (cannon.launchSpeed * powerBar.transform.localScale.x);
         Debug.Log("Power: " + cannon.launchSpeed + " x " + (powerBar.transform.localScale.x-1));
         currentProjectile.GetComponent<Rigidbody2D>().AddForce(forceVec, ForceMode2D.Impulse);
         currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 1;
