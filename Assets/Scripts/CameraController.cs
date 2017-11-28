@@ -6,26 +6,43 @@ using UnityEngine;
 [Serializable]
 public class CameraConfig
 {
-    public enum CameraState { ZoomIn, ZoomOut, Fixed, Center, CenterZoomOut, Free };
-    public CameraState State = CameraState.Fixed;
-    public float SizeOnObjectFocused = 5;
-    public float MaxOnScreenSize = 5; 
-    public float MinZoomInSize = 3;
-    public float ZoomRatio = 0.2f;
+    public enum CameraMode { Focus, Free };
+    public CameraMode State = CameraMode.Focus;
+    public GameObject initialFocus;
+    public float MaxZoomingSize = 10;
+    public float MinZoomingSize = 5;
+    public float MouseWheelZoomingSpeed = 5;
     public float FreeMovementSpeed = 0.3f;
-    public Rect Boundary = new Rect(-15, 10, 50, 10);
+    public Rect CameraBoundary = new Rect(-15, 10, 50, 10);
+}
+[Serializable]
+public class ObjectTracerController
+{
+    public enum TraceMode { None, ZoomIn, ZoomOut };
+    public enum TraceState { Idle, Tracing };
+    public bool Enabled;
+    public TraceMode Mode = TraceMode.ZoomIn;
+    public TraceState State;
+    public GameObject Traget;
+    public float MinSizeOnFocus = 2;
+    public float MaxSizeOnFocus = 8;
+    public float ZoomingSpeed = 0.1f;
+    
+    public void SetFoucs(GameObject target, TraceState state = TraceState.Tracing)
+    {
+        if (target != null)
+        {
+            Traget = target;
+            State = state;
+        }
+    }
 }
 
 public class CameraController : MonoBehaviour
 {
-
-    public enum Target { Player, Projectile };
-
     public CameraConfig cameraConfig;
-    public GameObject player;
-    public GameObject projectile;
-    public GameObject target;
-    public Target targetState;
+    public ObjectTracerController ObjectTracker;
+    private GameObject player;
     private Vector3 offset;
     public Vector3 centerOffset;
 
@@ -33,9 +50,10 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         offset = new Vector3(0, 0, transform.position.z);
-        if (player != null)
+        if (cameraConfig.initialFocus != null)
         {
-            target = player;
+            ObjectTracker.Traget = cameraConfig.initialFocus;
+            player = cameraConfig.initialFocus;
         }
     }
 
@@ -45,13 +63,15 @@ public class CameraController : MonoBehaviour
         {
             switch (cameraConfig.State)
             {
-                case CameraConfig.CameraState.Free:
-                    cameraConfig.State = CameraConfig.CameraState.Fixed;
+                case CameraConfig.CameraMode.Free:
+                    cameraConfig.State = CameraConfig.CameraMode.Focus;
                     offset.x = 0;
                     offset.y = 0;
+                    ObjectTracker.Enabled = true;
                     break;
-                case CameraConfig.CameraState.Fixed:
-                    cameraConfig.State = CameraConfig.CameraState.Free;
+                case CameraConfig.CameraMode.Focus:
+                    cameraConfig.State = CameraConfig.CameraMode.Free;
+                    ObjectTracker.Enabled = false;
                     break;
             }
             
@@ -60,89 +80,83 @@ public class CameraController : MonoBehaviour
 
     void LateUpdate()
     {
-        switch (targetState)
-        {
-            case Target.Player:
-                if (player != null)
-                {
-                    target = player;
-                }
-                
-                break;
-            case Target.Projectile:
-                if (player != null)
-                {
-                    target = projectile;
-                }
-                break;
-        }
         switch (cameraConfig.State)
         {
-            case CameraConfig.CameraState.ZoomIn:
-                Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - cameraConfig.ZoomRatio, cameraConfig.MinZoomInSize, cameraConfig.MaxOnScreenSize);
-                break;
-            case CameraConfig.CameraState.ZoomOut:
-                Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + cameraConfig.ZoomRatio, cameraConfig.MinZoomInSize, cameraConfig.SizeOnObjectFocused);
-                break;
-            case CameraConfig.CameraState.Fixed:
-                Camera.main.orthographicSize = cameraConfig.SizeOnObjectFocused;
-                break;
-            case CameraConfig.CameraState.Center:
-                centerOffset = Vector3.zero - player.transform.position;
-                cameraConfig.State = CameraConfig.CameraState.CenterZoomOut;
-                break;
-            case CameraConfig.CameraState.CenterZoomOut:
-                Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + cameraConfig.ZoomRatio, cameraConfig.MinZoomInSize, cameraConfig.MaxOnScreenSize);
-                if (Camera.main.orthographicSize == cameraConfig.MaxOnScreenSize)
+            case CameraConfig.CameraMode.Focus:
+                if (ObjectTracker.State == ObjectTracerController.TraceState.Idle)
                 {
-                    centerOffset = Vector3.zero;
-                    cameraConfig.State = CameraConfig.CameraState.ZoomIn;
+                    Camera.main.orthographicSize = cameraConfig.MinZoomingSize;
                 }
                 break;
-            case CameraConfig.CameraState.Free:
+            case CameraConfig.CameraMode.Free:
                 //Mouse Position Bottom Left = 0,0  /  Top Right = ScreenSize.x, ScreenSize.y
-                if(Input.mousePosition.x < 0)
+                if (Input.mousePosition.x < 1)
                 {
                     //Restrict the camera to move outside of the map
-                    if (transform.position.x - Camera.main.orthographicSize > cameraConfig.Boundary.x)
+                    if (transform.position.x - Camera.main.orthographicSize > cameraConfig.CameraBoundary.x)
                     {
                         offset.x -= cameraConfig.FreeMovementSpeed;
                     }
                 }
-                else if(Input.mousePosition.x > Screen.width)
+                else if (Input.mousePosition.x >= Screen.width - 1)
                 {
-                    if (transform.position.x + Camera.main.orthographicSize < cameraConfig.Boundary.x + cameraConfig.Boundary.width)
+                    if (transform.position.x + Camera.main.orthographicSize < cameraConfig.CameraBoundary.x + cameraConfig.CameraBoundary.width)
                     {
                         offset.x += cameraConfig.FreeMovementSpeed;
                     }
                 }
-                if (Input.mousePosition.y < 0)
+                if (Input.mousePosition.y < 1)
                 {
-                    if (transform.position.y + Camera.main.orthographicSize > cameraConfig.Boundary.y - cameraConfig.Boundary.height)
+                    if (transform.position.y + Camera.main.orthographicSize > cameraConfig.CameraBoundary.y - cameraConfig.CameraBoundary.height)
                     {
                         offset.y -= cameraConfig.FreeMovementSpeed;
                     }
                 }
-                else if (Input.mousePosition.y > Screen.height)
+                else if (Input.mousePosition.y >= Screen.height - 1)
                 {
-                    if (transform.position.y - Camera.main.orthographicSize < cameraConfig.Boundary.y)
+                    if (transform.position.y - Camera.main.orthographicSize < cameraConfig.CameraBoundary.y)
                     {
                         offset.y += cameraConfig.FreeMovementSpeed;
                     }
                 }
+                if (Input.GetAxis("Mouse ScrollWheel") != 0)
+                {
+                    Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - Input.GetAxis("Mouse ScrollWheel") * cameraConfig.MouseWheelZoomingSpeed, cameraConfig.MinZoomingSize, cameraConfig.MaxZoomingSize);
+                }
                 break;
         }
-        if(target != null)
+        if (ObjectTracker.Enabled)
         {
-            switch (cameraConfig.State)
-            {
-                case CameraConfig.CameraState.Free:
-                    transform.position = offset;
-                    break;
-                default:
-                    transform.position = target.transform.position + offset + centerOffset;
-                    break;
+            if(ObjectTracker.State == ObjectTracerController.TraceState.Tracing){
+                switch (ObjectTracker.Mode)
+                {
+                    case ObjectTracerController.TraceMode.ZoomIn:
+                        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - ObjectTracker.ZoomingSpeed, ObjectTracker.MinSizeOnFocus, ObjectTracker.MaxSizeOnFocus);
+                        break;
+                    case ObjectTracerController.TraceMode.ZoomOut:
+                        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + ObjectTracker.ZoomingSpeed, ObjectTracker.MinSizeOnFocus, ObjectTracker.MaxSizeOnFocus);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if(ObjectTracker.Traget != null){
+                transform.position = ObjectTracker.Traget.transform.position + offset;
             }
         }
+        else
+        {
+            transform.position = player.transform.position + offset;
+        }
+    }
+
+    public void SetCameraState(CameraConfig.CameraMode state)
+    {
+        cameraConfig.State = state;
+    }
+
+    public GameObject GetPlayer()
+    {
+        return player;
     }
 }

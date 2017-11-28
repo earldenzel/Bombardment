@@ -11,13 +11,12 @@ public class DeathByFalling : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (transform.position.y < -10)
+        if (transform.position.y < -10)
         {
-            if(gameObject.GetComponent<ChangeFocusByContact>() != null)
+            if (gameObject.GetComponent<ChangeFocusByContact>() != null)
             {
-                gameObject.GetComponent<ChangeFocusByContact>().ChangeFocus();
+                gameObject.GetComponent<ChangeFocusByContact>().ChangeFocusAndDestroy();
             }
-            Destroy(this.gameObject);
         }
-	}
+    }
 }

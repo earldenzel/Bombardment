@@ -53,7 +53,6 @@ public class ProjectileController : MonoBehaviour {
                     }
                 }
             }
-            Destroy(this.gameObject);
         }        
     }
 }

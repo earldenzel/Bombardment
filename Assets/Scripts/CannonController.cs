@@ -129,9 +129,7 @@ public class CannonController : MonoBehaviour {
         //Change the target state for the camera
         if (cameraController != null)
         {
-            cameraController.projectile = currentProjectile;
-            cameraController.targetState = CameraController.Target.Projectile;
-            cameraController.cameraConfig.State = CameraConfig.CameraState.ZoomIn;
+            cameraController.ObjectTracker.SetFoucs(currentProjectile);
         }
     }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ChangeFocusByContact : MonoBehaviour
 {
-
+    public float WaitTime = 1;
     private bool landed = false;
 
     // Use this for initialization
@@ -23,14 +23,16 @@ public class ChangeFocusByContact : MonoBehaviour
     {
         if (!landed)
         {
-            ChangeFocus();
+            Invoke("ChangeFocusAndDestroy", WaitTime);
         }
     }
 
-    public void ChangeFocus()
+    public void ChangeFocusAndDestroy()
     {
-        Camera.main.GetComponent<CameraController>().targetState = CameraController.Target.Player;
-        Camera.main.GetComponent<CameraController>().cameraConfig.State = CameraConfig.CameraState.Fixed;
+        CameraController controller = Camera.main.GetComponent<CameraController>();
+        controller.ObjectTracker.SetFoucs(controller.GetPlayer(), ObjectTracerController.TraceState.Idle);
+        //controller.SetCameraState(); // default fixed
         landed = true;
+        Destroy(this.gameObject);
     }
 }
