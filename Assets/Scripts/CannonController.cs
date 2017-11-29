@@ -129,18 +129,18 @@ public class CannonController : MonoBehaviour {
         //Change the target state for the camera
         if (cameraController != null)
         {
-            cameraController.ObjectTracker.SetFoucs(currentProjectile);
+            cameraController.ObjectTracer.SetFoucs(currentProjectile);
         }
     }
 
     private IEnumerator TwoMoreShots(Vector2 shotStrength)
     {
         yield return new WaitForSeconds(0.3f);
-        GameObject secondShot = Instantiate(cannon.shot1, transform.GetChild(0).position, spawnRotation) as GameObject;
+        GameObject secondShot = Instantiate(cannon.shot2, transform.GetChild(0).position, spawnRotation) as GameObject;
         secondShot.GetComponent<ProjectileController>().cannon = this;
         secondShot.GetComponent<Rigidbody2D>().AddForce(shotStrength, ForceMode2D.Impulse);
         yield return new WaitForSeconds(0.3f);
-        GameObject thirdShot = Instantiate(cannon.shot3, transform.GetChild(0).position, spawnRotation) as GameObject;
+        GameObject thirdShot = Instantiate(cannon.shot2, transform.GetChild(0).position, spawnRotation) as GameObject;
         thirdShot.GetComponent<ProjectileController>().cannon = this;
         thirdShot.GetComponent<Rigidbody2D>().AddForce(shotStrength, ForceMode2D.Impulse);
         yield return new WaitForSeconds(0.3f);

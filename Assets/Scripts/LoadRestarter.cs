@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Tilemaps;
 
 public class LoadRestarter : MonoBehaviour {
 
     public string mainScene;
     public Text restartMessage;
-	
-	// Update is called once per frame
-	void Update () {
+
+    void Start()
+    {
+    }
+    // Update is called once per frame
+    void Update () {
 		if (Input.GetKeyDown(KeyCode.R))
         {
             StartCoroutine(RestartMessage());

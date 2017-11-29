@@ -38,13 +38,40 @@ public class ObjectTracerController
     }
 }
 
+[Serializable]
+public class ParallaxController
+{
+    public bool EnableParallaxScrolling;
+    public GameObject background;
+    public float parallaxSpeed;
+
+    private float lastBackgroundX;
+
+    public ParallaxController()
+    {
+        lastBackgroundX= background.transform.position.x;
+    }
+
+    public void Scroll(float deltaTime)
+    {
+        if (EnableParallaxScrolling)
+        {
+            float deltaX = background.transform.position.x - lastBackgroundX;
+            background.transform.position += Vector3.right * (deltaX * parallaxSpeed);
+
+            lastBackgroundX = background.transform.position.x;
+        }
+    }
+}
+
 public class CameraController : MonoBehaviour
 {
+    
     public CameraConfig cameraConfig;
-    public ObjectTracerController ObjectTracker;
+    public ObjectTracerController ObjectTracer;
+    public ParallaxController ParallaxController;
     private GameObject player;
     private Vector3 offset;
-    public Vector3 centerOffset;
 
     // Use this for initialization
     void Start()
@@ -52,7 +79,7 @@ public class CameraController : MonoBehaviour
         offset = new Vector3(0, 0, transform.position.z);
         if (cameraConfig.initialFocus != null)
         {
-            ObjectTracker.Traget = cameraConfig.initialFocus;
+            ObjectTracer.Traget = cameraConfig.initialFocus;
             player = cameraConfig.initialFocus;
         }
     }
@@ -67,11 +94,11 @@ public class CameraController : MonoBehaviour
                     cameraConfig.State = CameraConfig.CameraMode.Focus;
                     offset.x = 0;
                     offset.y = 0;
-                    ObjectTracker.Enabled = true;
+                    ObjectTracer.Enabled = true;
                     break;
                 case CameraConfig.CameraMode.Focus:
                     cameraConfig.State = CameraConfig.CameraMode.Free;
-                    ObjectTracker.Enabled = false;
+                    ObjectTracer.Enabled = false;
                     break;
             }
             
@@ -83,7 +110,7 @@ public class CameraController : MonoBehaviour
         switch (cameraConfig.State)
         {
             case CameraConfig.CameraMode.Focus:
-                if (ObjectTracker.State == ObjectTracerController.TraceState.Idle)
+                if (ObjectTracer.State == ObjectTracerController.TraceState.Idle)
                 {
                     Camera.main.orthographicSize = cameraConfig.MinZoomingSize;
                 }
@@ -125,29 +152,33 @@ public class CameraController : MonoBehaviour
                 }
                 break;
         }
-        if (ObjectTracker.Enabled)
+        if (ObjectTracer.Enabled)
         {
-            if(ObjectTracker.State == ObjectTracerController.TraceState.Tracing){
-                switch (ObjectTracker.Mode)
+            if(ObjectTracer.State == ObjectTracerController.TraceState.Tracing){
+                switch (ObjectTracer.Mode)
                 {
                     case ObjectTracerController.TraceMode.ZoomIn:
-                        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - ObjectTracker.ZoomingSpeed, ObjectTracker.MinSizeOnFocus, ObjectTracker.MaxSizeOnFocus);
+                        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - ObjectTracer.ZoomingSpeed, ObjectTracer.MinSizeOnFocus, ObjectTracer.MaxSizeOnFocus);
                         break;
                     case ObjectTracerController.TraceMode.ZoomOut:
-                        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + ObjectTracker.ZoomingSpeed, ObjectTracker.MinSizeOnFocus, ObjectTracker.MaxSizeOnFocus);
+                        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + ObjectTracer.ZoomingSpeed, ObjectTracer.MinSizeOnFocus, ObjectTracer.MaxSizeOnFocus);
                         break;
                     default:
                         break;
                 }
             }
-            if(ObjectTracker.Traget != null){
-                transform.position = ObjectTracker.Traget.transform.position + offset;
+            if(ObjectTracer.Traget != null){
+                transform.position = ObjectTracer.Traget.transform.position + offset;
             }
         }
         else
         {
-            transform.position = player.transform.position + offset;
+            if(player != null)
+            {
+                transform.position = player.transform.position + offset;
+            }
         }
+        ParallaxController.Scroll(Time.deltaTime);
     }
 
     public void SetCameraState(CameraConfig.CameraMode state)
@@ -158,5 +189,16 @@ public class CameraController : MonoBehaviour
     public GameObject GetPlayer()
     {
         return player;
+    }
+    
+
+    public void CameraDelay(float time)
+    {
+        Invoke("ResetCamera", time);
+    }
+
+    private void ResetCamera()
+    {
+        ObjectTracer.SetFoucs(player, ObjectTracerController.TraceState.Idle);
     }
 }
