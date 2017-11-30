@@ -38,38 +38,11 @@ public class ObjectTracerController
     }
 }
 
-[Serializable]
-public class ParallaxController
-{
-    public bool EnableParallaxScrolling;
-    public GameObject background;
-    public float parallaxSpeed;
-
-    private float lastBackgroundX;
-
-    public ParallaxController()
-    {
-        lastBackgroundX= background.transform.position.x;
-    }
-
-    public void Scroll(float deltaTime)
-    {
-        if (EnableParallaxScrolling)
-        {
-            float deltaX = background.transform.position.x - lastBackgroundX;
-            background.transform.position += Vector3.right * (deltaX * parallaxSpeed);
-
-            lastBackgroundX = background.transform.position.x;
-        }
-    }
-}
-
 public class CameraController : MonoBehaviour
 {
     
     public CameraConfig cameraConfig;
     public ObjectTracerController ObjectTracer;
-    public ParallaxController ParallaxController;
     private GameObject player;
     private Vector3 offset;
 
@@ -178,7 +151,6 @@ public class CameraController : MonoBehaviour
                 transform.position = player.transform.position + offset;
             }
         }
-        ParallaxController.Scroll(Time.deltaTime);
     }
 
     public void SetCameraState(CameraConfig.CameraMode state)
