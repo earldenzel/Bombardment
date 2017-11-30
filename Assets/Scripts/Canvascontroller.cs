@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
-public class Canvascontroller : MonoBehaviour {
+public class CanvasController : MonoBehaviour {
 
     Text power;
     Text shot;
@@ -45,13 +45,13 @@ public class Canvascontroller : MonoBehaviour {
 
         if (shot1)
         {
-            shot.text = "Current weapon: SINGLE SHOT";
+            shot.text = "Current Weapon: SINGLE SHOT";
             arrow1.enabled = true;
             arrow2.enabled = false;
         }
         else
         {
-            shot.text = "Current weapon: TRIPLE STRAFE";
+            shot.text = "Current Weapon: TRIPLE STRAFE";
             arrow1.enabled = false;
             arrow2.enabled = true;
         }

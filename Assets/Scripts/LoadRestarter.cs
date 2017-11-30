@@ -23,6 +23,10 @@ public class LoadRestarter : MonoBehaviour {
 
     private IEnumerator RestartMessage()
     {
+        if (restartMessage.GetComponent<ObjectEffect>())
+        {
+            restartMessage.GetComponent<ObjectEffect>().EnableFade = true;
+        }
         restartMessage.text = "Restarting... hold on!";
         yield return new WaitForSeconds(2f);
         SceneManager.LoadScene(mainScene);

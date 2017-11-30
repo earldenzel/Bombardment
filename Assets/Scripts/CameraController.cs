@@ -65,12 +65,14 @@ public class CameraController : MonoBehaviour
             {
                 case CameraConfig.CameraMode.Free:
                     cameraConfig.State = CameraConfig.CameraMode.Focus;
+                    Camera.main.orthographicSize = (cameraConfig.MaxZoomingSize + cameraConfig.MinZoomingSize) / 2;
                     offset.x = 0;
                     offset.y = 0;
                     ObjectTracer.Enabled = true;
                     break;
                 case CameraConfig.CameraMode.Focus:
                     cameraConfig.State = CameraConfig.CameraMode.Free;
+                    Camera.main.orthographicSize = (cameraConfig.MaxZoomingSize + cameraConfig.MinZoomingSize) / 2;
                     ObjectTracer.Enabled = false;
                     break;
             }
@@ -85,7 +87,7 @@ public class CameraController : MonoBehaviour
             case CameraConfig.CameraMode.Focus:
                 if (ObjectTracer.State == ObjectTracerController.TraceState.Idle)
                 {
-                    Camera.main.orthographicSize = cameraConfig.MinZoomingSize;
+                    Camera.main.orthographicSize = cameraConfig.MaxZoomingSize;
                 }
                 break;
             case CameraConfig.CameraMode.Free:

@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ObjectEffect : MonoBehaviour {
 
-    public enum EffectType { ZoomInAndOut, ZoomIn, ZoomOut, RotateClockwise, RotateCounterClockwise }
+    public enum EffectType { ZoomInAndOut, ZoomIn, ZoomOut, RotateClockwise, RotateCounterClockwise, FadeInAndOut, FadeIn, FadeOut }
 
     public EffectType[] Effects;
 
@@ -13,8 +14,17 @@ public class ObjectEffect : MonoBehaviour {
     public float MinSize = 0.5f;
     public float ZoomSpeed = 0.5f;
     public float RotateSpeed = 20;
+    public float FadeSpeed = 0.1f;
 
-    private bool zoomTrigger;
+    public bool EnableFade;
+    public bool fadeSpriteColor = true;
+    public bool fadeTextColor = false;
+
+    private bool zoomTrigger = false;
+    private bool fadeTrigger = false;
+    private float alphaValue = 1;
+
+    
 
 	// Use this for initialization
 	void Start () {
@@ -50,6 +60,22 @@ public class ObjectEffect : MonoBehaviour {
                     case EffectType.RotateCounterClockwise:
                         rotate(Vector3.forward);
                         break;
+                    case EffectType.FadeInAndOut:
+                        if (fadeTrigger)
+                        {
+                            fadeIn();
+                        }
+                        else
+                        {
+                            fadeOut();
+                        }
+                        break;
+                    case EffectType.FadeIn:
+                        fadeIn();
+                        break;
+                    case EffectType.FadeOut:
+                        fadeOut();
+                        break;
                     default:
                         break;
                 }
@@ -78,6 +104,50 @@ public class ObjectEffect : MonoBehaviour {
         else
         {
             zoomTrigger = !zoomTrigger;
+        }
+    }
+
+    private void fade()
+    {
+        if (fadeSpriteColor && this.GetComponent<SpriteRenderer>() != null)
+        {
+            this.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, alphaValue);
+        }
+        if (fadeTextColor && this.GetComponent<Text>() != null)
+        {
+            this.GetComponent<Text>().color = new Color(this.GetComponent<Text>().color.r, this.GetComponent<Text>().color.g, this.GetComponent<Text>().color.b, alphaValue);
+        }
+    }
+
+    private void fadeIn()
+    {
+        if (EnableFade)
+        {
+            if (alphaValue - FadeSpeed * Time.deltaTime >= 0)
+            {
+                alphaValue -= FadeSpeed * Time.deltaTime;
+                fade();
+            }
+            else
+            {
+                fadeTrigger = !fadeTrigger;
+            }
+        }
+    }
+
+    private void fadeOut()
+    {
+        if (EnableFade)
+        {
+            if (alphaValue + FadeSpeed * Time.deltaTime <= 1)
+            {
+                alphaValue += FadeSpeed * Time.deltaTime;
+                fade();
+            }
+            else
+            {
+                fadeTrigger = !fadeTrigger;
+            }
         }
     }
 
