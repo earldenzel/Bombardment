@@ -29,7 +29,6 @@ public class ChangeFocusByContact : MonoBehaviour
 
     public void ChangeFocusAndDestroy()
     {
-        Debug.Log(DelayTime);
         CameraController controller = Camera.main.GetComponent<CameraController>();
         controller.CameraDelay(DelayTime);
         //controller.SetCameraState(); // default fixed

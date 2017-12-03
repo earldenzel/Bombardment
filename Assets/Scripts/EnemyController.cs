@@ -20,7 +20,13 @@ public class EnemyController : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<ProjectileController>() != null)
         {
-            HP.value -= collision.gameObject.GetComponent<ProjectileController>().baseDamage;
+            Damage(collision.gameObject.GetComponent<ProjectileController>().baseDamage);
         }
+    }
+
+    public void Damage(int damage)
+    {
+        Debug.Log(this.gameObject.name + " received " + damage + " damage.");
+        HP.value -= damage;
     }
 }

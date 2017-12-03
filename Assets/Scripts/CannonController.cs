@@ -10,7 +10,6 @@ public class CannonConfig
     public float maxAngle;
     public GameObject shot1;
     public GameObject shot2;
-    public GameObject shot3;
     public float launchSpeed;
 }
 
@@ -63,9 +62,9 @@ public class CannonController : MonoBehaviour {
 	void Update () {
         if (onShot)
         {
-            myTime += Time.deltaTime;
-            powerBar.transform.localScale = new Vector3(originalScale.x + 2f*powerCurve.Evaluate(myTime), originalScale.y, originalScale.z);
-            powerBar.transform.localPosition = new Vector3(originalPosition.x + 0.5f*powerCurve.Evaluate(myTime), 0, 0);
+            myTime += Time.deltaTime/2;
+            powerBar.transform.localScale = new Vector3(3f*powerCurve.Evaluate(myTime), originalScale.y, originalScale.z);
+            powerBar.transform.localPosition = new Vector3(0.75f*powerCurve.Evaluate(myTime), 0, 0);
         }
         if (Input.GetKeyDown(KeyCode.Tab) && !OnShot)
         {
@@ -88,7 +87,6 @@ public class CannonController : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             transform.root.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
-            Debug.Log(transform.root.GetComponent<Rigidbody2D>().velocity.magnitude);
             if (OnShot)
             {
                 //shot ends
@@ -117,7 +115,6 @@ public class CannonController : MonoBehaviour {
     {
         Vector2 forceVec = (transform.GetChild(0).position - this.transform.position).normalized;
         forceVec *= (cannon.launchSpeed * powerBar.transform.localScale.x);
-        Debug.Log("Power: " + cannon.launchSpeed + " x " + (powerBar.transform.localScale.x-1));
         currentProjectile.GetComponent<Rigidbody2D>().AddForce(forceVec, ForceMode2D.Impulse);
         currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 1;
 
