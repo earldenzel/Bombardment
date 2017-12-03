@@ -6,25 +6,43 @@ public class ChangeFocusByContact : MonoBehaviour
 {
     public float DelayTime = 1;
     private bool landed = false;
+    private int reflectedTimes = 0;
+    private Vector2 projectileVelocity;
 
     // Use this for initialization
     void Start()
     {
-
+        if (transform.gameObject.tag == "Reflective")
+        {
+            reflectedTimes = 1;
+        }
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-
+        projectileVelocity = GetComponent<Rigidbody2D>().velocity;
     }
 
     void OnCollisionEnter2D(Collision2D other)
     {
         if (!landed)
         {
-            ChangeFocusAndDestroy();
+            if (reflectedTimes > 0)
+            {
+                reflectedTimes--;
+                ReflectShot(projectileVelocity);
+            }
+            else
+            {
+                ChangeFocusAndDestroy();
+            }
         }
+    }
+
+    private void ReflectShot(Vector2 lastVelocity)
+    {
+        GetComponent<Rigidbody2D>().AddForce(-lastVelocity.normalized, ForceMode2D.Impulse);
     }
 
     public void ChangeFocusAndDestroy()

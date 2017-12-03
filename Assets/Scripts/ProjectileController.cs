@@ -38,9 +38,9 @@ public class ProjectileController : MonoBehaviour {
         if (!cannon.OnShot)
         {
             Vector2 finalDirection = rb2d.velocity.normalized;
-            rb2d.velocity = Vector2.zero;
-            rb2d.drag = 100000;
-            rb2d.angularDrag = 100000;
+            //rb2d.velocity = Vector2.zero;
+            //rb2d.drag = 100000;
+            //rb2d.angularDrag = 100000;
 
             Vector3Int gridCenterOfImpact = currentMap.WorldToCell(transform.position);
             for (int x = -collateralDamageSize; x <= collateralDamageSize; x++)
