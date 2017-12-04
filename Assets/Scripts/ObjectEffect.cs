@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ObjectEffect : MonoBehaviour {
 
-    public enum EffectType { ZoomInAndOut, ZoomIn, ZoomOut, RotateClockwise, RotateCounterClockwise, FadeInAndOut, FadeIn, FadeOut }
+    public enum EffectType { ZoomInAndOut, ZoomIn, ZoomOut, RotateClockwise, RotateCounterClockwise, FadeInAndOut, FadeIn, FadeOut, Flip }
 
     public EffectType[] Effects;
 
@@ -16,20 +16,30 @@ public class ObjectEffect : MonoBehaviour {
     public float RotateSpeed = 20;
     public float FadeSpeed = 0.1f;
 
+    public bool oneTurnFlip;
+    public float FlipSpeed = 20;
+    public Text text;
+
     public bool EnableFade;
     public bool fadeSpriteColor = true;
     public bool fadeTextColor = false;
+
+    public bool ResetAlpha = false;
 
     private bool zoomTrigger = false;
     private bool fadeTrigger = false;
     private float alphaValue = 1;
 
+
     
 
 	// Use this for initialization
 	void Start () {
-		
-	}
+        if (ResetAlpha)
+        {
+            alphaValue = 0;
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -76,6 +86,9 @@ public class ObjectEffect : MonoBehaviour {
                     case EffectType.FadeOut:
                         fadeOut();
                         break;
+                    case EffectType.Flip:
+                        flip();
+                        break;
                     default:
                         break;
                 }
@@ -112,6 +125,10 @@ public class ObjectEffect : MonoBehaviour {
         if (fadeSpriteColor && this.GetComponent<SpriteRenderer>() != null)
         {
             this.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, alphaValue);
+        }
+        if (fadeSpriteColor && this.GetComponent<Image>() != null)
+        {
+            this.GetComponent<Image>().color = new Color(1f, 1f, 1f, alphaValue);
         }
         if (fadeTextColor && this.GetComponent<Text>() != null)
         {
@@ -154,5 +171,15 @@ public class ObjectEffect : MonoBehaviour {
     private void rotate(Vector3 rot)
     {
         transform.Rotate(rot * RotateSpeed * Time.deltaTime);
+    }
+
+    private void flip()
+    {
+        Vector3 rot = Vector3.back * Time.deltaTime * FlipSpeed;
+        if(text != null && rot.y >= 90)
+        {            text.text = "";
+        }
+        rot.y = oneTurnFlip ? Mathf.Clamp(rot.y, 0, 90) : rot.y;
+        transform.Rotate(rot);
     }
 }

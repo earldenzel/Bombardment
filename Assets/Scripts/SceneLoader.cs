@@ -7,30 +7,29 @@ public class SceneLoader : MonoBehaviour {
 
     public enum GameScene { Loading, TankSelection, Main }
 
+    public bool EnableTimeTransition;
+    public float timeToNextScene = 3f;
     public GameScene NextScene;
 
 	// Use this for initialization
 	void Start () {
+        if (EnableTimeTransition)
+        {
+            StartCoroutine(ToNextScene(NextScene.ToString(), timeToNextScene));
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        switch (NextScene)
+        if (Input.anyKey)
         {
-            case GameScene.TankSelection:
-                if (Input.anyKey)
-                {
-                    Debug.Log("Loading Selection");
-                    SceneManager.LoadScene("selection");
-                }
-                break;
-            case GameScene.Main:
-                if (Input.GetKeyUp(KeyCode.KeypadEnter))
-                {
-                    Debug.Log("Loading Game");
-                    SceneManager.LoadScene("main");
-                }
-                break;
+            StartCoroutine(ToNextScene(NextScene.ToString(), 0));
         }
 	}
+
+    IEnumerator ToNextScene(string name, float time)
+    {
+        yield return new WaitForSeconds(time);
+        SceneManager.LoadScene(name);
+    }
 }
