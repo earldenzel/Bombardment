@@ -5,38 +5,17 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
-    private bool movable; //tells if the tank is movable. will be disabled on shot
+    public bool movable; //tells if the tank is movable. will be disabled on shot
     private Vector3 direction; //tells the direction of the tank upon left or right arrow press
     public float velocity = 2; //tells the velocity of the tank
     private Rigidbody2D tankBody; //rigidbody of transform. tankBody has a trigger collider so the wheels could do the heavy lifting
-    private bool rightDirection; //tells if the tank is facing right
+    public bool rightDirection; //tells if the tank is facing right
     public float jumpForce;
     private float risingAngle;
-
-    public bool Movable
-    {
-        get
-        {
-            return movable;
-        }
-
-        set
-        {
-            movable = value;
-        }
-    }
-
-    public bool RightDirection
-    {
-        get
-        {
-            return rightDirection;
-        }
-    }
-
+        
     // Use this for initialization
     void Start () {
-        Movable = true;
+        movable = true;
         rightDirection = true;
         tankBody = GetComponent<Rigidbody2D>();
 	}    
@@ -44,7 +23,7 @@ public class PlayerController : MonoBehaviour {
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl) && Movable)
+        if (Input.GetKeyDown(KeyCode.LeftControl) && movable)
         {
             if (rightDirection)
             {
@@ -64,21 +43,21 @@ public class PlayerController : MonoBehaviour {
             {
                 tankBody.AddForce(Vector2.right * Input.GetAxis("Horizontal") * velocity);
             }
-            Movable = false;
+            movable = false;
         }
         else if (Input.GetAxis("Horizontal") == 0 && !GetComponent<OrientationChecker>().Freefall)
         {
             tankBody.gravityScale = 0;
-            if (transform.GetChild(0).GetChild(0).GetComponent<CannonController>().OnShot)
+            if (transform.GetChild(0).GetChild(0).GetComponent<CannonController>().onShot)
             {
-                Movable = false;
+                movable = false;
             }
             else
             {
-                Movable = true;
+                movable = true;
             }
         }
-        else if (Input.GetAxis("Horizontal") != 0 && Movable)
+        else if (Input.GetAxis("Horizontal") != 0 && movable)
         {
             movable = true;
             tankBody.gravityScale = 1;

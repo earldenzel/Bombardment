@@ -47,7 +47,7 @@ public class OrientationChecker : MonoBehaviour {
             freefall = true;
             hit1 = Physics2D.Raycast(new Vector3(wheel1.position.x, wheel1.position.y - 0.38f), Vector3.down);
             hit2 = Physics2D.Raycast(new Vector3(wheel2.position.x, wheel2.position.y - 0.38f), Vector3.down);
-            tankBody.transform.right = (hit2.point - hit1.point) * ((GetComponent<PlayerController>().RightDirection) ? 1 : -1);
+            tankBody.transform.right = (hit2.point - hit1.point) * ((GetComponent<PlayerController>().rightDirection) ? 1 : -1);
         }
         else
         {

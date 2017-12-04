@@ -17,7 +17,7 @@ public class CannonController : MonoBehaviour {
     public CannonConfig cannon;
     private float zRotate;
     private float parentAngle;
-    private bool onShot; //tells if the player is currently taking a shot.
+    public bool onShot; //tells if the player is currently taking a shot.
     private bool shot1; // tells if the current shot is shot1. if shot1 = false, then shot2
     //private bool yourTurn; //tells if it's the current player's turn. for now, it will be set to true.
     private GameObject currentProjectile;
@@ -28,23 +28,10 @@ public class CannonController : MonoBehaviour {
     private Vector3 originalPosition;
     private float myTime;
     private CameraController cameraController;
-
-    public bool OnShot
-    {
-        get
-        {
-            return onShot;
-        }
-
-        set
-        {
-            onShot = value;
-        }
-    }
-
+    
     // Use this for initialization
     void Start () {
-        OnShot = false;
+        onShot = false;
         shot1 = true;
         //yourTurn = true;
         powerBar = transform.GetChild(1).GetComponent<SpriteRenderer>();
@@ -62,15 +49,23 @@ public class CannonController : MonoBehaviour {
 	void Update () {
         if (onShot)
         {
-            myTime += Time.deltaTime/2;
-            powerBar.transform.localScale = new Vector3(3f*powerCurve.Evaluate(myTime), originalScale.y, originalScale.z);
-            powerBar.transform.localPosition = new Vector3(0.75f*powerCurve.Evaluate(myTime), 0, 0);
+            myTime += Time.deltaTime / 2;
+            if (transform.parent.tag == "Scorch")
+            {
+                powerBar.transform.localScale = new Vector3(3f * powerCurve.Evaluate(myTime), originalScale.y, originalScale.z);
+                powerBar.transform.localPosition = new Vector3(0, 0.75f*powerCurve.Evaluate(myTime), 0);
+            }
+            else
+            {
+                powerBar.transform.localScale = new Vector3(3f * powerCurve.Evaluate(myTime), originalScale.y, originalScale.z);
+                powerBar.transform.localPosition = new Vector3(0.75f * powerCurve.Evaluate(myTime), 0, 0);
+            }
         }
-        if (Input.GetKeyDown(KeyCode.Tab) && !OnShot)
+        if (Input.GetKeyDown(KeyCode.Tab) && !onShot)
         {
             shot1 = !shot1;
         }
-        if (Input.GetAxis("Vertical") != 0 && !OnShot)
+        if (Input.GetAxis("Vertical") != 0 && !onShot)
         {
             transform.Rotate(new Vector3(0, 0, Input.GetAxis("Vertical")));
 
@@ -87,20 +82,20 @@ public class CannonController : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             transform.root.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
-            if (OnShot)
+            if (onShot)
             {
                 //shot ends
                 ShootProjectile();
-                transform.root.GetComponent<PlayerController>().Movable = true;
+                transform.root.GetComponent<PlayerController>().movable = true;
                 StartCoroutine(ShowLastPower());
-                OnShot = false;
+                onShot = false;
             }
             else
             {
                 //shot begins
                 myTime = 0.0f;
                 LoadShotOne(shot1);
-                OnShot = true;
+                onShot = true;
             }
         }
     }
@@ -114,6 +109,13 @@ public class CannonController : MonoBehaviour {
     private void ShootProjectile()
     {
         Vector2 forceVec = (transform.GetChild(0).position - this.transform.position).normalized;
+
+        //scorch's projectiles becomes inverted when facing the other way. this fixes it
+        if (currentProjectile.tag == "Scorch")
+        {
+            currentProjectile.transform.localScale = new Vector3(1, 1, 1);
+        }
+
         forceVec *= (cannon.launchSpeed * powerBar.transform.localScale.x);
         currentProjectile.GetComponent<Rigidbody2D>().AddForce(forceVec, ForceMode2D.Impulse);
         currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 1;
@@ -141,7 +143,7 @@ public class CannonController : MonoBehaviour {
         thirdShot.GetComponent<ProjectileController>().cannon = this;
         thirdShot.GetComponent<Rigidbody2D>().AddForce(shotStrength, ForceMode2D.Impulse);
         yield return new WaitForSeconds(0.3f);
-        OnShot = false;
+        onShot = false;
     }
 
     private void LoadShotOne(bool shot1)
@@ -151,7 +153,7 @@ public class CannonController : MonoBehaviour {
         powerBar.transform.localPosition = originalPosition;
         powerBar.enabled = true;
         //tank does not move when loading shot
-        transform.root.GetComponent<PlayerController>().Movable = false;
+        transform.root.GetComponent<PlayerController>().movable = false;
         //whole block checks orientation first of the tank before attempting to create projectile object
         if (transform.root.transform.localScale.x > 0)
         {
@@ -170,7 +172,11 @@ public class CannonController : MonoBehaviour {
         {
             currentProjectile = Instantiate(cannon.shot2, transform.GetChild(0).position, spawnRotation) as GameObject;
         }
-
+        //maintains fidelity of projectile even when facing left
+        if (!transform.root.GetComponent<PlayerController>().rightDirection)
+        {
+            currentProjectile.transform.localScale = new Vector3(1, -1, 1);
+        }
         currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 0;
         currentProjectile.GetComponent<ProjectileController>().cannon = this; 
     }
