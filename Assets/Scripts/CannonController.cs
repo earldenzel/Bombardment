@@ -28,6 +28,10 @@ public class CannonController : MonoBehaviour {
     private Vector3 originalPosition;
     private float myTime;
     private CameraController cameraController;
+
+    public string vertical;
+    public string shoot;
+    public string switchShot;
     
     // Use this for initialization
     void Start () {
@@ -61,13 +65,13 @@ public class CannonController : MonoBehaviour {
                 powerBar.transform.localPosition = new Vector3(0.75f * powerCurve.Evaluate(myTime), 0, 0);
             }
         }
-        if (Input.GetKeyDown(KeyCode.Tab) && !onShot)
+        if (Input.GetButtonDown(switchShot) && !onShot)
         {
             shot1 = !shot1;
         }
-        if (Input.GetAxis("Vertical") != 0 && !onShot)
+        if (Input.GetAxis(vertical) != 0 && !onShot)
         {
-            transform.Rotate(new Vector3(0, 0, Input.GetAxis("Vertical")));
+            transform.Rotate(new Vector3(0, 0, Input.GetAxis(vertical)));
 
             //this whole block of code respects the base angle of the tank in respect to the angle of the projectile
             zRotate = transform.localRotation.eulerAngles.z;
@@ -79,7 +83,7 @@ public class CannonController : MonoBehaviour {
             currentRotation.z = Mathf.Clamp(zRotate, cannon.minAngle, cannon.maxAngle);
             transform.localRotation = Quaternion.Euler(currentRotation);
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetButtonDown(shoot))
         {
             transform.root.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
             if (onShot)

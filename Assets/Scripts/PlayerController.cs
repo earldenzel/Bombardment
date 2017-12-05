@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour {
     public bool rightDirection; //tells if the tank is facing right
     public float jumpForce;
     private float risingAngle;
+
+    public string horizontal;
+    public string jump;
         
     // Use this for initialization
     void Start () {
@@ -23,7 +26,7 @@ public class PlayerController : MonoBehaviour {
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl) && movable)
+        if (Input.GetButtonDown(jump) && movable)
         {
             if (rightDirection)
             {
@@ -39,13 +42,13 @@ public class PlayerController : MonoBehaviour {
         {
             tankBody.gravityScale = 1;
             //allow some degree of movement on freefall/flight
-            if (Input.GetAxis("Horizontal") != 0)
+            if (Input.GetAxis(horizontal) != 0)
             {
-                tankBody.AddForce(Vector2.right * Input.GetAxis("Horizontal") * velocity);
+                tankBody.AddForce(Vector2.right * Input.GetAxis(horizontal) * velocity);
             }
             movable = false;
         }
-        else if (Input.GetAxis("Horizontal") == 0 && !GetComponent<OrientationChecker>().Freefall)
+        else if (Input.GetAxis(horizontal) == 0 && !GetComponent<OrientationChecker>().Freefall)
         {
             tankBody.gravityScale = 0;
             if (transform.GetChild(0).GetChild(0).GetComponent<CannonController>().onShot)
@@ -57,11 +60,11 @@ public class PlayerController : MonoBehaviour {
                 movable = true;
             }
         }
-        else if (Input.GetAxis("Horizontal") != 0 && movable)
+        else if (Input.GetAxis(horizontal) != 0 && movable)
         {
             movable = true;
             tankBody.gravityScale = 1;
-            if ((Input.GetAxis("Horizontal") > 0))
+            if ((Input.GetAxis(horizontal) > 0))
             {
                 if (!rightDirection)
                 {
@@ -81,16 +84,7 @@ public class PlayerController : MonoBehaviour {
                 rightDirection = false;
             }
 
-            //set direction for tank depending on where it's facing
-            //if (rightDirection)
-            //{
-            //    direction = tankBody.transform.right * Input.GetAxis("Horizontal") - 0.2f*transform.up;
-            //}
-            //else
-            //{
-            //    direction = tankBody.transform.right * Input.GetAxis("Horizontal") - 0.2f*transform.up;
-            //}
-            direction = tankBody.transform.right * Input.GetAxis("Horizontal") -0.2f*transform.up;
+            direction = tankBody.transform.right * Input.GetAxis(horizontal) -0.2f*transform.up;
             risingAngle = Vector3.Angle(transform.right, Vector3.right);
             if (risingAngle > 70.0f)
             {
