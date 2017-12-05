@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoaderWithProgress : MonoBehaviour {
 
+    public float delayBeforeLoad = 3f;
     public Slider slider;
 
     // Use this for initialization
@@ -15,6 +16,7 @@ public class SceneLoaderWithProgress : MonoBehaviour {
 
     IEnumerator LoadAsyncScene()
     {
+        yield return new WaitForSeconds(delayBeforeLoad);
         AsyncOperation operation = SceneManager.LoadSceneAsync("main");
         
         //Wait until the last operation fully loads to return anything
