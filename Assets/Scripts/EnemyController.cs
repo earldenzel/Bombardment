@@ -12,6 +12,10 @@ public class EnemyController : MonoBehaviour
         if (HP.value == 0)
         {
             Destroy(this.gameObject);
+            if (GetComponent<PlayerController>() != null)
+            {
+                GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
+            }
             //after this is where you instantiate the explosion
         }
     }

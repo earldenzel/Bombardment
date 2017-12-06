@@ -16,7 +16,6 @@ public class CannonConfig
 public class CannonController : MonoBehaviour {
     public CannonConfig cannon;
     private float zRotate;
-    private float parentAngle;
     public bool onShot; //tells if the player is currently taking a shot.
     private bool shot1; // tells if the current shot is shot1. if shot1 = false, then shot2
     //private bool yourTurn; //tells if it's the current player's turn. for now, it will be set to true.
@@ -28,6 +27,7 @@ public class CannonController : MonoBehaviour {
     private Vector3 originalPosition;
     private float myTime;
     private CameraController cameraController;
+    public bool fired;
 
     public string vertical;
     public string shoot;
@@ -37,11 +37,11 @@ public class CannonController : MonoBehaviour {
     void Start () {
         onShot = false;
         shot1 = true;
-        //yourTurn = true;
         powerBar = transform.GetChild(1).GetComponent<SpriteRenderer>();
         originalScale = powerBar.transform.localScale;
         originalPosition = powerBar.transform.localPosition;
         powerBar.enabled = false;
+        fired = false;
 
         if (Camera.main.GetComponent<CameraController>() != null)
         {
@@ -88,20 +88,29 @@ public class CannonController : MonoBehaviour {
             transform.root.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
             if (onShot)
             {
-                //shot ends
+                //shot ends and cannot be shot anymore
                 ShootProjectile();
                 transform.root.GetComponent<PlayerController>().movable = true;
                 StartCoroutine(ShowLastPower());
                 onShot = false;
+                fired = true;                
             }
             else
             {
-                //shot begins
-                myTime = 0.0f;
-                LoadShotOne(shot1);
-                onShot = true;
+                //shot begins if shot hasn't been fired
+                if (!fired)
+                {
+                    myTime = 0.0f;
+                    LoadShotOne(shot1);
+                    onShot = true;
+                }
             }
         }
+    }
+
+    public void InstantiateShot()
+    {
+        fired = false;
     }
 
     private IEnumerator ShowLastPower()
@@ -112,28 +121,35 @@ public class CannonController : MonoBehaviour {
 
     private void ShootProjectile()
     {
+        //determine direction of shooting
         Vector2 forceVec = (transform.GetChild(0).position - this.transform.position).normalized;
-
         //scorch's projectiles becomes inverted when facing the other way. this fixes it
         if (currentProjectile.tag == "Scorch")
         {
             currentProjectile.transform.localScale = new Vector3(1, 1, 1);
         }
-
+        //throw projectile
         forceVec *= (cannon.launchSpeed * powerBar.transform.localScale.x);
         currentProjectile.GetComponent<Rigidbody2D>().AddForce(forceVec, ForceMode2D.Impulse);
         currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 1;
-
+        //this only applies to archer's shots
         if(currentProjectile.tag == "Arrow")
         {
             StartCoroutine(TwoMoreShots(forceVec));
         }
-
         //Change the target state for the camera
         if (cameraController != null)
         {
             cameraController.ObjectTracer.SetFoucs(currentProjectile);
         }
+
+        StartCoroutine(NextPlayer());
+    }
+
+    private IEnumerator NextPlayer()
+    {
+        yield return new WaitForSeconds(3.0f);
+        GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
     }
 
     private IEnumerator TwoMoreShots(Vector2 shotStrength)

@@ -51,28 +51,6 @@ public class ProjectileController : MonoBehaviour {
                     }
                 }
             }
-
-            if(collision.gameObject.tag == "Terrain")
-            {
-                hits = Physics2D.CircleCastAll(this.transform.position, collateralDamageSize * 0.08f, Vector2.zero);
-
-                foreach (RaycastHit2D h in hits)
-                {
-                    if (h.transform.gameObject.tag == "Enemy")
-                    {
-                        float damage = (h.transform.position - this.transform.position).magnitude;
-
-                        //provides some weak damage if hit was not exact
-                        if (damage < collateralDamageSize*0.08f)
-                        {
-                            damage = 1 - (damage / (collateralDamageSize*0.08f));
-                            damage *= baseDamage;
-                            h.transform.gameObject.GetComponent<EnemyController>().Damage((int)Mathf.Round(damage/2));
-                        }
-                    }
-
-                }
-            }
         }        
     }
 }

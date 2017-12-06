@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour {
             }
         }
         //if tank movement is not pressed and not on freefall, gravity does not affect the tank
-        if (GetComponent<OrientationChecker>().Freefall)
+        if (GetComponent<OrientationChecker>().freefall)
         {
             tankBody.gravityScale = 1;
             //allow some degree of movement on freefall/flight
@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour {
             }
             movable = false;
         }
-        else if (Input.GetAxis(horizontal) == 0 && !GetComponent<OrientationChecker>().Freefall)
+        else if (Input.GetAxis(horizontal) == 0 && !GetComponent<OrientationChecker>().freefall)
         {
             tankBody.gravityScale = 0;
             if (transform.GetChild(0).GetChild(0).GetComponent<CannonController>().onShot)
@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour {
             }
             else
             {
-                tankBody.velocity = Vector2.zero;
+                VelocityZero();
                 if (rightDirection)
                 {
                     //flip
@@ -88,7 +88,8 @@ public class PlayerController : MonoBehaviour {
             risingAngle = Vector3.Angle(transform.right, Vector3.right);
             if (risingAngle > 70.0f)
             {
-                tankBody.velocity = Vector2.zero;
+                VelocityZero();
+                GetComponent<OrientationChecker>().freefall = true;
             }
             else
             {
@@ -107,7 +108,7 @@ public class PlayerController : MonoBehaviour {
     {
         foreach (Transform t in transform)
         {
-            if (t.GetComponent<SpriteRenderer>().tag == "Wheels")
+            if (t.tag == "Wheels")
             {
                 t.Rotate(new Vector3(0, 0, -tankBody.velocity.magnitude));
             }
@@ -117,6 +118,12 @@ public class PlayerController : MonoBehaviour {
     void OnCollisionEnter2D(Collision2D collision)
     {
         tankBody.gravityScale = 0;
+        VelocityZero();
+    }
+
+    void VelocityZero()
+    {
         tankBody.velocity = Vector2.zero;
+        tankBody.angularVelocity = 0;
     }
 }

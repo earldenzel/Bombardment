@@ -11,20 +11,7 @@ public class OrientationChecker : MonoBehaviour {
     private RaycastHit2D hit2;
     private Rigidbody2D tankBody;
     private string message;
-    private bool freefall;
-
-    public bool Freefall
-    {
-        get
-        {
-            return freefall;
-        }
-
-        set
-        {
-            freefall = value;
-        }
-    }
+    public bool freefall;
 
     // Use this for initialization
     void Start () {
@@ -39,7 +26,7 @@ public class OrientationChecker : MonoBehaviour {
         hit2 = Physics2D.Raycast(new Vector3(wheel2.position.x, wheel2.position.y - 0.38f), Vector3.down, 0.5f);
         if (hit1.collider == GetComponent<Collider2D>() || hit2.collider == GetComponent<Collider2D>())
         {
-            tankBody.transform.up = Vector3.up;
+            //tankBody.transform.up = Vector3.up;
             freefall = true;
         }
         else if (hit1.collider == null && hit2.collider == null)
@@ -52,14 +39,6 @@ public class OrientationChecker : MonoBehaviour {
         else
         {
             freefall = false;
-            //if (hit1.collider == null)
-            //{
-            //    tankBody.AddForceAtPosition(Vector2.down, wheel1.position, ForceMode2D.Impulse);
-            //}
-            //else if (hit2.collider == null)
-            //{
-            //    tankBody.AddForceAtPosition(Vector2.down, wheel2.position, ForceMode2D.Impulse);
-            //}
         }
     }
 
