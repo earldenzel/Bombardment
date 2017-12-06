@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class TankSelection : MonoBehaviour {
 
-    public enum TankType { Archer, Boomer, Pirate}
+    public enum TankType { Archer, Boomer, Pirate, Scorch}
 
-//    public TankType[] tankList;
-    private TankType[] selectedTank;
-    private int currentTankIndex = 0;
+    //    public TankType[] tankList;
+    public Sprite[] tankSprites;
+    public GridLayoutGroup selectedList;
+    private TankType[] selectedTankList;
+    private int selectedTankIndex = 0;
     private int currentPlayerIndex = 0;
     private int totalPlayer;
     // Use this for initialization
@@ -19,22 +22,42 @@ public class TankSelection : MonoBehaviour {
     
 	void Start () {
         GameManager.Instance.AddPlayer(gameObject);
-        selectedTank = new TankType[GameManager.Instance.NumberOfPlayers];
+        selectedTankList = new TankType[GameManager.Instance.NumberOfPlayers];
         headerText.text = "Player " + (currentPlayerIndex + 1) + " is selecting...";
     }
 	
 	// Update is called once per frame
 	void Update () {
+        
+    }
+    
+    public void ConfirmSelectedTank()
+    {
+        selectedTankList[currentPlayerIndex] = (TankType)selectedTankIndex;
+        if (currentPlayerIndex < GameManager.Instance.NumberOfPlayers)
+        {
+            selectedList.transform.GetChild(currentPlayerIndex).GetChild(0).GetComponent<Image>().sprite = tankSprites[selectedTankIndex];
+            currentPlayerIndex++;
+            if(currentPlayerIndex == GameManager.Instance.NumberOfPlayers)
+            {
+                SceneManager.LoadScene("loading");
+            }
+            headerText.text = "Player " + (currentPlayerIndex + 1) + " is selecting...";
+        }
 
     }
 
-    public void AddTankToSelection()
+    public void SetSelectedTank(int index)
     {
-        selectedTank[currentPlayerIndex] = (TankType)currentTankIndex;
-        if(currentPlayerIndex < GameManager.Instance.NumberOfPlayers - 1)
+        if(index >= 0 && index < Enum.GetNames(typeof(TankType)).Length)
         {
-            currentPlayerIndex++;
-            headerText.text = "Player " + (currentPlayerIndex + 1) + " is selecting...";
+            headerText.text = "Player " + (currentPlayerIndex + 1) + " selected " + (TankType)index;
+            selectedTankIndex = index;
         }
+    }
+
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene("Menu");
     }
 }

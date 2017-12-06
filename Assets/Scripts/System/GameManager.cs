@@ -25,11 +25,12 @@ public class GameManager : MonoBehaviour
 
     private int numberOfPlayers;
     public int NumberOfPlayers { get; private set; }
+    
 
     public GameManager()
     {
         gameData = new GameData();
-        NumberOfPlayers = 4;
+        NumberOfPlayers = 2;
     }
 
     public void AddPlayer(GameObject player)
@@ -37,8 +38,7 @@ public class GameManager : MonoBehaviour
         gameData.Players.Add(player);
     }
 
-    // Use this for initialization
-    void Start()
+    void Awake()
     {
         if (Instance == null)
         {
@@ -50,6 +50,12 @@ public class GameManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(this.gameObject);
+    }
+
+    // Use this for initialization
+    void Start()
+    {
+       
     }
 
     // Update is called once per frame
