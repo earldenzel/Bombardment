@@ -13,6 +13,9 @@ public class OrientationChecker : MonoBehaviour {
     private string message;
     public bool freefall;
 
+    private Vector3 currentRotation;
+    private float zRotate;
+
     // Use this for initialization
     void Start () {
         wheel1 = transform.GetChild(1).transform;
@@ -21,7 +24,17 @@ public class OrientationChecker : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () {
+	void FixedUpdate ()
+    {
+        zRotate = transform.rotation.eulerAngles.z;
+        if (zRotate > 180)
+        {
+            zRotate = zRotate - 360;
+        }
+        Vector3 currentRotation = transform.rotation.eulerAngles;
+        currentRotation.z = Mathf.Clamp(zRotate, -60f, 60f);
+        transform.rotation = Quaternion.Euler(currentRotation);
+
         hit1 = Physics2D.Raycast(new Vector3(wheel1.position.x, wheel1.position.y - 0.38f), Vector3.down, 0.5f);
         hit2 = Physics2D.Raycast(new Vector3(wheel2.position.x, wheel2.position.y - 0.38f), Vector3.down, 0.5f);
         if (hit1.collider == GetComponent<Collider2D>() || hit2.collider == GetComponent<Collider2D>())
@@ -32,13 +45,23 @@ public class OrientationChecker : MonoBehaviour {
         else if (hit1.collider == null && hit2.collider == null)
         {
             freefall = true;
-            hit1 = Physics2D.Raycast(new Vector3(wheel1.position.x, wheel1.position.y - 0.38f), Vector3.down);
-            hit2 = Physics2D.Raycast(new Vector3(wheel2.position.x, wheel2.position.y - 0.38f), Vector3.down);
-            tankBody.transform.right = (hit2.point - hit1.point) * ((GetComponent<PlayerController>().rightDirection) ? 1 : -1);
+            //hit1 = Physics2D.Raycast(new Vector3(wheel1.position.x, wheel1.position.y - 0.38f), Vector3.down);
+            //hit2 = Physics2D.Raycast(new Vector3(wheel2.position.x, wheel2.position.y - 0.38f), Vector3.down);
+            //tankBody.transform.right = (hit2.point - hit1.point) * ((GetComponent<PlayerController>().rightDirection) ? 1 : -1);
+            //tankBody.transform.right = ;
         }
         else
         {
             freefall = false;
+        }
+
+        if (freefall)
+        {
+            tankBody.gravityScale = 1;
+        }
+        else
+        {
+            tankBody.gravityScale = 0;
         }
     }
 

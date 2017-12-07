@@ -13,13 +13,13 @@ public class ZeroRotation : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
         transform.rotation = Quaternion.identity;
-        FlipBar(transform.root.GetComponent<PlayerController>().rightDirection);
         if (transform.root.tag == "Enemy")
         {
             transform.position = transform.root.position + 0.8f * Vector3.up;
         }
         else
         {
+            FlipBar(transform.root.GetComponent<PlayerController>().rightDirection);
             if (tag == "Health")
             {
                 transform.position = transform.root.position - 1.35f * Vector3.up;

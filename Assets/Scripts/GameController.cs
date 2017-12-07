@@ -52,11 +52,11 @@ public class GameController : MonoBehaviour {
     {
         if (playerCount == 1)
         {
-            Debug.Log("Game over!");
+            //Debug.Log("Game over!");
         }
         else if (playerCount == 0)
         {
-            Debug.Log("Draw");
+            //Debug.Log("Draw");
         }
     }
 
@@ -81,6 +81,10 @@ public class GameController : MonoBehaviour {
     public void ReducePlayers()
     {
         playerCount--;
+    }
+    public void CountEnemies(int enemies)
+    {
+        playerCount += enemies;
     }
 
     private void DisableEveryone()

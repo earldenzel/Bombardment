@@ -86,15 +86,7 @@ public class PlayerController : MonoBehaviour {
 
             direction = tankBody.transform.right * Input.GetAxis(horizontal) -0.2f*transform.up;
             risingAngle = Vector3.Angle(transform.right, Vector3.right);
-            if (risingAngle > 70.0f)
-            {
-                VelocityZero();
-                GetComponent<OrientationChecker>().freefall = true;
-            }
-            else
-            {
-                tankBody.velocity = velocity * direction;
-            }
+            tankBody.velocity = velocity * direction;
             
         }
         if (tankBody.velocity != Vector2.zero)
