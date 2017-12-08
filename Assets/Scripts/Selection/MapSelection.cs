@@ -111,6 +111,7 @@ public class MapSelection : MonoBehaviour {
     public void ConfrimSetup()
     {
         GameManager.Instance.NumberOfPlayers = numberOfPlayer;
+        GameManager.Instance.GameData.SelectedMapIndex = selectedMapIndex;
         SceneManager.LoadScene("TankSelection");
     }
 }

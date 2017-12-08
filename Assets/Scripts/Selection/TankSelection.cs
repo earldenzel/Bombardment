@@ -24,6 +24,15 @@ public class TankSelection : MonoBehaviour {
 	void Start () {
         selectedTankList = new TankType[GameManager.Instance.NumberOfPlayers];
         headerText.text = "Player " + (currentPlayerIndex + 1) + " is selecting...";
+        headerText.GetComponent<ObjectEffect>().EnableFade = true;
+        int children = selectedList.transform.childCount;
+        for (int i = 0; i < children; ++i)
+        {
+            if (i >= GameManager.Instance.NumberOfPlayers)
+            {
+                selectedList.transform.GetChild(i).gameObject.SetActive(false);
+            }
+        }
     }
 	
 	// Update is called once per frame
@@ -38,13 +47,14 @@ public class TankSelection : MonoBehaviour {
         if (currentPlayerIndex < GameManager.Instance.NumberOfPlayers - 1)
         {
             currentPlayerIndex++;
+            headerText.GetComponent<ObjectEffect>().EnableFade = true;
             headerText.text = "Player " + (currentPlayerIndex + 1) + " is selecting...";
         }
         else
         {
             headerText.text = "Get Ready!";
             AddTanksToGameManager();
-            SceneManager.LoadSceneAsync("loading");
+            SceneManager.LoadScene("Loading");
         }
     }
 
@@ -62,6 +72,8 @@ public class TankSelection : MonoBehaviour {
     {
         if(index >= 0 && index < Enum.GetNames(typeof(TankType)).Length)
         {
+            headerText.GetComponent<ObjectEffect>().SetAlpha(1);
+            headerText.GetComponent<ObjectEffect>().EnableFade = false;
             headerText.text = "Player " + (currentPlayerIndex + 1) + " selected " + (TankType)index;
             selectedTankIndex = index;
         }

@@ -17,7 +17,7 @@ public class SceneLoaderWithProgress : MonoBehaviour {
     IEnumerator LoadAsyncScene()
     {
         yield return new WaitForSeconds(delayBeforeLoad);
-        AsyncOperation operation = SceneManager.LoadSceneAsync("main");
+        AsyncOperation operation = SceneManager.LoadSceneAsync(((Map.Level)GameManager.Instance.GameData.SelectedMapIndex).ToString());
         
         //Wait until the last operation fully loads to return anything
         while (!operation.isDone)

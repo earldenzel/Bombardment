@@ -28,7 +28,7 @@ public class ObjectEffect : MonoBehaviour {
 
     private bool zoomTrigger = false;
     private bool fadeTrigger = false;
-    private float alphaValue = 1;
+    public float alphaValue = 1;
 
 
     
@@ -95,6 +95,22 @@ public class ObjectEffect : MonoBehaviour {
             }
         }
 	}
+
+    public void SetAlpha(float value)
+    {
+        if (fadeSpriteColor && this.GetComponent<SpriteRenderer>() != null)
+        {
+            this.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, value);
+        }
+        if (fadeSpriteColor && this.GetComponent<Image>() != null)
+        {
+            this.GetComponent<Image>().color = new Color(1f, 1f, 1f, value);
+        }
+        if (fadeTextColor && this.GetComponent<Text>() != null)
+        {
+            this.GetComponent<Text>().color = new Color(this.GetComponent<Text>().color.r, this.GetComponent<Text>().color.g, this.GetComponent<Text>().color.b, value);
+        }
+    }
 
     private void zoomIn()
     {

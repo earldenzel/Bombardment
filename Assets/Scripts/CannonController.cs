@@ -48,6 +48,7 @@ public class CannonController : MonoBehaviour {
         {
             cameraController = Camera.main.GetComponent<CameraController>();
         }
+        
     }
 	
 	// Update is called once per frame
