@@ -6,12 +6,14 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour {
 
     private List<GameObject> players;
+    private GameObject[] enemies;
     public int totalTurnsDone;
     private int playerCount;
     private CanvasController UICanvas;
     public Text cameraMessage;
     private GameObject currentPlayer;
     public bool gameOver;
+    public Camera mainCamera; 
 
     //Before anything else, set controls to proper axes
     void Awake () {
@@ -33,6 +35,9 @@ public class GameController : MonoBehaviour {
 
     void Start()
     {
+        enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        
+
         gameOver = false;
         UICanvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasController>();
         //shuffle player list
@@ -50,7 +55,7 @@ public class GameController : MonoBehaviour {
             message += player.name + " ";
         }
         Debug.Log(message);
-        playerCount = players.Count;   
+        playerCount = players.Count + enemies.Length;   
         totalTurnsDone = -1;
         EnableNextPlayer();
     }
@@ -62,14 +67,14 @@ public class GameController : MonoBehaviour {
             cameraMessage.text = "Game over! " + currentPlayer.tag + " (" + currentPlayer.name + ") wins!";
             DisableEveryone();
             gameOver = true;
+            Debug.Log(playerCount);
         }
         else if (playerCount == 0 && currentPlayer == null)
         {
             cameraMessage.text = "Game over! DRAW!";
             gameOver = true;
         }
-    }
-    
+    }    
 
     public void EnableNextPlayer()
     {
@@ -83,6 +88,9 @@ public class GameController : MonoBehaviour {
         if (currentPlayer != null)
         {
             UICanvas.UpdateUI(currentPlayer);
+            mainCamera.GetComponent<CameraController>().cameraConfig.initialFocus = currentPlayer;
+            mainCamera.GetComponent<CameraController>().ObjectTracer.Traget = currentPlayer;
+            //mainCamera.GetComponent<CameraController>().ObjectTracer.Mode = ObjectTracerController.TraceMode.ZoomOut;
             StartCoroutine(announcePlayerTurn(currentPlayer));
             currentPlayer.GetComponent<PlayerController>().enabled = true;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = true;
@@ -109,10 +117,6 @@ public class GameController : MonoBehaviour {
     public void ReducePlayers()
     {
         playerCount--;
-    }
-    public void CountEnemies(int enemies)
-    {
-        playerCount += enemies;
     }
 
     private void DisableEveryone()
