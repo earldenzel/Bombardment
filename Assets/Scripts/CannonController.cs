@@ -17,7 +17,7 @@ public class CannonController : MonoBehaviour {
     public CannonConfig cannon;
     private float zRotate;
     public bool onShot; //tells if the player is currently taking a shot.
-    private bool shot1; // tells if the current shot is shot1. if shot1 = false, then shot2
+    public bool shot1; // tells if the current shot is shot1. if shot1 = false, then shot2
     //private bool yourTurn; //tells if it's the current player's turn. for now, it will be set to true.
     private GameObject currentProjectile;
     private Quaternion spawnRotation;
@@ -68,6 +68,7 @@ public class CannonController : MonoBehaviour {
         if (Input.GetButtonDown(switchShot) && !onShot)
         {
             shot1 = !shot1;
+            GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasController>().UpdateUI(transform.root.gameObject);
         }
         if (Input.GetAxis(vertical) != 0 && !onShot)
         {
@@ -132,6 +133,8 @@ public class CannonController : MonoBehaviour {
         forceVec *= (cannon.launchSpeed * powerBar.transform.localScale.x);
         currentProjectile.GetComponent<Rigidbody2D>().AddForce(forceVec, ForceMode2D.Impulse);
         currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 1;
+        //disable current tank
+        transform.root.GetComponent<PlayerController>().enabled = false;
         //this only applies to archer's shots
         if(currentProjectile.tag == "Arrow")
         {
@@ -148,7 +151,7 @@ public class CannonController : MonoBehaviour {
 
     private IEnumerator NextPlayer()
     {
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(7.0f);
         GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
     }
 
@@ -198,6 +201,7 @@ public class CannonController : MonoBehaviour {
             currentProjectile.transform.localScale = new Vector3(1, -1, 1);
         }
         currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 0;
-        currentProjectile.GetComponent<ProjectileController>().cannon = this; 
+        currentProjectile.GetComponent<ProjectileController>().cannon = this;
+        currentProjectile.GetComponent<ProjectileController>().attacker = transform.root.gameObject;
     }
 }

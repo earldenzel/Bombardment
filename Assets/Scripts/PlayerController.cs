@@ -10,18 +10,28 @@ public class PlayerController : MonoBehaviour {
     public float velocity = 2; //tells the velocity of the tank
     private Rigidbody2D tankBody; //rigidbody of transform. tankBody has a trigger collider so the wheels could do the heavy lifting
     public bool rightDirection; //tells if the tank is facing right
-    public float jumpForce;
-    private float risingAngle;
+    public float jumpForce; //tells how strong the jump of the tank is
 
+    //control strings
     public string horizontal;
     public string jump;
         
     // Use this for initialization
-    void Start () {
+    void Awake () {
         movable = true;
         rightDirection = true;
         tankBody = GetComponent<Rigidbody2D>();
 	}    
+
+    void OnDisable()
+    {
+        tankBody.constraints = RigidbodyConstraints2D.FreezePositionX;
+    }
+
+    void OnEnable()
+    {
+        tankBody.constraints = RigidbodyConstraints2D.None;
+    }
 
     // Update is called once per frame
     void FixedUpdate()
@@ -85,7 +95,6 @@ public class PlayerController : MonoBehaviour {
             }
 
             direction = tankBody.transform.right * Input.GetAxis(horizontal) -0.2f*transform.up;
-            risingAngle = Vector3.Angle(transform.right, Vector3.right);
             tankBody.velocity = velocity * direction;
             
         }

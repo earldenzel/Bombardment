@@ -10,6 +10,7 @@ public class ProjectileController : MonoBehaviour {
     private RaycastHit2D[] hits;
     private Tilemap currentMap;
     public CannonController cannon;
+    public GameObject attacker;
 
     public float windEffect;
     public int collateralDamageSize;

@@ -1,15 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
 
     private List<GameObject> players;
     public int totalTurnsDone;
     private int playerCount;
-	
+    private CanvasController UICanvas;
+    public Text cameraMessage;
+    private GameObject currentPlayer;
+    public bool gameOver;
+
     //Before anything else, set controls to proper axes
-	void Awake () {
+    void Awake () {
         players = new List<GameObject>();
         for(int i=1; i<=4; i++)
         {
@@ -28,6 +33,8 @@ public class GameController : MonoBehaviour {
 
     void Start()
     {
+        gameOver = false;
+        UICanvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasController>();
         //shuffle player list
         for (int i = 0; i < players.Count; i++)
         {
@@ -50,23 +57,33 @@ public class GameController : MonoBehaviour {
 
     void Update()
     {
-        if (playerCount == 1)
+        if (playerCount == 1 && currentPlayer != null)
         {
-            //Debug.Log("Game over!");
+            cameraMessage.text = "Game over! " + currentPlayer.tag + " (" + currentPlayer.name + ") wins!";
+            DisableEveryone();
+            gameOver = true;
         }
-        else if (playerCount == 0)
+        else if (playerCount == 0 && currentPlayer == null)
         {
-            //Debug.Log("Draw");
+            cameraMessage.text = "Game over! DRAW!";
+            gameOver = true;
         }
     }
+    
 
     public void EnableNextPlayer()
     {
+        if (gameOver)
+        {
+            return;
+        }
         totalTurnsDone++;
         DisableEveryone();
-        GameObject currentPlayer = players[totalTurnsDone % players.Count];
+        currentPlayer = players[totalTurnsDone % players.Count];
         if (currentPlayer != null)
         {
+            UICanvas.UpdateUI(currentPlayer);
+            StartCoroutine(announcePlayerTurn(currentPlayer));
             currentPlayer.GetComponent<PlayerController>().enabled = true;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = true;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().InstantiateShot();
@@ -76,6 +93,17 @@ public class GameController : MonoBehaviour {
         {
             EnableNextPlayer();
         }
+    }
+
+    public IEnumerator announcePlayerTurn(GameObject currentPlayer)
+    {
+        if (cameraMessage.GetComponent<ObjectEffect>())
+        {
+            cameraMessage.GetComponent<ObjectEffect>().EnableFade = true;
+        }
+        cameraMessage.text = currentPlayer.tag + "'s turn - " + currentPlayer.name;
+        yield return new WaitForSeconds(3f);
+        cameraMessage.text = "";
     }
 
     public void ReducePlayers()

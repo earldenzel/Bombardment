@@ -5,56 +5,45 @@ using UnityEngine;
 
 public class CanvasController : MonoBehaviour {
 
-    Text power;
-    Text shot;
-    public Image arrow1;
-    public Image arrow2;
-    bool shot1;
-    bool locked;
+    private Text power;
+    private Text shot;
+    public Image canvasImage;
+    private GameObject currentProjectile;
+    //public Text powertext;
+    public Text shotName;
+    public Text shotStrength;
 
     // Use this for initialization
     void Start() {
-        shot1 = true;
         GameObject canvasObject = GameObject.FindGameObjectWithTag("Canvas");
-        //arrow1 = GameObject.FindGameObjectWithTag("Shot1");
-        //arrow2 = GameObject.FindGameObjectWithTag("Shot2");
-
-        Transform ptexttr = canvasObject.transform.Find("Powertxt");
-        Transform stexttr = canvasObject.transform.Find("Shottxt");
-        power = ptexttr.GetComponent<Text>();
+        //powertext = canvasObject.transform.Find("Powertxt").GetComponent<Text>();
+        //shotText = canvasObject.transform.Find("Shottxt").GetComponent<Text>();
         //power.text = "Power: 90"; 
         //I changed the power setting temporarily to this text block so the teacher can safely navigate our game for the first playable
-        power.text = "CONTROLS"
-            + "\n\tLeft or right directional keys - Move"
-            + "\n\tUp and down directional keys - Increase/Decrease shot angle"
-            + "\n\tTAB - Change shot type"
-            + "\t\t\tRight CTRL - Jump forward"
-            + "\n\tF - Toggle free camera"
-            + "\t\t\tR - Reset the stage"
-            + "\n\n\tPlease note that some elements at this stage are riddled with bugs";
-        shot = stexttr.GetComponent<Text>();
-        shot1 = true;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        if (Input.GetKeyUp(KeyCode.Tab))
-        {
-            shot1 = !shot1;
-        }
+        //power.text = "CONTROLS"
+        //    + "\n\tLeft or right directional keys - Move"
+        //    + "\n\tUp and down directional keys - Increase/Decrease shot angle"
+        //    + "\n\tTAB - Change shot type"
+        //    + "\t\t\tRight CTRL - Jump forward"
+        //    + "\n\tF - Toggle free camera"
+        //    + "\t\t\tR - Reset the stage"
+        //    + "\n\n\tPlease note that some elements at this stage are riddled with bugs";
+    }    
 
-        if (shot1)
+    public void UpdateUI(GameObject currentPlayer)
+    {
+        if (currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().shot1)
         {
-            shot.text = "Current Weapon: SINGLE SHOT";
-            arrow1.enabled = true;
-            arrow2.enabled = false;
+            currentProjectile = currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().cannon.shot1;
         }
         else
         {
-            shot.text = "Current Weapon: TRIPLE STRAFE";
-            arrow1.enabled = false;
-            arrow2.enabled = true;
+            currentProjectile = currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().cannon.shot2;
         }
-
+        canvasImage.GetComponent<Image>().sprite = currentProjectile.GetComponent<SpriteRenderer>().sprite;
+        canvasImage.GetComponent<Image>().color = currentProjectile.GetComponent<SpriteRenderer>().color;
+        shotName.text = currentProjectile.name;
+        shotStrength.text = "Damage: " + currentProjectile.GetComponent<ProjectileController>().baseDamage
+            + ((currentProjectile.name == "Triple Strafe") ? "x3" : "");
     }
 }
