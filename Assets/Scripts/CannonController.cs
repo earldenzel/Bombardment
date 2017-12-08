@@ -40,6 +40,7 @@ public class CannonController : MonoBehaviour {
         powerBar = transform.GetChild(1).GetComponent<SpriteRenderer>();
         originalScale = powerBar.transform.localScale;
         originalPosition = powerBar.transform.localPosition;
+        powerBar.transform.localScale = new Vector3(0, originalScale.y, originalScale.z);
         powerBar.enabled = false;
         fired = false;
 
@@ -50,7 +51,9 @@ public class CannonController : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
+        GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasController>().UpdatePower(powerBar.transform.localScale.x);
         if (onShot)
         {
             myTime += Time.deltaTime / 2;

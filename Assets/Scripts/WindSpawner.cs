@@ -25,6 +25,12 @@ public class WindSpawner : MonoBehaviour {
         windAngle = FindDegree(Wind.y, Wind.x);
         Debug.Log("Wind Power: " + windPower + " Wind Angle: " + windAngle);
         Debug.Log("Wind X: " + Wind.x + " Wind Y: " + Wind.y);
+        UpdateWind();
+    }
+
+    private void UpdateWind()
+    {
+        GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasController>().UpdateWind(windAngle,windPower);
     }
 
     float FindDegree(float y, float x)
