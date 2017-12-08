@@ -10,6 +10,7 @@ public class TankSelection : MonoBehaviour {
     public enum TankType { Archer, Boomer, Pirate, Scorch}
 
     //    public TankType[] tankList;
+    public GameObject[] tanks;
     public Sprite[] tankSprites;
     public GridLayoutGroup selectedList;
     private TankType[] selectedTankList;
@@ -21,7 +22,6 @@ public class TankSelection : MonoBehaviour {
     public Text headerText;
     
 	void Start () {
-        GameManager.Instance.AddPlayer(gameObject);
         selectedTankList = new TankType[GameManager.Instance.NumberOfPlayers];
         headerText.text = "Player " + (currentPlayerIndex + 1) + " is selecting...";
     }
@@ -34,17 +34,28 @@ public class TankSelection : MonoBehaviour {
     public void ConfirmSelectedTank()
     {
         selectedTankList[currentPlayerIndex] = (TankType)selectedTankIndex;
-        if (currentPlayerIndex < GameManager.Instance.NumberOfPlayers)
+        selectedList.transform.GetChild(currentPlayerIndex).GetChild(0).GetComponent<Image>().sprite = tankSprites[selectedTankIndex];
+        if (currentPlayerIndex < GameManager.Instance.NumberOfPlayers - 1)
         {
-            selectedList.transform.GetChild(currentPlayerIndex).GetChild(0).GetComponent<Image>().sprite = tankSprites[selectedTankIndex];
             currentPlayerIndex++;
-            if(currentPlayerIndex == GameManager.Instance.NumberOfPlayers)
-            {
-                SceneManager.LoadScene("loading");
-            }
             headerText.text = "Player " + (currentPlayerIndex + 1) + " is selecting...";
         }
+        else
+        {
+            headerText.text = "Get Ready!";
+            AddTanksToGameManager();
+            SceneManager.LoadSceneAsync("loading");
+        }
+    }
 
+    private void AddTanksToGameManager()
+    {
+        for(int i = 0; i < selectedTankList.Length; i++)
+        {
+            GameObject go = tanks[(int)selectedTankList[i]];
+            go.tag = "Player" + (i + 1);
+            GameManager.Instance.AddPlayer(go);
+        }
     }
 
     public void SetSelectedTank(int index)
@@ -54,10 +65,5 @@ public class TankSelection : MonoBehaviour {
             headerText.text = "Player " + (currentPlayerIndex + 1) + " selected " + (TankType)index;
             selectedTankIndex = index;
         }
-    }
-
-    public void BackToMenu()
-    {
-        SceneManager.LoadScene("Menu");
     }
 }

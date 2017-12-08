@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-
 public class GameData
 {
-    public List<GameObject> Players;
+    public int SelectedMapIndex = 0;
+    public List<GameObject> Players { get; }
 
     public GameData()
     {
@@ -17,25 +17,42 @@ public class GameData
 public class GameManager : MonoBehaviour
 {
 
-    public enum TankType { Archer, Boomer, Pirate }
+    public enum TankType { Archer, Boomer, Pirate, Scorch }
+
+    public readonly int MIN_PLAYER = 2;
+    public int MAX_PLAYER = 4;
+
 
     public static GameManager Instance;
 
-    private GameData gameData;
+    public GameData GameData { get; }
 
     private int numberOfPlayers;
-    public int NumberOfPlayers { get; private set; }
+    public int NumberOfPlayers {
+        get
+        {
+            return numberOfPlayers;
+        }
+        set
+        {
+            if(value >= MIN_PLAYER && value <= MAX_PLAYER)
+            {
+                numberOfPlayers = value;
+            }
+        }
+    }
     
 
     public GameManager()
     {
-        gameData = new GameData();
-        NumberOfPlayers = 2;
+        GameData = new GameData();
+        NumberOfPlayers = MIN_PLAYER;
     }
 
     public void AddPlayer(GameObject player)
     {
-        gameData.Players.Add(player);
+
+        GameData.Players.Add(player);
     }
 
     void Awake()
@@ -64,7 +81,10 @@ public class GameManager : MonoBehaviour
 
     }
 
-
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene("Menu");
+    }
 
     public void LoadScene(int level)
     {

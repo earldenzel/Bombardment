@@ -15,7 +15,7 @@ public class SceneLoader : MonoBehaviour {
 	void Start () {
         if (EnableTimeTransition)
         {
-            StartCoroutine(ToNextScene(NextScene.ToString(), timeToNextScene));
+            StartCoroutine(ToNextScene(NextScene, timeToNextScene));
         }
 	}
 	
@@ -24,15 +24,15 @@ public class SceneLoader : MonoBehaviour {
         
 	}
 
-    IEnumerator ToNextScene(string name, float time)
+    IEnumerator ToNextScene(GameScene name, float time)
     {
         yield return new WaitForSeconds(time);
-        SceneManager.LoadScene(name);
+        SceneManager.LoadScene(name.ToString());
     }
 
     public void LoadScene(int level)
     {
-        StartCoroutine(ToNextScene(NextScene.ToString(), 0));
+        StartCoroutine(ToNextScene((GameScene)level, 0));
     }
 
     public void Quit()
