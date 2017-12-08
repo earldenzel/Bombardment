@@ -17,11 +17,10 @@ public class EnemyController : MonoBehaviour
                 GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
             }
             Destroy(this.gameObject);
-            //if (GetComponent<PlayerController>() != null)
-            //{
-            //    GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
-            //}
-            GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
+            if (GetComponent<PlayerController>() != null)
+            {
+                GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
+            }
             //after this is where you instantiate the explosion
         }
         suicide = false;
