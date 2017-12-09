@@ -21,11 +21,13 @@ public class DeathByFalling : MonoBehaviour {
             {
                 //this means the enemy or the gameplayer dieded. Focus on its destruction should be put here
                 //insert script to temporarily focus here
-                if (gameObject.GetComponent<PlayerController>() != null)
-                {
-                    GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
-                    GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
-                }
+                //if (gameObject.GetComponent<PlayerController>() != null)
+                //{
+                //    GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
+                //    GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
+                //}
+                GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
+                GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
                 Destroy(this.gameObject);
             }
         }
