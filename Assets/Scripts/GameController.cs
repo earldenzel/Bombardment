@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
 
     private List<GameObject> players;
     public int totalTurnsDone;
     private int playerCount;    
-    private GameObject[] enemies;
     private CanvasController UICanvas;
     public Text cameraMessage;
     private GameObject currentPlayer;
@@ -39,8 +39,6 @@ public class GameController : MonoBehaviour {
         }
 
         //determine game variables
-
-        enemies = GameObject.FindGameObjectsWithTag("Enemy");
         gameOver = false;
         UICanvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasController>();
         //shuffle player list
@@ -58,7 +56,13 @@ public class GameController : MonoBehaviour {
             message += player.name + " ";
         }
         Debug.Log(message);
-        playerCount = players.Count + enemies.Length;
+        if (SceneManager.GetActiveScene().name == "Tutorial")
+        {
+            playerCount = playerCount + 5;
+        }
+        //enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        //playerCount = players.Count + enemies.Length;
+        //Debug.Log(players.Count + enemies.Length);
         totalTurnsDone = -1;
         EnableNextPlayer();
     }
@@ -70,7 +74,7 @@ public class GameController : MonoBehaviour {
             cameraMessage.text = "Game over! " + currentPlayer.tag + " (" + currentPlayer.name + ") wins!";
             DisableEveryone();
             gameOver = true;
-            Debug.Log(playerCount);
+
         }
         else if (playerCount == 0 && currentPlayer == null)
         {
@@ -81,6 +85,7 @@ public class GameController : MonoBehaviour {
 
     public void EnableNextPlayer()
     {
+        Debug.Log("players: " + playerCount);
         if (gameOver)
         {
             return;
