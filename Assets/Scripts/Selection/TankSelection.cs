@@ -98,4 +98,9 @@ public class TankSelection : MonoBehaviour {
             
         }
     }
+
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene("Menu");
+    }
 }

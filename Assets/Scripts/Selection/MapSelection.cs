@@ -114,4 +114,9 @@ public class MapSelection : MonoBehaviour {
         GameManager.Instance.GameData.SelectedMapIndex = selectedMapIndex;
         SceneManager.LoadScene("TankSelection");
     }
+
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene("Menu");
+    }
 }

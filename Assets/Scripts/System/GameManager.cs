@@ -55,6 +55,10 @@ public class GameManager : MonoBehaviour
         }
         set
         {
+            if(GameData.SelectedMapIndex == 0)
+            {
+                numberOfPlayers = 1;
+            }
             if(value >= MIN_PLAYER && value <= MAX_PLAYER)
             {
                 numberOfPlayers = value;
