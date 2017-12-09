@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
 
@@ -72,18 +73,28 @@ public class GameController : MonoBehaviour {
             EnableNextPlayer();
             
         }
-        if (playerCount == 1 && currentPlayer != null)
+        if (GameManager.Instance.GameData.SelectedMapIndex != 0 && playerCount == 1 && currentPlayer != null)
         {
-            cameraMessage.text = "Game over! " + currentPlayer.tag + " (" + currentPlayer.name + ") wins!";
+            cameraMessage.text = "Game over! " + currentPlayer.tag + " (" + currentPlayer.name + ") wins! Returning to Menu.";
             DisableEveryone();
             gameOver = true;
             Debug.Log(playerCount);
         }
-        else if (playerCount == 0 && currentPlayer == null)
+        else if (GameManager.Instance.GameData.SelectedMapIndex != 0 && playerCount == 0 && currentPlayer == null)
         {
             cameraMessage.text = "Game over! DRAW!";
             gameOver = true;
         }
+        if (gameOver)
+        {
+            StartCoroutine(GameFinish());
+        }
+    }
+
+    IEnumerator GameFinish()
+    {
+        yield return new WaitForSeconds(5.0f);
+        SceneManager.LoadScene("Menu");
     }
 
     public void EnableNextPlayer()
