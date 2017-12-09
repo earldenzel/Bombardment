@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ChangeFocusByContact : MonoBehaviour
 {
-    public float DelayTime = 1;
+    public float DelayTime = 3;
     private bool landed = false;
     private int reflectedTimes = 0;
     private Vector2 projectileVelocity;
@@ -26,18 +26,20 @@ public class ChangeFocusByContact : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        if (!landed)
+
+        if (reflectedTimes > 0)
         {
-            if (reflectedTimes > 0)
-            {
-                reflectedTimes--;
-                ReflectShot(projectileVelocity);
-            }
-            else
-            {
-                ChangeFocusAndDestroy();
-            }
+            reflectedTimes--;
+            ReflectShot(projectileVelocity);
         }
+        else
+        {
+            ChangeFocusAndDestroy();
+        }
+        //if (!landed)
+        //{
+            
+        //}
     }
 
     private void ReflectShot(Vector2 lastVelocity)
@@ -48,9 +50,14 @@ public class ChangeFocusByContact : MonoBehaviour
     public void ChangeFocusAndDestroy()
     {
         CameraController controller = Camera.main.GetComponent<CameraController>();
+        GameManager.Instance.GameData.TotalProjectile -= 1;
+        Debug.Log(GameManager.Instance.GameData.TotalProjectile);
         controller.CameraDelay(DelayTime);
         //controller.SetCameraState(); // default fixed
-        landed = true;
+        
+    //    landed = true;
+
+        
         Destroy(this.gameObject);
     }
 }

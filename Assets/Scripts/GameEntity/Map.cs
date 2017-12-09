@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class Map : MonoBehaviour {
 
-    public enum Level { Tutorial, Snow, Volcano }
+    public enum Level { Tutorial, Snow }//, Volcano }
     
 }

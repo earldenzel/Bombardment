@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
 
     private List<GameObject> players;
     public int totalTurnsDone;
     private int playerCount;    
+    private GameObject[] enemies;
     private CanvasController UICanvas;
     public Text cameraMessage;
     private GameObject currentPlayer;
@@ -24,9 +24,10 @@ public class GameController : MonoBehaviour {
         //Before anything else, set controls to proper axes
         players = new List<GameObject>();
 
-        for (int i = 1; i <= 4; i++)
+        for (int i = 1; i <= GameManager.Instance.NumberOfPlayers; i++)
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player" + i.ToString());
+            player.name = player.name.Substring(0, player.name.Length - 7);
             if (player != null)
             {
                 player.GetComponent<PlayerController>().horizontal = "Horizontal_P" + i.ToString();
@@ -39,6 +40,8 @@ public class GameController : MonoBehaviour {
         }
 
         //determine game variables
+
+        enemies = GameObject.FindGameObjectsWithTag("Enemy");
         gameOver = false;
         UICanvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasController>();
         //shuffle player list
@@ -56,25 +59,25 @@ public class GameController : MonoBehaviour {
             message += player.name + " ";
         }
         Debug.Log(message);
-        if (SceneManager.GetActiveScene().name == "Tutorial")
-        {
-            playerCount = playerCount + 5;
-        }
-        //enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        //playerCount = players.Count + enemies.Length;
-        //Debug.Log(players.Count + enemies.Length);
+        playerCount = players.Count + enemies.Length;
         totalTurnsDone = -1;
         EnableNextPlayer();
     }
 
     void Update()
     {
+        if (GameManager.Instance.GameData.ToNextPlayer)
+        {
+            GameManager.Instance.GameData.ToNextPlayer = false;
+            EnableNextPlayer();
+            
+        }
         if (playerCount == 1 && currentPlayer != null)
         {
             cameraMessage.text = "Game over! " + currentPlayer.tag + " (" + currentPlayer.name + ") wins!";
             DisableEveryone();
             gameOver = true;
-
+            Debug.Log(playerCount);
         }
         else if (playerCount == 0 && currentPlayer == null)
         {
@@ -85,7 +88,6 @@ public class GameController : MonoBehaviour {
 
     public void EnableNextPlayer()
     {
-        Debug.Log("players: " + playerCount);
         if (gameOver)
         {
             return;

@@ -70,7 +70,7 @@ public class TankSelection : MonoBehaviour {
 
     public void SetSelectedTank(int index)
     {
-        if(index >= 0 && index < Enum.GetNames(typeof(TankType)).Length)
+       if (index >= 0 && index < Enum.GetNames(typeof(TankType)).Length)
         {
             headerText.GetComponent<ObjectEffect>().SetAlpha(1);
             headerText.GetComponent<ObjectEffect>().EnableFade = false;

@@ -134,7 +134,6 @@ public class CannonController : MonoBehaviour {
             currentProjectile.transform.localScale = new Vector3(1, 1, 1);
         }
         //throw projectile
-        currentProjectile.GetComponent<Collider2D>().isTrigger = false;
         forceVec *= (cannon.launchSpeed * powerBar.transform.localScale.x);
         currentProjectile.GetComponent<Rigidbody2D>().AddForce(forceVec, ForceMode2D.Impulse);
         currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 1;
@@ -143,6 +142,7 @@ public class CannonController : MonoBehaviour {
         //this only applies to archer's shots
         if(currentProjectile.tag == "Arrow")
         {
+            GameManager.Instance.GameData.TotalProjectile += 2;
             StartCoroutine(TwoMoreShots(forceVec));
         }
         //Change the target state for the camera
@@ -151,12 +151,12 @@ public class CannonController : MonoBehaviour {
             cameraController.ObjectTracer.SetFoucs(currentProjectile);
         }
 
-        StartCoroutine(NextPlayer());
+      //  StartCoroutine(NextPlayer());
     }
 
     private IEnumerator NextPlayer()
     {
-        yield return new WaitForSeconds(7.0f);
+        yield return new WaitForSeconds(1.0f);
         GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
     }
 
@@ -205,9 +205,9 @@ public class CannonController : MonoBehaviour {
         {
             currentProjectile.transform.localScale = new Vector3(1, -1, 1);
         }
-        currentProjectile.GetComponent<Collider2D>().isTrigger = true;
         currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 0;
         currentProjectile.GetComponent<ProjectileController>().cannon = this;
         currentProjectile.GetComponent<ProjectileController>().attacker = transform.root.gameObject;
+        GameManager.Instance.GameData.TotalProjectile = 1;
     }
 }

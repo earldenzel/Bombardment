@@ -6,6 +6,26 @@ using UnityEngine.SceneManagement;
 public class GameData
 {
     public int SelectedMapIndex = 0;
+    private int totalProjectile;
+    public int TotalProjectile
+    {
+        set
+        {
+            if(value < 0)
+            {
+                totalProjectile = 0;
+            }
+            else
+            {
+                totalProjectile = value;
+            }
+        }
+        get
+        {
+            return totalProjectile;
+        }
+    }
+    public bool ToNextPlayer;
     public List<GameObject> Players { get; }
 
     public GameData()
