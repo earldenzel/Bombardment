@@ -1,28 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
 
     private List<GameObject> players;
     public int totalTurnsDone;
-    private int playerCount;
-	
-    //Before anything else, set controls to proper axes
-	void Awake () {
-        players = GameManager.Instance.GameData.Players;
-        int i = 1;
-        foreach (GameObject player in players) {
-            player.GetComponent<PlayerController>().horizontal = "Horizontal_P" + i.ToString();
-            player.GetComponent<PlayerController>().jump = "Jump_P" + i.ToString();
-            player.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().vertical = "Vertical_P" + i.ToString();
-            player.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().shoot = "Shoot_P" + i.ToString();
-            player.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().switchShot = "Switch_P" + i.ToString();
-            i++;
-        }
-        /*
+    private int playerCount;    
+    private GameObject[] enemies;
+    private CanvasController UICanvas;
+    public Text cameraMessage;
+    private GameObject currentPlayer;
+    public bool gameOver;
+    public Camera mainCamera;
+
+    void Awake () {
+        
+    }
+
+    void Start()
+    {
+        //Before anything else, set controls to proper axes
         players = new List<GameObject>();
-        for(int i=1; i<=4; i++)
+
+        for (int i = 1; i <= 4; i++)
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player" + i.ToString());
             if (player != null)
@@ -35,11 +37,12 @@ public class GameController : MonoBehaviour {
                 players.Add(player);
             }
         }
-        */
-    }
 
-    void Start()
-    {
+        //determine game variables
+
+        enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        gameOver = false;
+        UICanvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasController>();
         //shuffle player list
         for (int i = 0; i < players.Count; i++)
         {
@@ -55,30 +58,43 @@ public class GameController : MonoBehaviour {
             message += player.name + " ";
         }
         Debug.Log(message);
-        playerCount = players.Count;   
+        playerCount = players.Count + enemies.Length;
         totalTurnsDone = -1;
         EnableNextPlayer();
     }
 
     void Update()
     {
-        if (playerCount == 1)
+        if (playerCount == 1 && currentPlayer != null)
         {
-            //Debug.Log("Game over!");
+            cameraMessage.text = "Game over! " + currentPlayer.tag + " (" + currentPlayer.name + ") wins!";
+            DisableEveryone();
+            gameOver = true;
+            Debug.Log(playerCount);
         }
-        else if (playerCount == 0)
+        else if (playerCount == 0 && currentPlayer == null)
         {
-            //Debug.Log("Draw");
+            cameraMessage.text = "Game over! DRAW!";
+            gameOver = true;
         }
     }
 
     public void EnableNextPlayer()
     {
+        if (gameOver)
+        {
+            return;
+        }
         totalTurnsDone++;
         DisableEveryone();
-        GameObject currentPlayer = players[totalTurnsDone % GameManager.Instance.NumberOfPlayers];
+        currentPlayer = players[totalTurnsDone % players.Count];
         if (currentPlayer != null)
         {
+            UICanvas.UpdateUI(currentPlayer);
+            mainCamera.GetComponent<CameraController>().cameraConfig.initialFocus = currentPlayer;
+            mainCamera.GetComponent<CameraController>().ObjectTracer.Traget = currentPlayer;
+            //mainCamera.GetComponent<CameraController>().ObjectTracer.Mode = ObjectTracerController.TraceMode.ZoomOut;
+            StartCoroutine(announcePlayerTurn(currentPlayer));
             currentPlayer.GetComponent<PlayerController>().enabled = true;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = true;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().InstantiateShot();
@@ -90,13 +106,20 @@ public class GameController : MonoBehaviour {
         }
     }
 
+    public IEnumerator announcePlayerTurn(GameObject currentPlayer)
+    {
+        if (cameraMessage.GetComponent<ObjectEffect>())
+        {
+            cameraMessage.GetComponent<ObjectEffect>().EnableFade = true;
+        }
+        cameraMessage.text = currentPlayer.tag + "'s turn - " + currentPlayer.name;
+        yield return new WaitForSeconds(3f);
+        cameraMessage.text = "";
+    }
+
     public void ReducePlayers()
     {
         playerCount--;
-    }
-    public void CountEnemies(int enemies)
-    {
-        playerCount += enemies;
     }
 
     private void DisableEveryone()

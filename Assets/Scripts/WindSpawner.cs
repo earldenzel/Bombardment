@@ -23,8 +23,6 @@ public class WindSpawner : MonoBehaviour {
         windPower = Random.Range(0, maxWindPower);
         wind = Random.onUnitSphere * windPower;
         windAngle = FindDegree(Wind.y, Wind.x);
-        Debug.Log("Wind Power: " + windPower + " Wind Angle: " + windAngle);
-        Debug.Log("Wind X: " + Wind.x + " Wind Y: " + Wind.y);
         UpdateWind();
     }
 
