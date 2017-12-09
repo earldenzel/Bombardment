@@ -33,6 +33,7 @@ public class TankSelection : MonoBehaviour {
                 selectedList.transform.GetChild(i).gameObject.SetActive(false);
             }
         }
+        updateSelectionUI();
     }
 	
 	// Update is called once per frame
@@ -68,14 +69,33 @@ public class TankSelection : MonoBehaviour {
         }
     }
 
+    private void updateSelectionUI()
+    {
+        Transform slot = selectedList.transform.GetChild(currentPlayerIndex);
+        for (int i = 0; i < selectedTankList.Length; i++)
+        {
+            if (i == currentPlayerIndex)
+            {
+                slot.GetChild(1).GetComponent<ObjectEffect>().EnableFade = true;
+            }
+            else
+            {
+                slot.GetChild(1).GetComponent<ObjectEffect>().EnableFade = false;
+                slot.GetChild(1).GetComponent<ObjectEffect>().SetAlpha(1);
+            }
+        }
+    }
+
     public void SetSelectedTank(int index)
     {
-       if (index >= 0 && index < Enum.GetNames(typeof(TankType)).Length)
+        updateSelectionUI();
+        if (index >= 0 && index < Enum.GetNames(typeof(TankType)).Length)
         {
             headerText.GetComponent<ObjectEffect>().SetAlpha(1);
             headerText.GetComponent<ObjectEffect>().EnableFade = false;
             headerText.text = "Player " + (currentPlayerIndex + 1) + " selected " + (TankType)index;
             selectedTankIndex = index;
+            
         }
     }
 }

@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
 
     public enum TankType { Archer, Boomer, Pirate, Scorch }
 
-    public readonly int MIN_PLAYER = 1;
+    public readonly int MIN_PLAYER = 2;
     public int MAX_PLAYER = 4;
 
 

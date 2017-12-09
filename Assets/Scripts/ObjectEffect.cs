@@ -28,7 +28,7 @@ public class ObjectEffect : MonoBehaviour {
 
     private bool zoomTrigger = false;
     private bool fadeTrigger = false;
-    public float alphaValue = 1;
+    private float alphaValue = 1;
 
 
     
