@@ -149,7 +149,6 @@ public class GameController : MonoBehaviour {
             {
                 player.GetComponent<PlayerController>().enabled = false;
                 player.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = false;
-                player.GetComponent<OrientationChecker>().freefall = true;
             }
         }
     }

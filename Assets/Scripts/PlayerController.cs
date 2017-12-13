@@ -11,6 +11,12 @@ public class PlayerController : MonoBehaviour {
     private Rigidbody2D tankBody; //rigidbody of transform. tankBody has a trigger collider so the wheels could do the heavy lifting
     public bool rightDirection; //tells if the tank is facing right
     public float jumpForce; //tells how strong the jump of the tank is
+    public float jumpTime;
+    public bool onJump;
+    public bool isGrounded;
+    public bool slopeInFront;
+    
+    private Transform wheelFront;
 
     //control strings
     public string horizontal;
@@ -21,7 +27,9 @@ public class PlayerController : MonoBehaviour {
         movable = true;
         rightDirection = true;
         tankBody = GetComponent<Rigidbody2D>();
-	}    
+        onJump = false;
+        jumpTime = 2.0f;
+	}
 
     void OnDisable()
     {
@@ -33,47 +41,65 @@ public class PlayerController : MonoBehaviour {
         tankBody.constraints = RigidbodyConstraints2D.None;
     }
 
+    void Start()
+    {
+        wheelFront = transform.GetChild(2).transform;
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Input.GetButtonDown(jump) && movable)
+        //first, check if tank is grounded
+        isGrounded = Physics2D.Linecast(transform.position, transform.position-1f*Vector3.up, 1<<LayerMask.NameToLayer("Terrain"));
+        //Debug.DrawLine(transform.position, transform.position - 1.2f * Vector3.up, Color.red);
+        wheelFront.rotation = transform.rotation;
+
+        //then, check if there is a slope in front of the tank
+        if (rightDirection)
         {
-            if (rightDirection)
-            {
-                tankBody.AddForce(jumpForce * new Vector2 (1,1), ForceMode2D.Impulse);
-            }
-            else
-            {
-                tankBody.AddForce(jumpForce * new Vector2 (-1,1), ForceMode2D.Impulse);
-            }
+            slopeInFront = Physics2D.Linecast(wheelFront.position, wheelFront.position + wheelFront.transform.right * 0.35f - wheelFront.transform.up * 0.35f, 1 << LayerMask.NameToLayer("Terrain"));
+            //Debug.DrawLine(wheelFront.position, wheelFront.position + wheelFront.transform.right * 0.35f - wheelFront.transform.up * 0.35f, Color.blue);
         }
-        //if tank movement is not pressed and not on freefall, gravity does not affect the tank
-        if (GetComponent<OrientationChecker>().freefall)
+        else
         {
-            tankBody.gravityScale = 1;
-            //allow some degree of movement on freefall/flight
-            if (Input.GetAxis(horizontal) != 0)
-            {
-                tankBody.AddForce(Vector2.right * Input.GetAxis(horizontal) * velocity);
-            }
+            slopeInFront = Physics2D.Linecast(wheelFront.position, wheelFront.position - wheelFront.transform.right * 0.35f - wheelFront.transform.up * 0.35f, 1 << LayerMask.NameToLayer("Terrain"));
+            //Debug.DrawLine(wheelFront.position, wheelFront.position - wheelFront.transform.right * 0.35f - wheelFront.transform.up * 0.35f, Color.blue);
+        }
+
+        //disable moving when shot is occuring
+        if (transform.GetChild(0).GetChild(0).GetComponent<CannonController>().onShot)
+        {
             movable = false;
         }
-        else if (Input.GetAxis(horizontal) == 0 && !GetComponent<OrientationChecker>().freefall)
+        else
         {
-            tankBody.gravityScale = 0;
-            if (transform.GetChild(0).GetChild(0).GetComponent<CannonController>().onShot)
+            movable = true;
+        }
+
+        //if jump is pressed, tank can move, and is currently not jumping, then a jump must happen
+        if (Input.GetButtonDown(jump) && movable && !onJump)
+        {
+            onJump = true;
+            if (rightDirection)
             {
-                movable = false;
+                tankBody.AddForce(jumpForce * new Vector2(1,1), ForceMode2D.Impulse);
             }
             else
             {
-                movable = true;
+                tankBody.AddForce(jumpForce * new Vector2(-1,1), ForceMode2D.Impulse);
             }
         }
-        else if (Input.GetAxis(horizontal) != 0 && movable)
+
+        //if tank is both grounded and on jump, then a tank cannot be on a jump
+        if (isGrounded && onJump)
         {
-            movable = true;
-            tankBody.gravityScale = 1;
+            onJump = false;
+        }
+
+        //if movement is pressed, and tank is movable, and is currently a ground, then a move must happen
+        if (Input.GetAxis(horizontal) != 0 && movable && isGrounded)
+        {
+            //check orientation if facing camera nicely
             if ((Input.GetAxis(horizontal) > 0))
             {
                 if (!rightDirection)
@@ -85,7 +111,6 @@ public class PlayerController : MonoBehaviour {
             }
             else
             {
-                VelocityZero();
                 if (rightDirection)
                 {
                     //flip
@@ -93,38 +118,40 @@ public class PlayerController : MonoBehaviour {
                 }
                 rightDirection = false;
             }
+            direction = tankBody.transform.right * Input.GetAxis(horizontal);
+            Debug.DrawRay(transform.position, tankBody.transform.right * Input.GetAxis(horizontal), Color.cyan);
+            if (slopeInFront)
+            {
+                tankBody.AddTorque(30f * Input.GetAxis(horizontal));
+                direction = direction + 0.4f * transform.up;
+            }
+            else
+            {
+                direction = direction - 0.2f * transform.up;
+            }
 
-            direction = tankBody.transform.right * Input.GetAxis(horizontal) -0.2f*transform.up;
             tankBody.velocity = velocity * direction;
-            
         }
-        if (tankBody.velocity != Vector2.zero)
+        
+        if (Input.GetAxis(horizontal) == 0 && !onJump && tankBody.velocity.magnitude < 0.1f)
         {
-            RotateWheels();
+            tankBody.velocity = Vector2.zero;
         }
+        //if (tankBody.velocity != Vector2.zero)
+        //{
+        //    //RotateWheels();
+        //}
     }
 
     //rotates wheels during movement
-    void RotateWheels()
-    {
-        foreach (Transform t in transform)
-        {
-            if (t.tag == "Wheels")
-            {
-                t.Rotate(new Vector3(0, 0, -tankBody.velocity.magnitude));
-            }
-        }
-    }
-
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        tankBody.gravityScale = 0;
-        VelocityZero();
-    }
-
-    void VelocityZero()
-    {
-        tankBody.velocity = Vector2.zero;
-        tankBody.angularVelocity = 0;
-    }
+    //void RotateWheels()
+    //{
+    //    foreach (Transform t in transform)
+    //    {
+    //        if (t.tag == "Wheels")
+    //        {
+    //            t.Rotate(new Vector3(0, 0, -tankBody.velocity.magnitude));
+    //        }
+    //    }
+    //}
 }
