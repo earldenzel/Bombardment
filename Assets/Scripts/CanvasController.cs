@@ -62,6 +62,8 @@ public class CanvasController : MonoBehaviour {
         //show tank hp and fuel
         hPSlider.maxValue = currentPlayer.GetComponent<EnemyController>().HP.maxValue;
         hPSlider.value = currentPlayer.GetComponent<EnemyController>().HP.value;
+        fuelSlider.maxValue = currentPlayer.GetComponent<FuelController>().fuelSlider.maxValue;
+        fuelSlider.value = currentPlayer.GetComponent<FuelController>().fuelSlider.value;
 
     }
     public void UpdatePower(float currentPower)
@@ -73,5 +75,10 @@ public class CanvasController : MonoBehaviour {
     {
         windStrength.text = "Wind Strength: " + power;
         anemometer.transform.localRotation = Quaternion.Euler(new Vector3 (0,0,angle));
+    }
+
+    public void UpdateFuel(float currentFuel)
+    {
+        fuelSlider.value = currentFuel;
     }
 }

@@ -99,25 +99,6 @@ public class PlayerController : MonoBehaviour {
         //if movement is pressed, and tank is movable, and is currently a ground, then a move must happen
         if (Input.GetAxis(horizontal) != 0 && movable && isGrounded)
         {
-            //check orientation if facing camera nicely
-            if ((Input.GetAxis(horizontal) > 0))
-            {
-                if (!rightDirection)
-                {
-                    //flip
-                    transform.localScale = new Vector3(1, 1, 1);
-                }
-                rightDirection = true;
-            }
-            else
-            {
-                if (rightDirection)
-                {
-                    //flip
-                    transform.localScale = new Vector3(-1, 1, 1);
-                }
-                rightDirection = false;
-            }
             direction = tankBody.transform.right * Input.GetAxis(horizontal);
             Debug.DrawRay(transform.position, tankBody.transform.right * Input.GetAxis(horizontal), Color.cyan);
             if (slopeInFront)

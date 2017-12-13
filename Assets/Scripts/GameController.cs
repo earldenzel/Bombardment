@@ -108,6 +108,7 @@ public class GameController : MonoBehaviour {
         currentPlayer = players[totalTurnsDone % players.Count];
         if (currentPlayer != null)
         {
+            currentPlayer.GetComponent<FuelController>().ReplenishFuel();
             UICanvas.UpdateUI(currentPlayer);
             mainCamera.GetComponent<CameraController>().cameraConfig.initialFocus = currentPlayer;
             mainCamera.GetComponent<CameraController>().ObjectTracer.Traget = currentPlayer;

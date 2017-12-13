@@ -18,7 +18,6 @@ public class CannonController : MonoBehaviour {
     private float zRotate;
     public bool onShot; //tells if the player is currently taking a shot.
     public bool shot1; // tells if the current shot is shot1. if shot1 = false, then shot2
-    //private bool yourTurn; //tells if it's the current player's turn. for now, it will be set to true.
     private GameObject currentProjectile;
     private Quaternion spawnRotation;
     private SpriteRenderer powerBar;
@@ -28,10 +27,13 @@ public class CannonController : MonoBehaviour {
     private float myTime;
     private CameraController cameraController;
     public bool fired;
+    public bool canLoadStrongerShot;
 
     public string vertical;
     public string shoot;
     public string switchShot;
+
+    private CanvasController UICanvas;
     
     // Use this for initialization
     void Start () {
@@ -43,6 +45,7 @@ public class CannonController : MonoBehaviour {
         powerBar.transform.localScale = new Vector3(0, originalScale.y, originalScale.z);
         powerBar.enabled = false;
         fired = false;
+        UICanvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasController>();
 
         if (Camera.main.GetComponent<CameraController>() != null)
         {
@@ -54,7 +57,7 @@ public class CannonController : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasController>().UpdatePower(powerBar.transform.localScale.x);
+        UICanvas.UpdatePower(powerBar.transform.localScale.x);
         if (onShot)
         {
             myTime += Time.deltaTime / 2;
@@ -69,10 +72,13 @@ public class CannonController : MonoBehaviour {
                 powerBar.transform.localPosition = new Vector3(0.75f * powerCurve.Evaluate(myTime), 0, 0);
             }
         }
-        if (Input.GetButtonDown(switchShot) && !onShot)
+        if (Input.GetButtonDown(switchShot) && !onShot && canLoadStrongerShot && shot1)
         {
-            shot1 = !shot1;
-            GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasController>().UpdateUI(transform.root.gameObject);
+            LoadStrongerShot();
+        }
+        else if (Input.GetButtonDown(switchShot) && !onShot && !shot1)
+        {
+            LoadWeakerShot();
         }
         if (Input.GetAxis(vertical) != 0 && !onShot)
         {
@@ -113,6 +119,18 @@ public class CannonController : MonoBehaviour {
         }
     }
 
+    private void LoadStrongerShot()
+    {
+        shot1 = false;
+        UICanvas.UpdateUI(transform.root.gameObject);
+    }
+
+    public void LoadWeakerShot()
+    {
+        shot1 = true;
+        UICanvas.UpdateUI(transform.root.gameObject);
+    }
+
     public void InstantiateShot()
     {
         fired = false;
@@ -126,31 +144,37 @@ public class CannonController : MonoBehaviour {
 
     private void ShootProjectile()
     {
-        //determine direction of shooting
-        Vector2 forceVec = (transform.GetChild(0).position - this.transform.position).normalized;
-        //scorch's projectiles becomes inverted when facing the other way. this fixes it
-        if (currentProjectile.tag == "Scorch")
+        if (currentProjectile != null)
         {
-            currentProjectile.transform.localScale = new Vector3(1, 1, 1);
+            //determine direction of shooting
+            Vector2 forceVec = (transform.GetChild(0).position - this.transform.position).normalized;
+            //scorch's projectiles becomes inverted when facing the other way. this fixes it
+            if (currentProjectile.tag == "Scorch")
+            {
+                currentProjectile.transform.localScale = new Vector3(1, 1, 1);
+            }
+            //throw projectile
+            forceVec *= (cannon.launchSpeed * powerBar.transform.localScale.x);
+            currentProjectile.GetComponent<Rigidbody2D>().AddForce(forceVec, ForceMode2D.Impulse);
+            currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 1;
+            //disable current tank
+            transform.root.GetComponent<PlayerController>().enabled = false;
+            //this only applies to archer's shots
+            if (currentProjectile.tag == "Arrow")
+            {
+                GameManager.Instance.GameData.TotalProjectile += 2;
+                StartCoroutine(TwoMoreShots(forceVec));
+            }
+            //Change the target state for the camera
+            if (cameraController != null)
+            {
+                cameraController.ObjectTracer.SetFoucs(currentProjectile);
+            }
         }
-        //throw projectile
-        forceVec *= (cannon.launchSpeed * powerBar.transform.localScale.x);
-        currentProjectile.GetComponent<Rigidbody2D>().AddForce(forceVec, ForceMode2D.Impulse);
-        currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 1;
-        //disable current tank
-        transform.root.GetComponent<PlayerController>().enabled = false;
-        //this only applies to archer's shots
-        if(currentProjectile.tag == "Arrow")
+        else
         {
-            GameManager.Instance.GameData.TotalProjectile += 2;
-            StartCoroutine(TwoMoreShots(forceVec));
+            onShot = false;
         }
-        //Change the target state for the camera
-        if (cameraController != null)
-        {
-            cameraController.ObjectTracer.SetFoucs(currentProjectile);
-        }
-
       //  StartCoroutine(NextPlayer());
     }
 
