@@ -10,11 +10,19 @@ public class FuelController : MonoBehaviour {
     public Slider fuelSlider;
     private CanvasController UICanvas;
 
-	// Use this for initialization
-	void Start () {
+    private Tank tank;
+
+    void Awake()
+    {
+        tank = this.GetComponentInParent<Tank>();
+    }
+
+    // Use this for initialization
+    void Start () {
         thisPlayer = GetComponent<PlayerController>();
         thisCannon = transform.GetChild(0).GetChild(0).GetComponent<CannonController>();
         UICanvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasController>();
+        //tank = this.GetComponentInParent<Tank>();
     }
 	
 	void FixedUpdate () {
@@ -23,7 +31,11 @@ public class FuelController : MonoBehaviour {
             //cost of moving is deltaTime
             if (Input.GetAxis(thisPlayer.horizontal) != 0)
             {
-                UseFuel(Time.deltaTime / 2);
+                if (Mathf.Abs(Input.GetAxis(thisPlayer.horizontal)) > 0.2f)
+                {
+                    UseFuel(Time.deltaTime / 2);
+                }
+
             }
 
             //cost of jumping is 0.5 fuel units or less
@@ -35,7 +47,8 @@ public class FuelController : MonoBehaviour {
 
         if (thisCannon.enabled)
         {
-            if (fuelSlider.value < 1f)
+            if(tank.CurrentFuelLevel < 1f)
+            //if (fuelSlider.value < 1f)
             {
                 thisCannon.canLoadStrongerShot = false;
                 thisCannon.LoadWeakerShot();
@@ -44,7 +57,7 @@ public class FuelController : MonoBehaviour {
             {
                 thisCannon.canLoadStrongerShot = true;
             }
-
+            
             if (Input.GetButtonDown(thisCannon.shoot) && !thisCannon.shot1)
             {
                 UseFuel(1.0f);
@@ -52,21 +65,30 @@ public class FuelController : MonoBehaviour {
         }
 
         //disable movement when fuel = 0
-        if (fuelSlider.value == 0f)
+        //if (fuelSlider.value == 0f)
+        //{
+        //    thisPlayer.enabled = false;
+        //}
+        if (tank.CurrentFuelLevel == 0f)
         {
             thisPlayer.enabled = false;
         }
-
     }
 
     public void UseFuel(float fuel)
     {
-        fuelSlider.value -= fuel;
-        UICanvas.UpdateFuel(fuelSlider.value);
+        //fuelSlider.value -= fuel;
+        //UICanvas.UpdateFuel(fuelSlider.value);
+        if(tank.CurrentFuelLevel - fuel >= 0)
+        {
+            tank.CurrentFuelLevel -= fuel;
+            UICanvas.UpdateFuel(tank.CurrentFuelLevel);
+        }
     }
 
     public void ReplenishFuel()
     {
-        fuelSlider.value += 1f;
+        //fuelSlider.value += 1f;
+            tank.CurrentFuelLevel += 1f;
     }
 }

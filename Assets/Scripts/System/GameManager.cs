@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -27,47 +28,23 @@ public class GameData
     }
     public bool ToNextPlayer;
     public List<GameObject> Players { get; }
-    public Setting Settings { get; }
+    public CameraSetting Settings { get; }
 
     public GameData()
     {
         Players = new List<GameObject>();
-        Settings = new Setting();
+        Settings = new CameraSetting();
     }
 }
 
-public class Setting
-{
-    private readonly int minViewPortX = 3;
-    private readonly int maxViewPortX = 15;
-    private readonly int minViewPortY = 3;
-    private readonly int maxViewPortY = 15;
-    private Rect viewPort = new Rect(0, 0, 16, 8);
 
-    public Rect ViewPort {
-        get
-        {
-            return viewPort;
-        } 
-
-        set
-        {
-            viewPort.x = -(value.width / 2);
-            viewPort.y = -(value.height / 2);
-            viewPort.width = Mathf.Clamp(value.width, minViewPortX, maxViewPortX);
-            viewPort.height = Mathf.Clamp(value.height, minViewPortY, maxViewPortY);
-        }
-    }
-
-
-}
 
 public class GameManager : MonoBehaviour
 {
 
     public enum TankType { Archer, Boomer, Pirate, Scorch }
 
-    public readonly int MIN_PLAYER = 2;
+    public readonly int MIN_PLAYER = 1;
     public int MAX_PLAYER = 4;
 
 
@@ -93,7 +70,8 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-    
+
+    public CameraSetting Settings;
 
     public GameManager()
     {
@@ -105,6 +83,11 @@ public class GameManager : MonoBehaviour
     {
 
         GameData.Players.Add(player);
+    }
+
+    public void Reset()
+    {
+        GameData.Players.Clear();
     }
 
     void Awake()

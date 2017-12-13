@@ -28,7 +28,7 @@ public class GameController : MonoBehaviour {
         for (int i = 1; i <= GameManager.Instance.NumberOfPlayers; i++)
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player" + i.ToString());
-            player.name = player.name.Substring(0, player.name.Length - 7);
+            player.name = player.name.Substring(0, player.name.IndexOf("(") < 0 ? player.name.Length : player.name.IndexOf("("));
             if (player != null)
             {
                 player.GetComponent<PlayerController>().horizontal = "Horizontal_P" + i.ToString();
@@ -94,6 +94,7 @@ public class GameController : MonoBehaviour {
     IEnumerator GameFinish()
     {
         yield return new WaitForSeconds(5.0f);
+        GameManager.Instance.Reset();
         SceneManager.LoadScene("Menu");
     }
 
@@ -117,6 +118,7 @@ public class GameController : MonoBehaviour {
             currentPlayer.GetComponent<PlayerController>().enabled = true;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = true;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().InstantiateShot();
+            currentPlayer.GetComponent<Tank>().PowerUpRepository.OnTurnExcute();
             Debug.Log(currentPlayer.name + "'s turn.");
         }
         else

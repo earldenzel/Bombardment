@@ -173,7 +173,7 @@ public class CameraController : MonoBehaviour
 
     public void CameraDelay(float time)
     {
-        if(GameManager.Instance.GameData.TotalProjectile == 0)
+        if(GameManager.Instance.GameData.TotalProjectile <= 0)
         {
             Invoke("ResetCamera", time);
         }

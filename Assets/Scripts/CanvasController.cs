@@ -19,7 +19,10 @@ public class CanvasController : MonoBehaviour {
     public Slider powerSlider;
     public Image anemometer;
     public Text windStrength;
-    
+
+    public GameObject powerUps;
+    public Sprite[] powerUpSprites;
+
     public void UpdateUI(GameObject currentPlayer)
     {
         //shows current shot
@@ -62,9 +65,32 @@ public class CanvasController : MonoBehaviour {
         //show tank hp and fuel
         hPSlider.maxValue = currentPlayer.GetComponent<EnemyController>().HP.maxValue;
         hPSlider.value = currentPlayer.GetComponent<EnemyController>().HP.value;
+
         fuelSlider.maxValue = currentPlayer.GetComponent<FuelController>().fuelSlider.maxValue;
         fuelSlider.value = currentPlayer.GetComponent<FuelController>().fuelSlider.value;
 
+        PowerUp[] pus = currentPlayer.GetComponent<Tank>().PowerUpRepository.PowerUps;
+        int counter = 0;
+
+        //remove powerUps;
+        foreach (Transform child in powerUps.transform)
+        {
+            if(pus.Length > counter)
+            {
+                if (pus[counter].Mode != PowerUp.ApplyMode.NextTurn)
+                {
+                    child.gameObject.SetActive(false);
+                    child.gameObject.GetComponent<Image>().sprite = null;
+                }
+                else
+                {
+                    child.gameObject.SetActive(true);
+                    child.gameObject.GetComponent<Image>().sprite = powerUpSprites[(int)pus[counter].Type];
+                }
+                
+            }
+            counter++;
+        }
     }
     public void UpdatePower(float currentPower)
     {
@@ -77,8 +103,8 @@ public class CanvasController : MonoBehaviour {
         anemometer.transform.localRotation = Quaternion.Euler(new Vector3 (0,0,angle));
     }
 
-    public void UpdateFuel(float currentFuel)
+    public void UpdateFuel(float fuel)
     {
-        fuelSlider.value = currentFuel;
+        fuelSlider.value = fuel;
     }
 }
