@@ -45,7 +45,7 @@ public class Tank : MonoBehaviour {
         }
         set
         {
-            if(value == 0)
+            if(value < 0)
             {
                 currentFuelLevel = 0;
             }
