@@ -7,6 +7,26 @@ using UnityEngine.SceneManagement;
 public class GameData
 {
     public int SelectedMapIndex = 0;
+
+    private int activePlayerIndex;
+    public int ActivePlayerIndex
+    {
+        get
+        {
+            return activePlayerIndex;
+        }
+        set
+        {
+            if(value < Players.Count)
+            {
+                activePlayerIndex = value;
+            }
+            else if (value < 0)
+            {
+                activePlayerIndex = 0;
+            }
+        }
+    }
     private int totalProjectile;
     public int TotalProjectile
     {
@@ -34,6 +54,7 @@ public class GameData
     {
         Players = new List<GameObject>();
         Settings = new CameraSetting();
+        ActivePlayerIndex = 0;
     }
 }
 
@@ -44,31 +65,30 @@ public class GameManager : MonoBehaviour
 
     public enum TankType { Archer, Boomer, Pirate, Scorch }
 
-    public readonly int MIN_PLAYER = 1;
+    public int MIN_PLAYER = 2;
     public int MAX_PLAYER = 4;
 
 
     public static GameManager Instance;
 
     public GameData GameData { get; }
-
-    private int numberOfPlayers;
+    
     public int NumberOfPlayers {
         get
         {
-            return numberOfPlayers;
+            return GameData.Players.Count;
         }
-        set
-        {
-            if(GameData.SelectedMapIndex == 0)
-            {
-                numberOfPlayers = 1;
-            }
-            if(value >= MIN_PLAYER && value <= MAX_PLAYER)
-            {
-                numberOfPlayers = value;
-            }
-        }
+        //set
+        //{
+        //    if(GameData.SelectedMapIndex == 0)
+        //    {
+        //        numberOfPlayers = 1;
+        //    }
+        //    if(value >= MIN_PLAYER && value <= MAX_PLAYER)
+        //    {
+        //        numberOfPlayers = value;
+        //    }
+        //}
     }
 
     public CameraSetting Settings;
@@ -76,16 +96,14 @@ public class GameManager : MonoBehaviour
     public GameManager()
     {
         GameData = new GameData();
-        NumberOfPlayers = MIN_PLAYER;
     }
 
     public void AddPlayer(GameObject player)
     {
-
         GameData.Players.Add(player);
     }
 
-    public void Reset()
+    public void ResetPlayers()
     {
         GameData.Players.Clear();
     }

@@ -81,19 +81,17 @@ public class FuelController : MonoBehaviour {
     {
         //fuelSlider.value -= fuel;
         //UICanvas.UpdateFuel(fuelSlider.value);
-        if(tank.CurrentFuelLevel - fuel >= 0)
+        
+        tank.CurrentFuelLevel -= fuel;
+        if (thisCannon.enabled)
         {
-            tank.CurrentFuelLevel -= fuel;
-            if (thisCannon.enabled)
-            {
-                UICanvas.UpdateFuel(tank.CurrentFuelLevel);
-            }
+            UICanvas.UpdateFuel(tank.CurrentFuelLevel);
         }
     }
 
     public void ReplenishFuel()
     {
         //fuelSlider.value += 1f;
-            tank.CurrentFuelLevel += 1f;
+        tank.CurrentFuelLevel += 1f;
     }
 }

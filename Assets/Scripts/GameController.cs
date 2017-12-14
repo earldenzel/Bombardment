@@ -23,20 +23,21 @@ public class GameController : MonoBehaviour {
     void Start()
     {
         //Before anything else, set controls to proper axes
-        players = new List<GameObject>();
+        //players = new List<GameObject>();
+        players = GameManager.Instance.GameData.Players;
 
         for (int i = 1; i <= GameManager.Instance.NumberOfPlayers; i++)
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player" + i.ToString());
-            player.name = player.name.Substring(0, player.name.IndexOf("(") < 0 ? player.name.Length : player.name.IndexOf("("));
             if (player != null)
             {
+                player.name = player.name.Substring(0, player.name.IndexOf("(") < 0 ? player.name.Length : player.name.IndexOf("("));
                 player.GetComponent<PlayerController>().horizontal = "Horizontal_P" + i.ToString();
                 player.GetComponent<PlayerController>().jump = "Jump_P" + i.ToString();
                 player.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().vertical = "Vertical_P" + i.ToString();
                 player.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().shoot = "Shoot_P" + i.ToString();
                 player.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().switchShot = "Switch_P" + i.ToString();
-                players.Add(player);
+                //players.Add(player);
             }
         }
 
@@ -93,8 +94,8 @@ public class GameController : MonoBehaviour {
 
     IEnumerator GameFinish()
     {
-        yield return new WaitForSeconds(5.0f);
-        GameManager.Instance.Reset();
+        yield return new WaitForSeconds(3.0f);
+        GameManager.Instance.ResetPlayers();
         SceneManager.LoadScene("Menu");
     }
 
@@ -105,8 +106,16 @@ public class GameController : MonoBehaviour {
             return;
         }
         totalTurnsDone++;
+        //Check if the cycle just Enter;
+        if(totalTurnsDone % players.Count == 0)
+        {
+            this.GetComponentInParent<StageManager02>().OnExit();
+            this.GetComponentInParent<StageManager02>().OnEnter();
+        }
+        this.GetComponentInParent<StageManager02>().OnStage();
         DisableEveryone();
         currentPlayer = players[totalTurnsDone % players.Count];
+        GameManager.Instance.GameData.ActivePlayerIndex = totalTurnsDone % players.Count;
         if (currentPlayer != null)
         {
             currentPlayer.GetComponent<FuelController>().ReplenishFuel();

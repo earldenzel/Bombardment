@@ -19,23 +19,8 @@ public class CrateManager : MonoBehaviour {
         minSpawnX = GameManager.Instance.GameData.Settings.ViewPort.x;
         maxSpawnX = GameManager.Instance.GameData.Settings.ViewPort.x + GameManager.Instance.GameData.Settings.ViewPort.width;
     }
-	
-	// Update is called once per frame
-	void Update () {
-        if (Input.GetKeyUp(KeyCode.C))
-        {
-            createCrates();
-        }
 
-    }
-
-    IEnumerator SpawnCrate()
-    {
-        yield return new WaitForSeconds(3);
-        createCrates();
-    }
-
-    void createCrates()
+    public void SpawnCrates()
     {
         int numOfCrate = Random.Range(MinCratePerTurn, MaxCratePerTurn);
 

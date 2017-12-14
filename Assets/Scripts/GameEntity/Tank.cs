@@ -19,7 +19,7 @@ public class Tank : MonoBehaviour {
         }
         set
         {
-            if (value == 0)
+            if (value <= 0)
             {
                 currentHipPoint = 0;
             }
@@ -45,7 +45,7 @@ public class Tank : MonoBehaviour {
         }
         set
         {
-            if(value == 0)
+            if(value <= 0)
             {
                 currentFuelLevel = 0;
             }
@@ -97,6 +97,8 @@ public class Tank : MonoBehaviour {
         if (other.gameObject.tag == "PowerUp")
         {
             PowerUp pu = other.gameObject.GetComponent<PowerUp>();
+            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
+            canvas.GetComponent<CanvasController>().UpdateUI(this.gameObject);
             powerUps.AddPowerUp(pu);
             powerUps.OnTurnExcute();
             Destroy(other.gameObject);
