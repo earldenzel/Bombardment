@@ -7,39 +7,43 @@ public class OrientationChecker : MonoBehaviour {
 
     private Vector3 currentRotation;
     private float zRotate;
-    
+    public bool rightDirection; //tells if the tank is facing right
+
     private PlayerController thisPlayer;
+    private string horizontal;
+    public bool onTurn;
 
     // Use this for initialization
     void Start()
     {
         thisPlayer = GetComponent<PlayerController>();
+        rightDirection = true;
+        horizontal = thisPlayer.horizontal;
     }
-
-
+    
     void FixedUpdate ()
     {
         //enables tank to switch direction (without penalty)
-        if (Input.GetAxis(thisPlayer.horizontal) != 0 && thisPlayer.enabled)
+        if (Input.GetAxis(horizontal) != 0 && onTurn)
         {
             //check orientation if facing camera nicely
-            if ((Input.GetAxis(thisPlayer.horizontal) > 0))
+            if ((Input.GetAxis(horizontal) > 0))
             {
-                if (!thisPlayer.rightDirection)
+                if (!rightDirection)
                 {
                     //flip
                     transform.localScale = new Vector3(1, 1, 1);
                 }
-                thisPlayer.rightDirection = true;
+                rightDirection = true;
             }
             else
             {
-                if (thisPlayer.rightDirection)
+                if (rightDirection)
                 {
                     //flip
                     transform.localScale = new Vector3(-1, 1, 1);
                 }
-                thisPlayer.rightDirection = false;
+                rightDirection = false;
             }
         }
 
