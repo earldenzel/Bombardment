@@ -23,6 +23,12 @@ public class CanvasController : MonoBehaviour {
     public GameObject powerUps;
     public Sprite[] powerUpSprites;
 
+    public void UpdateUI()
+    {
+        GameObject go = GameManager.Instance.GameData.Players[GameManager.Instance.GameData.ActivePlayerIndex];
+        UpdateUI(go);
+    }
+
     public void UpdateUI(GameObject currentPlayer)
     {
         //shows current shot

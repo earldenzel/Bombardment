@@ -23,12 +23,12 @@ public class PowerUpRepository{
         if (powerUps.TryGetValue(pu.Type, out temp))
         {
             //Try to stack 2 power up
-            Debug.Log("Power Up: " + pu.Type + " already exist.");
+         //   Debug.Log("Power Up: " + pu.Type + " already exist.");
             temp += pu;
         }
         else
         {
-            Debug.Log("Power Up: " + pu.Type + " has been added.");
+        //    Debug.Log("Power Up: " + pu.Type + " has been added.");
             powerUps.Add(pu.Type, pu);
         }
     }
@@ -85,13 +85,13 @@ public class PowerUpRepository{
     public void RemovePowerUp(PowerUp.PowerUpType type)
     {
         powerUps.Remove(type);
-        Debug.Log("Power Up: " + type + " has been removed.");
+      //  Debug.Log("Power Up: " + type + " has been removed.");
     }
 
     public void RemoveAll()
     {
         powerUps.Clear();
-        Debug.Log("All Power Ups have been removed.");
+     //   Debug.Log("All Power Ups have been removed.");
     }
 
     public PowerUp[] PowerUps
@@ -107,11 +107,5 @@ public class PowerUpRepository{
             }
             return temp;
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }

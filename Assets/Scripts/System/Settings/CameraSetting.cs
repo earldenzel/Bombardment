@@ -11,7 +11,7 @@ public class CameraSetting
     private readonly int maxViewPortX = 15;
     private readonly int minViewPortY = 3;
     private readonly int maxViewPortY = 15;
-    private Rect viewPort = new Rect(0, 0, 16, 8);
+    private Rect viewPort;
 
     public int value;
 

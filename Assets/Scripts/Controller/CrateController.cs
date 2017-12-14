@@ -13,8 +13,8 @@ public class CrateController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        minSpawnX = GameManager.Instance.GameData.Settings.ViewPort.x;
-        maxSpawnX = GameManager.Instance.GameData.Settings.ViewPort.x + GameManager.Instance.GameData.Settings.ViewPort.width;
+        minSpawnX = GameManager.Instance.GameData.CameraSettings.ViewPort.x;
+        maxSpawnX = GameManager.Instance.GameData.CameraSettings.ViewPort.x + GameManager.Instance.GameData.CameraSettings.ViewPort.width;
     }
 	
 	// Update is called once per frame

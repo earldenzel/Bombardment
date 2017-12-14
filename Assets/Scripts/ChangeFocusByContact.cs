@@ -25,7 +25,17 @@ public class ChangeFocusByContact : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
-
+        if (other.gameObject.tag == "Crate")
+        {
+            other.gameObject.GetComponent<Crate>().HitPoint -= 1;
+            Debug.Log(other.gameObject.GetComponent<Crate>().HitPoint);
+            if(other.gameObject.GetComponent<Crate>().HitPoint == 0)
+            {
+                other.gameObject.GetComponent<Crate>().SpawnPowerUps();
+                Destroy(other.gameObject);
+                return;
+            }
+        }
         if (reflectedTimes > 0)
         {
             reflectedTimes--;
@@ -50,7 +60,7 @@ public class ChangeFocusByContact : MonoBehaviour
     {
         CameraController controller = Camera.main.GetComponent<CameraController>();
         GameManager.Instance.GameData.TotalProjectile -= 1;
-        Debug.Log(GameManager.Instance.GameData.TotalProjectile);
+     //   Debug.Log(GameManager.Instance.GameData.TotalProjectile);
         controller.CameraDelay(DelayTime);
         //controller.SetCameraState(); // default fixed
         

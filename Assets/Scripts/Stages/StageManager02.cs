@@ -43,20 +43,20 @@ public class StageManager02 : MonoBehaviour, IStage {
 
     public void OnStage()
     {
-        foreach(GameObject player in GameManager.Instance.GameData.Players)
-        {
-            player.GetComponent<Tank>().Velocity += 1;
-        }
+        //foreach(GameObject player in GameManager.Instance.GameData.Players)
+        //{
+        //    player.GetComponent<Tank>().Velocity += 1;
+        //}
     }
 
     public void OnExit()
     {
-        if (!FirstEnter)
-        {
-            foreach (GameObject player in GameManager.Instance.GameData.Players)
-            {
-                player.GetComponent<Tank>().MaxFuelLevel += 1;
-            }
-        }
+        //if (!FirstEnter)
+        //{
+        //    foreach (GameObject player in GameManager.Instance.GameData.Players)
+        //    {
+        //        player.GetComponent<Tank>().MaxFuelLevel += 1;
+        //    }
+        //}
     }
 }

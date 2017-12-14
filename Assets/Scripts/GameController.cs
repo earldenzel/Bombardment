@@ -107,7 +107,7 @@ public class GameController : MonoBehaviour {
         }
         totalTurnsDone++;
         //Check if the cycle just Enter;
-        if(totalTurnsDone % players.Count == 0)
+        if (totalTurnsDone % players.Count == 0)
         {
             this.GetComponentInParent<StageManager02>().OnExit();
             this.GetComponentInParent<StageManager02>().OnEnter();
@@ -135,6 +135,8 @@ public class GameController : MonoBehaviour {
         {
             EnableNextPlayer();
         }
+
+        
     }
 
     public IEnumerator announcePlayerTurn(GameObject currentPlayer)
@@ -166,4 +168,5 @@ public class GameController : MonoBehaviour {
             }
         }
     }
+
 }

@@ -57,7 +57,6 @@ public class Tank : MonoBehaviour {
             {
                 currentFuelLevel = value;
             }
-            Debug.Log("Current Fuel Level : " + currentFuelLevel);
         }
     }
     public float MaxFuelLevel = 5;
@@ -98,7 +97,7 @@ public class Tank : MonoBehaviour {
         {
             PowerUp pu = other.gameObject.GetComponent<PowerUp>();
             GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
-            canvas.GetComponent<CanvasController>().UpdateUI(this.gameObject);
+            canvas.GetComponent<CanvasController>().UpdateUI();
             powerUps.AddPowerUp(pu);
             powerUps.OnTurnExcute();
             Destroy(other.gameObject);

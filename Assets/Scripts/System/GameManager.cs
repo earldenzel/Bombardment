@@ -48,12 +48,13 @@ public class GameData
     }
     public bool ToNextPlayer;
     public List<GameObject> Players { get; }
-    public CameraSetting Settings { get; }
+    public CameraSetting CameraSettings { get; }
 
     public GameData()
     {
         Players = new List<GameObject>();
-        Settings = new CameraSetting();
+        CameraSettings = new CameraSetting();
+        CameraSettings.ViewPort = new Rect(0, 0, 16, 8);
         ActivePlayerIndex = 0;
     }
 }
@@ -90,8 +91,7 @@ public class GameManager : MonoBehaviour
         //    }
         //}
     }
-
-    public CameraSetting Settings;
+    
 
     public GameManager()
     {
@@ -127,11 +127,10 @@ public class GameManager : MonoBehaviour
     {
        
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    public void EndTurn()
     {
-
+        GameManager.Instance.GameData.ToNextPlayer = true;
     }
 
     public void BackToMenu()
