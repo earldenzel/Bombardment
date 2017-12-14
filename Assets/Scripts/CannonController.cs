@@ -38,7 +38,6 @@ public class CannonController : MonoBehaviour {
     // Use this for initialization
     void Start () {
         onShot = false;
-        shot1 = true;
         powerBar = transform.GetChild(1).GetComponent<SpriteRenderer>();
         originalScale = powerBar.transform.localScale;
         originalPosition = powerBar.transform.localPosition;
@@ -51,7 +50,7 @@ public class CannonController : MonoBehaviour {
         {
             cameraController = Camera.main.GetComponent<CameraController>();
         }
-        
+        LoadWeakerShot();        
     }
 	
 	// Update is called once per frame
@@ -61,7 +60,7 @@ public class CannonController : MonoBehaviour {
         if (onShot)
         {
             myTime += Time.deltaTime / 2;
-            if (transform.parent.tag == "Scorch")
+            if (transform.parent.tag == "Scorch" || transform.parent.tag == "Scorch2")
             {
                 powerBar.transform.localScale = new Vector3(3f * powerCurve.Evaluate(myTime), originalScale.y, originalScale.z);
                 powerBar.transform.localPosition = new Vector3(0, 0.75f*powerCurve.Evaluate(myTime), 0);
@@ -149,7 +148,7 @@ public class CannonController : MonoBehaviour {
             //determine direction of shooting
             Vector2 forceVec = (transform.GetChild(0).position - this.transform.position).normalized;
             //scorch's projectiles becomes inverted when facing the other way. this fixes it
-            if (currentProjectile.tag == "Scorch")
+            if (currentProjectile.tag == "Scorch" || currentProjectile.tag == "Scorch2")
             {
                 currentProjectile.transform.localScale = new Vector3(1, 1, 1);
             }

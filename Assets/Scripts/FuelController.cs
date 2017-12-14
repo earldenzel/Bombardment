@@ -22,6 +22,7 @@ public class FuelController : MonoBehaviour {
         thisPlayer = GetComponent<PlayerController>();
         thisCannon = transform.GetChild(0).GetChild(0).GetComponent<CannonController>();
         UICanvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasController>();
+        fuelSlider.maxValue = tank.MaxFuelLevel;
         //tank = this.GetComponentInParent<Tank>();
     }
 	
@@ -73,6 +74,7 @@ public class FuelController : MonoBehaviour {
         {
             thisPlayer.enabled = false;
         }
+        fuelSlider.value = tank.CurrentFuelLevel;
     }
 
     public void UseFuel(float fuel)
@@ -82,7 +84,10 @@ public class FuelController : MonoBehaviour {
         if(tank.CurrentFuelLevel - fuel >= 0)
         {
             tank.CurrentFuelLevel -= fuel;
-            UICanvas.UpdateFuel(tank.CurrentFuelLevel);
+            if (thisCannon.enabled)
+            {
+                UICanvas.UpdateFuel(tank.CurrentFuelLevel);
+            }
         }
     }
 

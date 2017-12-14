@@ -5,7 +5,6 @@ using UnityEngine;
 public class ChangeFocusByContact : MonoBehaviour
 {
     public float DelayTime = 3;
-    private bool landed = false;
     private int reflectedTimes = 0;
     private Vector2 projectileVelocity;
 
