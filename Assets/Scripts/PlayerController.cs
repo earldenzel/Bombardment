@@ -9,12 +9,12 @@ public class PlayerController : MonoBehaviour {
     private Vector3 direction; //tells the direction of the tank upon left or right arrow press
     public float velocity = 2; //tells the velocity of the tank
     private Rigidbody2D tankBody; //rigidbody of transform. tankBody has a trigger collider so the wheels could do the heavy lifting
-    public bool rightDirection; //tells if the tank is facing right
     public float jumpForce; //tells how strong the jump of the tank is
     public float jumpTime;
     public bool onJump;
     public bool isGrounded;
     public bool slopeInFront;
+    public OrientationChecker orientation;
     
     private Transform wheelFront;
 
@@ -25,10 +25,10 @@ public class PlayerController : MonoBehaviour {
     // Use this for initialization
     void Awake () {
         movable = true;
-        rightDirection = true;
         tankBody = GetComponent<Rigidbody2D>();
         onJump = false;
         jumpTime = 2.0f;
+        orientation = GetComponent<OrientationChecker>();
 	}
 
     void OnDisable()
@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour {
         wheelFront.rotation = transform.rotation;
 
         //then, check if there is a slope in front of the tank
-        if (rightDirection)
+        if (orientation.rightDirection)
         {
             slopeInFront = Physics2D.Linecast(wheelFront.position, wheelFront.position + wheelFront.transform.right * 0.35f - wheelFront.transform.up * 0.35f, 1 << LayerMask.NameToLayer("Terrain"));
             //Debug.DrawLine(wheelFront.position, wheelFront.position + wheelFront.transform.right * 0.35f - wheelFront.transform.up * 0.35f, Color.blue);
@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetButtonDown(jump) && movable && !onJump)
         {
             onJump = true;
-            if (rightDirection)
+            if (orientation.rightDirection)
             {
                 tankBody.AddForce(jumpForce * new Vector2(1,1), ForceMode2D.Impulse);
             }

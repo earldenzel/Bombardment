@@ -19,7 +19,7 @@ public class ZeroRotation : MonoBehaviour {
         }
         else
         {
-            FlipBar(transform.root.GetComponent<PlayerController>().rightDirection);
+            FlipBar(transform.root.GetComponent<OrientationChecker>().rightDirection);
             if (tag == "Health")
             {
                 transform.position = transform.root.position - 1.35f * Vector3.up;

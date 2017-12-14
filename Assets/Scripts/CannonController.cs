@@ -224,7 +224,7 @@ public class CannonController : MonoBehaviour {
             currentProjectile = Instantiate(cannon.shot2, transform.GetChild(0).position, spawnRotation) as GameObject;
         }
         //maintains fidelity of projectile even when facing left
-        if (!transform.root.GetComponent<PlayerController>().rightDirection)
+        if (!transform.root.GetComponent<OrientationChecker>().rightDirection)
         {
             currentProjectile.transform.localScale = new Vector3(1, -1, 1);
         }

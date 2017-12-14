@@ -124,6 +124,7 @@ public class GameController : MonoBehaviour {
             mainCamera.GetComponent<CameraController>().ObjectTracer.Traget = currentPlayer;
             //mainCamera.GetComponent<CameraController>().ObjectTracer.Mode = ObjectTracerController.TraceMode.ZoomOut;
             StartCoroutine(announcePlayerTurn(currentPlayer));
+            currentPlayer.GetComponent<OrientationChecker>().onTurn = true;
             currentPlayer.GetComponent<PlayerController>().enabled = true;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = true;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().InstantiateShot();
@@ -160,6 +161,7 @@ public class GameController : MonoBehaviour {
             if (player != null)
             {
                 player.GetComponent<PlayerController>().enabled = false;
+                player.GetComponent<OrientationChecker>().onTurn = false;
                 player.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = false;
             }
         }
