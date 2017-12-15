@@ -143,6 +143,26 @@ public class CannonController : MonoBehaviour {
 
     private void ShootProjectile()
     {
+        //whole block checks orientation first of the tank before attempting to create projectile object
+        if (transform.root.transform.localScale.x > 0)
+        {
+            spawnRotation = transform.rotation;
+        }
+        else
+        {
+            spawnRotation = Quaternion.Euler(0, 0, 180f) * transform.rotation;
+        }
+        //spawns projectile       
+        if (shot1)
+        {
+            currentProjectile = Instantiate(cannon.shot1, transform.GetChild(0).position, spawnRotation) as GameObject;
+        }
+        else
+        {
+            currentProjectile = Instantiate(cannon.shot2, transform.GetChild(0).position, spawnRotation) as GameObject;
+        }
+        SetProjectileProperties(currentProjectile);
+
         if (currentProjectile != null)
         {
             //determine direction of shooting
@@ -161,7 +181,7 @@ public class CannonController : MonoBehaviour {
             //this only applies to archer's shots
             if (currentProjectile.tag == "Arrow")
             {
-                GameManager.Instance.GameData.TotalProjectile += 2;
+                //GameManager.Instance.GameData.TotalProjectile += 2;
                 StartCoroutine(TwoMoreShots(forceVec));
             }
             //Change the target state for the camera
@@ -187,11 +207,13 @@ public class CannonController : MonoBehaviour {
     {
         yield return new WaitForSeconds(0.3f);
         GameObject secondShot = Instantiate(cannon.shot2, transform.GetChild(0).position, spawnRotation) as GameObject;
-        secondShot.GetComponent<ProjectileController>().cannon = this;
+        SetProjectileProperties(secondShot);
+        //secondShot.GetComponent<ProjectileController>().cannon = this;
         secondShot.GetComponent<Rigidbody2D>().AddForce(shotStrength, ForceMode2D.Impulse);
         yield return new WaitForSeconds(0.3f);
         GameObject thirdShot = Instantiate(cannon.shot2, transform.GetChild(0).position, spawnRotation) as GameObject;
-        thirdShot.GetComponent<ProjectileController>().cannon = this;
+        SetProjectileProperties(thirdShot);
+        //thirdShot.GetComponent<ProjectileController>().cannon = this;
         thirdShot.GetComponent<Rigidbody2D>().AddForce(shotStrength, ForceMode2D.Impulse);
         yield return new WaitForSeconds(0.3f);
         onShot = false;
@@ -205,32 +227,18 @@ public class CannonController : MonoBehaviour {
         powerBar.enabled = true;
         //tank does not move when loading shot
         transform.root.GetComponent<PlayerController>().movable = false;
-        //whole block checks orientation first of the tank before attempting to create projectile object
-        if (transform.root.transform.localScale.x > 0)
-        {
-            spawnRotation = transform.rotation;
-        }
-        else
-        {
-            spawnRotation = Quaternion.Euler(0, 0, 180f) * transform.rotation;
-        }
-        //spawns projectile       
-        if (shot1)
-        {
-            currentProjectile = Instantiate(cannon.shot1, transform.GetChild(0).position, spawnRotation) as GameObject;
-        }
-        else
-        {
-            currentProjectile = Instantiate(cannon.shot2, transform.GetChild(0).position, spawnRotation) as GameObject;
-        }
+    }
+
+    private void SetProjectileProperties(GameObject projectile)
+    {
+        //set projectile cannon and attacker
+        projectile.GetComponent<ProjectileController>().cannon = this;
+        projectile.GetComponent<ProjectileController>().attacker = transform.root.gameObject;
         //maintains fidelity of projectile even when facing left
         if (!transform.root.GetComponent<OrientationChecker>().rightDirection)
         {
-            currentProjectile.transform.localScale = new Vector3(1, -1, 1);
+            projectile.transform.localScale = new Vector3(1, -1, 1);
         }
-        currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 0;
-        currentProjectile.GetComponent<ProjectileController>().cannon = this;
-        currentProjectile.GetComponent<ProjectileController>().attacker = transform.root.gameObject;
-        GameManager.Instance.GameData.TotalProjectile = 1;
+        GameManager.Instance.GameData.TotalProjectile += 1;
     }
 }

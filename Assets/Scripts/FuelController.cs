@@ -32,7 +32,7 @@ public class FuelController : MonoBehaviour {
             //cost of moving is deltaTime
             if (Input.GetAxis(thisPlayer.horizontal) != 0)
             {
-                if (Mathf.Abs(Input.GetAxis(thisPlayer.horizontal)) > 0.2f)
+                if (Mathf.Abs(Input.GetAxis(thisPlayer.horizontal)) > 0.4f)
                 {
                     UseFuel(Time.deltaTime / 2);
                 }
@@ -49,10 +49,12 @@ public class FuelController : MonoBehaviour {
         if (thisCannon.enabled)
         {
             if(tank.CurrentFuelLevel < 1f)
-            //if (fuelSlider.value < 1f)
             {
                 thisCannon.canLoadStrongerShot = false;
-                thisCannon.LoadWeakerShot();
+                if (!thisCannon.onShot)
+                {
+                    thisCannon.LoadWeakerShot();
+                }
             }
             else
             {
@@ -64,12 +66,6 @@ public class FuelController : MonoBehaviour {
                 UseFuel(1.0f);
             }
         }
-
-        //disable movement when fuel = 0
-        //if (fuelSlider.value == 0f)
-        //{
-        //    thisPlayer.enabled = false;
-        //}
         if (tank.CurrentFuelLevel == 0f)
         {
             thisPlayer.enabled = false;
@@ -79,8 +75,6 @@ public class FuelController : MonoBehaviour {
 
     public void UseFuel(float fuel)
     {
-        //fuelSlider.value -= fuel;
-        //UICanvas.UpdateFuel(fuelSlider.value);
         tank.CurrentFuelLevel -= fuel;
         if (thisCannon.enabled)
         {
@@ -90,7 +84,6 @@ public class FuelController : MonoBehaviour {
 
     public void ReplenishFuel()
     {
-        //fuelSlider.value += 1f;
         tank.CurrentFuelLevel += 1f;
     }
 }

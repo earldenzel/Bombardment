@@ -97,7 +97,7 @@ public class PlayerController : MonoBehaviour {
         }
 
         //if movement is pressed, and tank is movable, and is currently a ground, then a move must happen
-        if (Input.GetAxis(horizontal) != 0 && movable && isGrounded)
+        if (Mathf.Abs(Input.GetAxis(horizontal)) > 0.4f && movable && isGrounded)
         {
             direction = tankBody.transform.right * Input.GetAxis(horizontal);
             Debug.DrawRay(transform.position, tankBody.transform.right * Input.GetAxis(horizontal), Color.cyan);
