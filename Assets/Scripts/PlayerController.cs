@@ -12,9 +12,9 @@ public class PlayerController : MonoBehaviour {
     public float jumpForce; //tells how strong the jump of the tank is
     public float jumpTime;
     public bool onJump;
-    public bool isGrounded;
     public bool slopeInFront;
     public OrientationChecker orientation;
+    private float time;
     
     private Transform wheelFront;
 
@@ -49,21 +49,16 @@ public class PlayerController : MonoBehaviour {
     // Update is called once per frame
     void FixedUpdate()
     {
-        //first, check if tank is grounded
-        isGrounded = Physics2D.Linecast(transform.position, transform.position-1f*Vector3.up, 1<<LayerMask.NameToLayer("Terrain"));
-        //Debug.DrawLine(transform.position, transform.position - 1.2f * Vector3.up, Color.red);
         wheelFront.rotation = transform.rotation;
 
         //then, check if there is a slope in front of the tank
         if (orientation.rightDirection)
         {
             slopeInFront = Physics2D.Linecast(wheelFront.position, wheelFront.position + wheelFront.transform.right * 0.35f - wheelFront.transform.up * 0.35f, 1 << LayerMask.NameToLayer("Terrain"));
-            //Debug.DrawLine(wheelFront.position, wheelFront.position + wheelFront.transform.right * 0.35f - wheelFront.transform.up * 0.35f, Color.blue);
         }
         else
         {
             slopeInFront = Physics2D.Linecast(wheelFront.position, wheelFront.position - wheelFront.transform.right * 0.35f - wheelFront.transform.up * 0.35f, 1 << LayerMask.NameToLayer("Terrain"));
-            //Debug.DrawLine(wheelFront.position, wheelFront.position - wheelFront.transform.right * 0.35f - wheelFront.transform.up * 0.35f, Color.blue);
         }
 
         //disable moving when shot is occuring
@@ -91,16 +86,16 @@ public class PlayerController : MonoBehaviour {
         }
 
         //if tank is both grounded and on jump, then a tank cannot be on a jump
-        if (isGrounded && onJump)
+        if (orientation.isGrounded && onJump)
         {
             onJump = false;
         }
 
         //if movement is pressed, and tank is movable, and is currently a ground, then a move must happen
-        if (Mathf.Abs(Input.GetAxis(horizontal)) > 0.4f && movable && isGrounded)
+        if (Mathf.Abs(Input.GetAxis(horizontal)) > 0.4f && movable && orientation.isGrounded)
         {
+            time = 0f;
             direction = tankBody.transform.right * Input.GetAxis(horizontal);
-            Debug.DrawRay(transform.position, tankBody.transform.right * Input.GetAxis(horizontal), Color.cyan);
             if (slopeInFront)
             {
                 tankBody.AddTorque(30f * Input.GetAxis(horizontal));

@@ -54,7 +54,7 @@ public class CannonController : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update ()
+	void FixedUpdate ()
     {
         UICanvas.UpdatePower(powerBar.transform.localScale.x);
         if (onShot)

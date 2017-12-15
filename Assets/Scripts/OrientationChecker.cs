@@ -12,6 +12,9 @@ public class OrientationChecker : MonoBehaviour {
     private PlayerController thisPlayer;
     private string horizontal;
     public bool onTurn;
+    public bool isGrounded;
+
+    private Rigidbody2D tankBody;
 
     // Use this for initialization
     void Start()
@@ -19,10 +22,30 @@ public class OrientationChecker : MonoBehaviour {
         thisPlayer = GetComponent<PlayerController>();
         rightDirection = true;
         horizontal = thisPlayer.horizontal;
+        tankBody = GetComponent<Rigidbody2D>();
     }
     
     void FixedUpdate ()
     {
+        //first, check if tank is grounded
+        isGrounded = Physics2D.Linecast(transform.position, transform.position - 1f * Vector3.up, 1 << LayerMask.NameToLayer("Terrain"));        
+        
+        //fix orientation
+        zRotate = transform.rotation.eulerAngles.z;
+        if (zRotate > 180)
+        {
+            zRotate = zRotate - 360;
+        }
+        
+        if (zRotate > 50f)
+        {
+            transform.Rotate(0, 0, 50f - zRotate);
+        }
+        else if (zRotate < -50f)
+        {
+            transform.Rotate(0, 0, -50f - zRotate);
+        }
+
         //enables tank to switch direction (without penalty)
         if (Input.GetAxis(horizontal) != 0 && onTurn)
         {
@@ -46,15 +69,5 @@ public class OrientationChecker : MonoBehaviour {
                 rightDirection = false;
             }
         }
-
-        //fix orientation
-        zRotate = transform.rotation.eulerAngles.z;
-        if (zRotate > 180)
-        {
-            zRotate = zRotate - 360;
-        }
-        currentRotation = transform.rotation.eulerAngles;
-        currentRotation.z = Mathf.Clamp(zRotate, -60f, 60f);
-        transform.rotation = Quaternion.Euler(currentRotation);
     }
 }

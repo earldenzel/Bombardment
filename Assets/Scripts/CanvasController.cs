@@ -72,8 +72,8 @@ public class CanvasController : MonoBehaviour {
         hPSlider.maxValue = currentPlayer.GetComponent<EnemyController>().HP.maxValue;
         hPSlider.value = currentPlayer.GetComponent<EnemyController>().HP.value;
 
-        fuelSlider.maxValue = currentPlayer.GetComponent<FuelController>().fuelSlider.maxValue;
-        fuelSlider.value = currentPlayer.GetComponent<FuelController>().fuelSlider.value;
+        fuelSlider.maxValue = currentPlayer.GetComponent<Tank>().MaxFuelLevel;
+        fuelSlider.value = currentPlayer.GetComponent<Tank>().CurrentFuelLevel;
 
         PowerUp[] pus = currentPlayer.GetComponent<Tank>().PowerUpRepository.PowerUps;
         int counter = 0;

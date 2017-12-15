@@ -122,7 +122,6 @@ public class GameController : MonoBehaviour {
             UICanvas.UpdateUI(currentPlayer);
             mainCamera.GetComponent<CameraController>().cameraConfig.initialFocus = currentPlayer;
             mainCamera.GetComponent<CameraController>().ObjectTracer.Traget = currentPlayer;
-            //mainCamera.GetComponent<CameraController>().ObjectTracer.Mode = ObjectTracerController.TraceMode.ZoomOut;
             StartCoroutine(announcePlayerTurn(currentPlayer));
             currentPlayer.GetComponent<OrientationChecker>().onTurn = true;
             currentPlayer.GetComponent<PlayerController>().enabled = true;
@@ -134,9 +133,7 @@ public class GameController : MonoBehaviour {
         else
         {
             EnableNextPlayer();
-        }
-
-        
+        }        
     }
 
     public IEnumerator announcePlayerTurn(GameObject currentPlayer)

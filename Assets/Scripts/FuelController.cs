@@ -63,7 +63,7 @@ public class FuelController : MonoBehaviour {
             
             if (Input.GetButtonDown(thisCannon.shoot) && !thisCannon.shot1)
             {
-                UseFuel(1.0f);
+                UseFuel(0.5f);
             }
         }
         if (tank.CurrentFuelLevel == 0f)
