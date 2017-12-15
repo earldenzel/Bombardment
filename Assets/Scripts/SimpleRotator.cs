@@ -11,6 +11,14 @@ public class SimpleRotator : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-        transform.Rotate(0, 0, Random.Range(5f, 15f));
+        if (gameObject.tag == "Cleave")
+        {
+            transform.Rotate(0, 0, Random.Range(-25f, -15f));
+
+        }
+        else
+        {
+            transform.Rotate(0, 0, Random.Range(5f, 15f));
+        }
 	}
 }
