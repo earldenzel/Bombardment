@@ -44,9 +44,10 @@ public class CanvasController : MonoBehaviour {
         canvasImage.GetComponent<Image>().preserveAspect = true;
         canvasImage.GetComponent<Image>().color = currentProjectile.GetComponent<SpriteRenderer>().color;
         shotName.text = currentProjectile.name;
-        shotStrength.text = "Damage: " + currentProjectile.GetComponent<ProjectileController>().baseDamage
-            + ((currentProjectile.name == "Triple Strafe") ? "x3" : "");
-
+        string strength = "Damage: " + currentProjectile.GetComponent<ProjectileController>().baseDamage;
+        if (currentProjectile.name == "Triple Strafe") strength += "x3";
+        else if (currentProjectile.name == "Falling Stars") strength += "x?";
+        shotStrength.text = strength;
         //shows tank info
         tankInfo.text = currentPlayer.tag + "\n" + currentPlayer.name;
         switch (currentPlayer.name)

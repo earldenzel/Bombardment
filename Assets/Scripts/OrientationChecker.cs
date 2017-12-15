@@ -28,7 +28,7 @@ public class OrientationChecker : MonoBehaviour {
     void FixedUpdate ()
     {
         //first, check if tank is grounded
-        isGrounded = Physics2D.Linecast(transform.position, transform.position - 1f * Vector3.up, 1 << LayerMask.NameToLayer("Terrain"));        
+        isGrounded = Physics2D.Linecast(transform.position, transform.position - 1.5f * Vector3.up, 1 << LayerMask.NameToLayer("Terrain"));        
         
         //fix orientation
         zRotate = transform.rotation.eulerAngles.z;

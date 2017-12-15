@@ -25,6 +25,10 @@ public class ChangeFocusByContact : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
+        if (gameObject.tag == "Trebuchet" && other.gameObject.tag == "Trebuchet")
+        {
+            return;
+        }
         if (other.gameObject.tag == "Crate")
         {
             other.gameObject.GetComponent<Crate>().HitPoint -= 1;

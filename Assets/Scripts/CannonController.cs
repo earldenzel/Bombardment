@@ -178,11 +178,14 @@ public class CannonController : MonoBehaviour {
             currentProjectile.GetComponent<Rigidbody2D>().gravityScale = 1;
             //disable current tank
             transform.root.GetComponent<PlayerController>().enabled = false;
-            //this only applies to archer's shots
+            //this only applies to archer's and trebuchet's shots
             if (currentProjectile.tag == "Arrow")
             {
-                //GameManager.Instance.GameData.TotalProjectile += 2;
-                StartCoroutine(TwoMoreShots(forceVec));
+                StartCoroutine(MoreShots(forceVec, currentProjectile, 2, 0.3f));
+            }
+            else if (currentProjectile.tag == "Trebuchet")
+            {
+                StartCoroutine(MoreShots(forceVec, currentProjectile, UnityEngine.Random.Range(1,3), 0.2f));
             }
             //Change the target state for the camera
             if (cameraController != null)
@@ -203,18 +206,16 @@ public class CannonController : MonoBehaviour {
         GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
     }
 
-    private IEnumerator TwoMoreShots(Vector2 shotStrength)
+    private IEnumerator MoreShots(Vector2 shotStrength, GameObject currentShot, int shotCount, float waitTime)
     {
-        yield return new WaitForSeconds(0.3f);
-        GameObject secondShot = Instantiate(cannon.shot2, transform.GetChild(0).position, spawnRotation) as GameObject;
-        SetProjectileProperties(secondShot);
-        //secondShot.GetComponent<ProjectileController>().cannon = this;
-        secondShot.GetComponent<Rigidbody2D>().AddForce(shotStrength, ForceMode2D.Impulse);
-        yield return new WaitForSeconds(0.3f);
-        GameObject thirdShot = Instantiate(cannon.shot2, transform.GetChild(0).position, spawnRotation) as GameObject;
-        SetProjectileProperties(thirdShot);
-        //thirdShot.GetComponent<ProjectileController>().cannon = this;
-        thirdShot.GetComponent<Rigidbody2D>().AddForce(shotStrength, ForceMode2D.Impulse);
+        for (int i = 1; i <= shotCount; i++)
+        {
+            yield return new WaitForSeconds(waitTime);
+            GameObject shot;
+            shot = Instantiate(currentShot, transform.GetChild(0).position, spawnRotation) as GameObject;
+            SetProjectileProperties(shot);
+            shot.GetComponent<Rigidbody2D>().AddForce(shotStrength, ForceMode2D.Impulse);
+        }
         yield return new WaitForSeconds(0.3f);
         onShot = false;
     }
