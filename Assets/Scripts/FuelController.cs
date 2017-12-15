@@ -9,6 +9,7 @@ public class FuelController : MonoBehaviour {
     private CannonController thisCannon;
     public Slider fuelSlider;
     private CanvasController UICanvas;
+    private float time;
 
     private Tank tank;
 
@@ -23,6 +24,7 @@ public class FuelController : MonoBehaviour {
         thisCannon = transform.GetChild(0).GetChild(0).GetComponent<CannonController>();
         UICanvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasController>();
         fuelSlider.maxValue = tank.MaxFuelLevel;
+        time = 10f;
         //tank = this.GetComponentInParent<Tank>();
     }
 	
@@ -61,9 +63,9 @@ public class FuelController : MonoBehaviour {
                 thisCannon.canLoadStrongerShot = true;
             }
             
-            if (Input.GetButtonDown(thisCannon.shoot) && !thisCannon.shot1)
+            if (Input.GetButtonDown(thisCannon.shoot) && !thisCannon.shot1 && thisCannon.onShot)
             {
-                UseFuel(0.5f);
+                UseFuel(1f);
             }
         }
         if (tank.CurrentFuelLevel == 0f)

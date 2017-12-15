@@ -63,6 +63,9 @@ public class CanvasController : MonoBehaviour {
             case "Scorch":
                 tankImage.GetComponent<Image>().sprite = spriteList[3];
                 break;
+            case "Gladiator":
+                tankImage.GetComponent<Image>().sprite = spriteList[4];
+                break;
             default:
                 break;
         }
