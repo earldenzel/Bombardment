@@ -16,6 +16,9 @@ public class GameController : MonoBehaviour {
     public bool gameOver;
     public Camera mainCamera;
 
+    public GameObject TurnSelector;
+    public GameObject InGameMenu;
+
     void Awake () {
         
     }
@@ -68,27 +71,35 @@ public class GameController : MonoBehaviour {
 
     void Update()
     {
-        if (GameManager.Instance.GameData.ToNextPlayer)
+        if (Input.GetKeyUp(KeyCode.Escape))
         {
-            GameManager.Instance.GameData.ToNextPlayer = false;
-            EnableNextPlayer();
-            
+            InGameMenu.SetActive(!InGameMenu.activeSelf);
         }
-        if (GameManager.Instance.GameData.SelectedMapIndex != 0 && playerCount == 1 && currentPlayer != null)
+        //If menu isn't active update the game
+        if (!InGameMenu.activeSelf)
         {
-            cameraMessage.text = "Game over! " + currentPlayer.tag + " (" + currentPlayer.name + ") wins! Returning to Menu.";
-            DisableEveryone();
-            gameOver = true;
-            Debug.Log(playerCount);
-        }
-        else if (GameManager.Instance.GameData.SelectedMapIndex != 0 && playerCount == 0 && currentPlayer == null)
-        {
-            cameraMessage.text = "Game over! DRAW!";
-            gameOver = true;
-        }
-        if (gameOver)
-        {
-            StartCoroutine(GameFinish());
+            if (GameManager.Instance.GameData.ToNextPlayer)
+            {
+                GameManager.Instance.GameData.ToNextPlayer = false;
+                EnableNextPlayer();
+
+            }
+            if (GameManager.Instance.GameData.SelectedMapIndex != 0 && playerCount == 1 && currentPlayer != null)
+            {
+                cameraMessage.text = "Game over! " + currentPlayer.tag + " (" + currentPlayer.name + ") wins! Returning to Menu.";
+                DisableEveryone();
+                gameOver = true;
+                Debug.Log(playerCount);
+            }
+            else if (GameManager.Instance.GameData.SelectedMapIndex != 0 && playerCount == 0 && currentPlayer == null)
+            {
+                cameraMessage.text = "Game over! DRAW!";
+                gameOver = true;
+            }
+            if (gameOver)
+            {
+                StartCoroutine(GameFinish());
+            }
         }
     }
 
@@ -143,6 +154,7 @@ public class GameController : MonoBehaviour {
             cameraMessage.GetComponent<ObjectEffect>().EnableFade = true;
         }
         cameraMessage.text = currentPlayer.tag + "'s turn - " + currentPlayer.name;
+        TurnSelector.GetComponent<TurnSelector>().ChangePlayer();
         yield return new WaitForSeconds(3f);
         cameraMessage.text = "";
     }

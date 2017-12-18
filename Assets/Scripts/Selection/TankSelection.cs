@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class TankSelection : MonoBehaviour {
 
-    public enum TankType { Archer, Boomer, Pirate, Scorch}
+    public enum TankType { Archer, Boomer, Pirate, Scorch, Gladiator, Trebuchet }
 
     //    public TankType[] tankList;
     public GameObject[] tanks;
@@ -26,7 +26,7 @@ public class TankSelection : MonoBehaviour {
         headerText.text = "Player " + (currentPlayerIndex + 1) + " is selecting...";
         headerText.GetComponent<ObjectEffect>().EnableFade = true;
         int children = selectedList.transform.childCount;
-        for (int i = 0; i < children; ++i)
+        for (int i = 0; i < children; i++)
         {
             if (i >= GameManager.Instance.NumberOfPlayers)
             {
@@ -44,6 +44,7 @@ public class TankSelection : MonoBehaviour {
     public void ConfirmSelectedTank()
     {
         selectedTankList[currentPlayerIndex] = (TankType)selectedTankIndex;
+        
         selectedList.transform.GetChild(currentPlayerIndex).GetChild(0).GetComponent<Image>().sprite = tankSprites[selectedTankIndex];
         if (currentPlayerIndex < GameManager.Instance.NumberOfPlayers - 1)
         {
@@ -95,7 +96,6 @@ public class TankSelection : MonoBehaviour {
             headerText.GetComponent<ObjectEffect>().EnableFade = false;
             headerText.text = "Player " + (currentPlayerIndex + 1) + " selected " + (TankType)index;
             selectedTankIndex = index;
-            
         }
     }
 

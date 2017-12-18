@@ -10,6 +10,8 @@ public class Tank : MonoBehaviour {
     [TextArea]
     public string Description;
 
+    public Sprite Sprite;
+
     private float currentHipPoint;
     public float CurrentHipPoint
     {

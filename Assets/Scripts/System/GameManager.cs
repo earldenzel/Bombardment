@@ -73,23 +73,25 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public GameData GameData { get; }
-    
+
+    private int numberOfPlayers;
+
     public int NumberOfPlayers {
         get
         {
-            return GameData.Players.Count;
+            return numberOfPlayers;
         }
-        //set
-        //{
-        //    if(GameData.SelectedMapIndex == 0)
-        //    {
-        //        numberOfPlayers = 1;
-        //    }
-        //    if(value >= MIN_PLAYER && value <= MAX_PLAYER)
-        //    {
-        //        numberOfPlayers = value;
-        //    }
-        //}
+        set
+        {
+            if (GameData.SelectedMapIndex == 0)
+            {
+                numberOfPlayers = 1;
+            }
+            if (value >= MIN_PLAYER && value <= MAX_PLAYER)
+            {
+                numberOfPlayers = value;
+            }
+        }
     }
     
 
