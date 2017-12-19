@@ -164,6 +164,13 @@ public class GameController : MonoBehaviour {
         TurnSelector.GetComponent<TurnSelector>().ChangePlayer();
     }
 
+
+    public void EndTurn()
+    {
+        GameManager.Instance.GameData.ToNextPlayer = true;
+    }
+
+
     public void ReducePlayers()
     {
         playerCount--;

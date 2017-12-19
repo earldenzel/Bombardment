@@ -50,26 +50,27 @@ public class CanvasController : MonoBehaviour {
         shotStrength.text = strength;
         //shows tank info
         tankInfo.text = currentPlayer.tag + "\n" + currentPlayer.name;
-        switch (currentPlayer.name)
-        {
-            case "Archer":
-                tankImage.GetComponent<Image>().sprite = spriteList[0];
-                break;
-            case "Boomer":
-                tankImage.GetComponent<Image>().sprite = spriteList[1];
-                break;
-            case "Pirate":
-                tankImage.GetComponent<Image>().sprite = spriteList[2];
-                break;
-            case "Scorch":
-                tankImage.GetComponent<Image>().sprite = spriteList[3];
-                break;
-            case "Gladiator":
-                tankImage.GetComponent<Image>().sprite = spriteList[4];
-                break;
-            default:
-                break;
-        }
+        tankImage.GetComponent<Image>().sprite = currentPlayer.GetComponent<Tank>().Sprite;
+        //switch (currentPlayer.name)
+        //{
+        //    case "Archer":
+        //        tankImage.GetComponent<Image>().sprite = spriteList[0];
+        //        break;
+        //    case "Boomer":
+        //        tankImage.GetComponent<Image>().sprite = spriteList[1];
+        //        break;
+        //    case "Pirate":
+        //        tankImage.GetComponent<Image>().sprite = spriteList[2];
+        //        break;
+        //    case "Scorch":
+        //        tankImage.GetComponent<Image>().sprite = spriteList[3];
+        //        break;
+        //    case "Gladiator":
+        //        tankImage.GetComponent<Image>().sprite = spriteList[4];
+        //        break;
+        //    default:
+        //        break;
+        //}
         tankImage.GetComponent<Image>().preserveAspect = true;
 
         //show tank hp and fuel

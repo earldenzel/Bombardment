@@ -69,7 +69,7 @@ public class GameManager : MonoBehaviour
 
     public enum TankType { Archer, Boomer, Pirate, Scorch }
 
-    public int MIN_PLAYER = 2;
+    public int MIN_PLAYER = 4;
     public int MAX_PLAYER = 4;
 
 
@@ -131,11 +131,6 @@ public class GameManager : MonoBehaviour
     void Start()
     {
        
-    }
-    
-    public void EndTurn()
-    {
-        GameManager.Instance.GameData.ToNextPlayer = true;
     }
 
     public void BackToMenu()

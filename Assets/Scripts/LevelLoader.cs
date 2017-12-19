@@ -6,6 +6,8 @@ public class LevelLoader : MonoBehaviour {
 
     private Transform[] spawningPoints;
 
+    private int loopCount;
+
     void Awake()
     {
         int numOfPoints = this.transform.childCount;
@@ -15,30 +17,26 @@ public class LevelLoader : MonoBehaviour {
             spawningPoints[i] = this.transform.GetChild(i);
         }
 
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        //Check if current scene has any player
-        if(players.Length > 0)
+        //Clear player list;
+        GameManager.Instance.ResetPlayers();
+
+        /** Testing Only - Remove/Comment after done **/
+
+        //for (int i = 0; i < GameManager.Instance.MIN_PLAYER; i++)
+        //{
+        //    GameManager.Instance.GameData.SelectedTankClass.Add(Tank.Class.Archer);
+        //}
+
+        /****/
+
+        for (int i = 0; i < GameManager.Instance.NumberOfPlayers; i++)
         {
-            GameManager.Instance.ResetPlayers();
-            for(int i = 0; i < players.Length; i++)
-            {
-                players[i].tag = "Player" + (i + 1);
-                GameManager.Instance.AddPlayer(players[i]);
-            }
-        }
-        else
-        {
-            //Clear player list;
-            GameManager.Instance.ResetPlayers();
-            for (int i = 0; i < GameManager.Instance.NumberOfPlayers; i++)
-            {
-                Tank.Class tankClass = GameManager.Instance.GameData.SelectedTankClass[i];
-                //Instantiate player based on prefab
-                GameObject player = Instantiate(GameManager.Instance.GameData.TankPrefab[(int)tankClass], getValidPoint(), Quaternion.identity);
-                player.tag = "Player" + (i + 1);
-                //Add new player object to Players
-                GameManager.Instance.GameData.Players.Add(player);
-            }
+            Tank.Class tankClass = GameManager.Instance.GameData.SelectedTankClass[i];
+            //Instantiate player based on prefab
+            GameObject player = Instantiate(GameManager.Instance.GameData.TankPrefab[(int)tankClass], getValidPoint(), Quaternion.identity);
+            player.tag = "Player" + (i + 1);
+            //Add new player object to Players
+            GameManager.Instance.GameData.Players.Add(player);
         }
     }
 
@@ -46,11 +44,18 @@ public class LevelLoader : MonoBehaviour {
     {
         int pointIndex = Random.Range(0, spawningPoints.Length);
         Vector3 point = spawningPoints[pointIndex].position;
-        spawningPoints[pointIndex].position.Set(point.x, point.y, -1);
-        if (spawningPoints[pointIndex].position.z != 0)
+        //if this point have not been choose return this point
+        if (spawningPoints[pointIndex].position.z == 0)
         {
-            getValidPoint();
+            //set z position so that this point will not be select again
+            spawningPoints[pointIndex].position = new Vector3(point.x, point.y, -1);
+            return point;
         }
-        return point;
+        loopCount++;
+        if (loopCount >= 10)
+        {
+            return point;
+        }
+        return getValidPoint();
     }
 }

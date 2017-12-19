@@ -66,12 +66,12 @@ public class EnemyController : MonoBehaviour
     public void Damage(int damage, GameObject target)
     {
         Debug.Log(this.gameObject.name + " received " + damage + " damage.");
-        if (damageVisualizer!=null)
-        {
-            GameObject go = Instantiate(damageVisualizer, target.transform.position, Quaternion.identity);
-            go.GetComponent<Text>().text = damage.ToString();
-            go.transform.parent = GameObject.FindGameObjectWithTag("Environment").transform.GetChild(0);
-        }
+        //if (damageVisualizer!=null)
+        //{
+        //    GameObject go = Instantiate(damageVisualizer, target.transform.position, Quaternion.identity);
+        //    go.transform.GetChild(0).GetComponent<Text>().text = damage.ToString();
+        //    //go.transform.parent = GameObject.FindGameObjectWithTag("Environment").transform.GetChild(0);
+        //}
         HP.value -= damage;
     }
 }
