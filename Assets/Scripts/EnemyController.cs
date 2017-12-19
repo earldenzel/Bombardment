@@ -7,11 +7,15 @@ public class EnemyController : MonoBehaviour
 {
     public Slider HP;
     public bool suicide;
+    public GameObject damageVisualizer;
     private Text cameraMessage;
+
+    private Transform canvas;
 
     void Start()
     {
         cameraMessage = GameObject.FindGameObjectWithTag("Environment").transform.GetChild(0).GetChild(0).GetComponent<Text>();
+        canvas = GameObject.FindGameObjectWithTag("Environment").transform.GetChild(0);
     }
 
     void FixedUpdate()
@@ -50,7 +54,7 @@ public class EnemyController : MonoBehaviour
                 GetComponent<FuelController>().UseFuel(2f);
             }
 
-            Damage(collision.gameObject.GetComponent<ProjectileController>().baseDamage);
+            Damage(collision.gameObject.GetComponent<ProjectileController>().baseDamage, collision.gameObject);
             if (collision.gameObject.GetComponent<ProjectileController>().attacker == this.gameObject)
             {
                 Debug.Log(this.gameObject.name + " attacked itself");
@@ -59,9 +63,15 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    public void Damage(int damage)
+    public void Damage(int damage, GameObject target)
     {
         Debug.Log(this.gameObject.name + " received " + damage + " damage.");
+        if (damageVisualizer!=null)
+        {
+            GameObject go = Instantiate(damageVisualizer, target.transform.position, Quaternion.identity);
+            go.GetComponent<Text>().text = damage.ToString();
+            go.transform.parent = GameObject.FindGameObjectWithTag("Environment").transform.GetChild(0);
+        }
         HP.value -= damage;
     }
 }

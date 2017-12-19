@@ -12,9 +12,4 @@ public class GridController : MonoBehaviour {
         tileMap = transform.GetChild(0).gameObject;
         tileMap.SetActive(true);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }

@@ -57,13 +57,13 @@ public class GameController : MonoBehaviour {
             players[i] = players[randomIndex];
             players[randomIndex] = temp;
         }
-        //show turn list
-        string message = players.Count + " players ready to fight. Turn list: ";
-        foreach (GameObject player in players)
-        {
-            message += player.name + " ";
-        }
-        Debug.Log(message);
+        ////show turn list
+        //string message = players.Count + " players ready to fight. Turn list: ";
+        //foreach (GameObject player in players)
+        //{
+        //    message += player.name + " ";
+        //}
+        //Debug.Log(message);
         playerCount = players.Count + enemies.Length;
         totalTurnsDone = -1;
         EnableNextPlayer();
@@ -131,15 +131,15 @@ public class GameController : MonoBehaviour {
         {
             currentPlayer.GetComponent<FuelController>().ReplenishFuel();
             UICanvas.UpdateUI(currentPlayer);
-            mainCamera.GetComponent<CameraController>().cameraConfig.initialFocus = currentPlayer;
-            mainCamera.GetComponent<CameraController>().ObjectTracer.Traget = currentPlayer;
+            mainCamera.GetComponent<CameraController>().SetFocus(currentPlayer);
             StartCoroutine(announcePlayerTurn(currentPlayer));
             currentPlayer.GetComponent<OrientationChecker>().onTurn = true;
             currentPlayer.GetComponent<PlayerController>().enabled = true;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = true;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().InstantiateShot();
-            currentPlayer.GetComponent<Tank>().PowerUpRepository.OnTurnExcute();
-            Debug.Log(currentPlayer.name + "'s turn.");
+       //     currentPlayer.GetComponent<Tank>().PowerUpRepository.OnTurnExcute();
+            changeTurn();
+            //Debug.Log(currentPlayer.name + "'s turn.");
         }
         else
         {
@@ -149,14 +149,19 @@ public class GameController : MonoBehaviour {
 
     public IEnumerator announcePlayerTurn(GameObject currentPlayer)
     {
-        if (cameraMessage.GetComponent<ObjectEffect>())
-        {
-            cameraMessage.GetComponent<ObjectEffect>().EnableFade = true;
-        }
-        cameraMessage.text = currentPlayer.tag + "'s turn - " + currentPlayer.name;
-        TurnSelector.GetComponent<TurnSelector>().ChangePlayer();
+        //if (cameraMessage.GetComponent<ObjectEffect>())
+        //{
+        //    cameraMessage.GetComponent<ObjectEffect>().EnableFade = true;
+        //}
+        //cameraMessage.text = currentPlayer.tag + "'s turn - " + currentPlayer.name;
+     //   TurnSelector.GetComponent<TurnSelector>().ChangePlayer();
         yield return new WaitForSeconds(3f);
-        cameraMessage.text = "";
+        //cameraMessage.text = "";
+    }
+
+    private void changeTurn()
+    {
+        TurnSelector.GetComponent<TurnSelector>().ChangePlayer();
     }
 
     public void ReducePlayers()

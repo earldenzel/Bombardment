@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Tank : MonoBehaviour {
 
+    public enum Class { Archer, Boomer, Pirate, Scorch, Gladiator, Trebuchet }
+
     private PowerUpRepository powerUps;
 //    public string TankName;
 

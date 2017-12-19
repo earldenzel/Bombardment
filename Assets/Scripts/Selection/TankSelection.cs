@@ -7,13 +7,11 @@ using UnityEngine.SceneManagement;
 
 public class TankSelection : MonoBehaviour {
 
-    public enum TankType { Archer, Boomer, Pirate, Scorch, Gladiator, Trebuchet }
-
     //    public TankType[] tankList;
     public GameObject[] tanks;
     public Sprite[] tankSprites;
     public GridLayoutGroup selectedList;
-    private TankType[] selectedTankList;
+    private Tank.Class[] selectedTankList;
     private int selectedTankIndex = 0;
     private int currentPlayerIndex = 0;
     private int totalPlayer;
@@ -22,7 +20,7 @@ public class TankSelection : MonoBehaviour {
     public Text headerText;
     
 	void Start () {
-        selectedTankList = new TankType[GameManager.Instance.NumberOfPlayers];
+        selectedTankList = new Tank.Class[GameManager.Instance.NumberOfPlayers];
         headerText.text = "Player " + (currentPlayerIndex + 1) + " is selecting...";
         headerText.GetComponent<ObjectEffect>().EnableFade = true;
         int children = selectedList.transform.childCount;
@@ -34,6 +32,8 @@ public class TankSelection : MonoBehaviour {
             }
         }
         updateSelectionUI();
+        //Set Prefab
+        GameManager.Instance.GameData.TankPrefab = tanks;
     }
 	
 	// Update is called once per frame
@@ -43,7 +43,7 @@ public class TankSelection : MonoBehaviour {
     
     public void ConfirmSelectedTank()
     {
-        selectedTankList[currentPlayerIndex] = (TankType)selectedTankIndex;
+        selectedTankList[currentPlayerIndex] = (Tank.Class)selectedTankIndex;
         
         selectedList.transform.GetChild(currentPlayerIndex).GetChild(0).GetComponent<Image>().sprite = tankSprites[selectedTankIndex];
         if (currentPlayerIndex < GameManager.Instance.NumberOfPlayers - 1)
@@ -64,9 +64,8 @@ public class TankSelection : MonoBehaviour {
     {
         for(int i = 0; i < selectedTankList.Length; i++)
         {
-            GameObject go = tanks[(int)selectedTankList[i]];
-            go.tag = "Player" + (i + 1);
-            GameManager.Instance.AddPlayer(go);
+            //Add Selected Tank Class
+            GameManager.Instance.GameData.SelectedTankClass.Add(selectedTankList[i]);
         }
     }
 
@@ -90,11 +89,11 @@ public class TankSelection : MonoBehaviour {
     public void SetSelectedTank(int index)
     {
         updateSelectionUI();
-        if (index >= 0 && index < Enum.GetNames(typeof(TankType)).Length)
+        if (index >= 0 && index < Enum.GetNames(typeof(Tank.Class)).Length)
         {
             headerText.GetComponent<ObjectEffect>().SetAlpha(1);
             headerText.GetComponent<ObjectEffect>().EnableFade = false;
-            headerText.text = "Player " + (currentPlayerIndex + 1) + " selected " + (TankType)index;
+            headerText.text = "Player " + (currentPlayerIndex + 1) + " selected " + (Tank.Class)index;
             selectedTankIndex = index;
         }
     }

@@ -79,28 +79,28 @@ public class CanvasController : MonoBehaviour {
         fuelSlider.maxValue = currentPlayer.GetComponent<Tank>().MaxFuelLevel;
         fuelSlider.value = currentPlayer.GetComponent<Tank>().CurrentFuelLevel;
 
-        PowerUp[] pus = currentPlayer.GetComponent<Tank>().PowerUpRepository.PowerUps;
-        int counter = 0;
+        //PowerUp[] pus = currentPlayer.GetComponent<Tank>().PowerUpRepository.PowerUps;
+        //int counter = 0;
 
-        //remove powerUps;
-        foreach (Transform child in powerUps.transform)
-        {
-            if(pus.Length > counter)
-            {
-                if (pus[counter].Mode != PowerUp.ApplyMode.NextTurn)
-                {
-                    child.gameObject.SetActive(false);
-                    child.gameObject.GetComponent<Image>().sprite = null;
-                }
-                else
-                {
-                    child.gameObject.SetActive(true);
-                    child.gameObject.GetComponent<Image>().sprite = powerUpSprites[(int)pus[counter].Type];
-                }
+        ////remove powerUps;
+        //foreach (Transform child in powerUps.transform)
+        //{
+        //    if(pus.Length > counter)
+        //    {
+        //        if (pus[counter].Mode != PowerUp.ApplyMode.NextTurn)
+        //        {
+        //            child.gameObject.SetActive(false);
+        //            child.gameObject.GetComponent<Image>().sprite = null;
+        //        }
+        //        else
+        //        {
+        //            child.gameObject.SetActive(true);
+        //            child.gameObject.GetComponent<Image>().sprite = powerUpSprites[(int)pus[counter].Type];
+        //        }
                 
-            }
-            counter++;
-        }
+        //    }
+        //    counter++;
+        //}
     }
     public void UpdatePower(float currentPower)
     {

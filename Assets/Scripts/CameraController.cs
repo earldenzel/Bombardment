@@ -8,7 +8,6 @@ public class CameraConfig
 {
     public enum CameraMode { Focus, Free };
     public CameraMode State = CameraMode.Focus;
-    public GameObject initialFocus;
     public float MaxZoomingSize = 10;
     public float MinZoomingSize = 5;
     public float MouseWheelZoomingSpeed = 5;
@@ -52,10 +51,14 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         offset = new Vector3(0, 0, transform.position.z);
-        if (cameraConfig.initialFocus != null)
+    }
+
+    public void SetFocus(GameObject go)
+    {
+        if (go != null)
         {
-            ObjectTracer.Traget = cameraConfig.initialFocus;
-            player = cameraConfig.initialFocus;
+            ObjectTracer.Traget = go;
+            player = go;
         }
     }
 

@@ -8,6 +8,8 @@ public class GameData
 {
     public int SelectedMapIndex = 0;
 
+    public List<Tank.Class> SelectedTankClass;
+    public GameObject[] TankPrefab;
     private int activePlayerIndex;
     public int ActivePlayerIndex
     {
@@ -53,6 +55,7 @@ public class GameData
     public GameData()
     {
         Players = new List<GameObject>();
+        SelectedTankClass = new List<Tank.Class>();
         CameraSettings = new CameraSetting();
         CameraSettings.ViewPort = new Rect(0, 0, 16, 8);
         ActivePlayerIndex = 0;
