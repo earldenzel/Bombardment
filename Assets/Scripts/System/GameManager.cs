@@ -108,9 +108,9 @@ public class GameManager : MonoBehaviour
         GameData.Players.Add(player);
     }
 
-    public void RemovePlayer(GameObject player)
+    public void RemoveActivePlayer()
     {
-        GameData.Players.Remove(player);
+        GameData.Players.RemoveAt(GameData.ActivePlayerIndex);
         numberOfPlayers--;
     }
 

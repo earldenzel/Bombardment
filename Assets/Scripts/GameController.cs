@@ -16,8 +16,10 @@ public class GameController : MonoBehaviour {
     public bool gameOver;
     public Camera mainCamera;
 
+    //UI panels
     public GameObject TurnSelector;
-    public GameObject InGameMenu;
+    public GameObject InGameMenuPanel;
+    public GameObject GameResultPanel;
 
     void Awake () {
         
@@ -72,12 +74,18 @@ public class GameController : MonoBehaviour {
 
     void Update()
     {
+        if (gameOver)
+        {
+          //  showGameResult();
+          //  return;
+            StartCoroutine(GameFinish());
+        }
         if (Input.GetKeyUp(KeyCode.Escape))
         {
-            InGameMenu.SetActive(!InGameMenu.activeSelf);
+            InGameMenuPanel.SetActive(!InGameMenuPanel.activeSelf);
         }
         //If menu isn't active update the game
-        if (!InGameMenu.activeSelf)
+        if (!InGameMenuPanel.activeSelf)
         {
             if (GameManager.Instance.GameData.ToNextPlayer)
             {
@@ -87,26 +95,42 @@ public class GameController : MonoBehaviour {
             }
             if (GameManager.Instance.GameData.SelectedMapIndex != 0 && GameManager.Instance.NumberOfPlayers == 1 && currentPlayer != null)
             {
-                cameraMessage.text = "Game over! " + currentPlayer.tag + " (" + currentPlayer.name + ") wins! Returning to Menu.";
+             //   cameraMessage.text = "Game over! " + currentPlayer.tag + " (" + currentPlayer.name + ") wins! Returning to Menu.";
                 DisableEveryone();
                 gameOver = true;
-                Debug.Log(playerCount);
+            //    Debug.Log(playerCount);
             }
             else if (GameManager.Instance.GameData.SelectedMapIndex != 0 && playerCount == 0 && currentPlayer == null)
             {
                 cameraMessage.text = "Game over! DRAW!";
                 gameOver = true;
             }
-            if (gameOver)
-            {
-                StartCoroutine(GameFinish());
-            }
+        }
+    }
+
+    private void showGameResult()
+    {
+        if (!GameResultPanel.activeSelf)
+        {
+            GameResultPanel.SetActive(true);
+            Transform header = GameResultPanel.transform.GetChild(0).GetChild(0);
+            Transform content = GameResultPanel.transform.GetChild(0).GetChild(1);
+            Text playerName = header.GetChild(0).GetComponent<Text>();
+            Image tankSprite = content.GetChild(0).GetComponent<Image>();
+            Text tankName = content.GetChild(0).GetChild(0).GetComponent<Text>();
+            Text description = content.GetChild(1).GetComponent<Text>();
+
+            playerName.text += currentPlayer.tag;
+            tankSprite.sprite = currentPlayer.GetComponent<Tank>().Sprite;
+            tankName.text = currentPlayer.GetComponent<Tank>().name;
+            description.text = "Total tank destroyed: ???";
         }
     }
 
     IEnumerator GameFinish()
     {
-        yield return new WaitForSeconds(3.0f);
+        showGameResult();
+        yield return new WaitForSeconds(5.0f);
         GameManager.Instance.ResetPlayers();
         SceneManager.LoadScene("Menu");
     }

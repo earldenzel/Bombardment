@@ -24,14 +24,16 @@ public class TurnSelector : MonoBehaviour {
         for (int i = 0; i < GameManager.Instance.MAX_PLAYER; i++)
         {
             Transform trans = this.transform.GetChild(i);
-            if (i >= GameManager.Instance.NumberOfPlayers)
+            if (i < GameManager.Instance.NumberOfPlayers)
             {
-                trans.gameObject.SetActive(false);
+                trans.gameObject.SetActive(true);
+                trans.GetComponent<Image>().sprite = GameManager.Instance.GameData.Players[i].GetComponent<Tank>().Sprite;
             }
             else
             {
-                trans.GetComponent<Image>().sprite = GameManager.Instance.GameData.Players[i].GetComponent<Tank>().Sprite;
+                trans.gameObject.SetActive(false);
             }
+            
         }
     }
 
