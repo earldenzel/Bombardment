@@ -74,8 +74,8 @@ public class CanvasController : MonoBehaviour {
         tankImage.GetComponent<Image>().preserveAspect = true;
 
         //show tank hp and fuel
-        hPSlider.maxValue = currentPlayer.GetComponent<EnemyController>().HP.maxValue;
-        hPSlider.value = currentPlayer.GetComponent<EnemyController>().HP.value;
+        hPSlider.maxValue = currentPlayer.GetComponent<Tank>().MaxHitPoint;
+        hPSlider.value = currentPlayer.GetComponent<Tank>().CurrentHipPoint;
 
         fuelSlider.maxValue = currentPlayer.GetComponent<Tank>().MaxFuelLevel;
         fuelSlider.value = currentPlayer.GetComponent<Tank>().CurrentFuelLevel;

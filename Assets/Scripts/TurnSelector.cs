@@ -11,11 +11,20 @@ public class TurnSelector : MonoBehaviour {
 
     void Start()
     {
+        ResetUI();
+    }
+	// Update is called once per frame
+	void Update () {
+		
+	}
+
+    public void ResetUI()
+    {
         players = GameManager.Instance.GameData.Players;
         for (int i = 0; i < GameManager.Instance.MAX_PLAYER; i++)
         {
             Transform trans = this.transform.GetChild(i);
-            if(i >= GameManager.Instance.NumberOfPlayers)
+            if (i >= GameManager.Instance.NumberOfPlayers)
             {
                 trans.gameObject.SetActive(false);
             }
@@ -25,14 +34,11 @@ public class TurnSelector : MonoBehaviour {
             }
         }
     }
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
-    public void ChangePlayer()
+    public void UpdateUI()
     {
-        for(int i = 0; i < GameManager.Instance.NumberOfPlayers; i++)
+        ResetUI();
+        for (int i = 0; i < GameManager.Instance.NumberOfPlayers; i++)
         {
             Image image = this.transform.GetChild(i).GetComponent<Image>();
             if (i == GameManager.Instance.GameData.ActivePlayerIndex)

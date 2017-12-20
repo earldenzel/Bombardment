@@ -108,6 +108,12 @@ public class GameManager : MonoBehaviour
         GameData.Players.Add(player);
     }
 
+    public void RemovePlayer(GameObject player)
+    {
+        GameData.Players.Remove(player);
+        numberOfPlayers--;
+    }
+
     public void ResetPlayers()
     {
         GameData.Players.Clear();

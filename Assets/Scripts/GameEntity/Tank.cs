@@ -35,7 +35,7 @@ public class Tank : MonoBehaviour {
             {
                 currentHipPoint = value;
             }
-            Debug.Log("Current Hit Point : " + currentHipPoint);
+        //    Debug.Log("Current Hit Point : " + currentHipPoint);
         }
     }
     public float MaxHitPoint = 100;
@@ -78,6 +78,7 @@ public class Tank : MonoBehaviour {
 
     void Start () {
         //    TankName = this.gameObject.name;
+        currentHipPoint = MaxHitPoint;
         currentFuelLevel = MaxFuelLevel;
 
     }

@@ -12,15 +12,19 @@ public class EnemyController : MonoBehaviour
 
     private Transform canvas;
 
+    private Tank tank;
+
     void Start()
     {
         cameraMessage = GameObject.FindGameObjectWithTag("Environment").transform.GetChild(0).GetChild(0).GetComponent<Text>();
         canvas = GameObject.FindGameObjectWithTag("Environment").transform.GetChild(0);
+        tank = GetComponent<Tank>();
+
     }
 
     void FixedUpdate()
     {
-        if (HP.value == 0)
+        if (tank.CurrentHipPoint == 0)
         {
             if (suicide)
             {
@@ -32,7 +36,8 @@ public class EnemyController : MonoBehaviour
             //{
             //    GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
             //}
-            GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
+            GameManager.Instance.GameData.Players.Remove(this.gameObject);
+            //GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
             //after this is where you instantiate the explosion
         }
         suicide = false;
@@ -72,6 +77,7 @@ public class EnemyController : MonoBehaviour
         //    go.transform.GetChild(0).GetComponent<Text>().text = damage.ToString();
         //    //go.transform.parent = GameObject.FindGameObjectWithTag("Environment").transform.GetChild(0);
         //}
-        HP.value -= damage;
+        tank.CurrentHipPoint -= damage;
+        HP.value = tank.CurrentHipPoint;
     }
 }

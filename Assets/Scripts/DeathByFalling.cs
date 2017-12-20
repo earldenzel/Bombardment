@@ -26,8 +26,10 @@ public class DeathByFalling : MonoBehaviour {
                 //    GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
                 //    GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
                 //}
-                GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
+                // GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
+                
                 GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
+                GameManager.Instance.RemovePlayer(this.gameObject);
                 Destroy(this.gameObject);
             }
         }

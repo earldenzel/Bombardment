@@ -67,6 +67,7 @@ public class GameController : MonoBehaviour {
         playerCount = players.Count + enemies.Length;
         totalTurnsDone = -1;
         EnableNextPlayer();
+        TurnSelector.GetComponent<TurnSelector>().ResetUI();
     }
 
     void Update()
@@ -84,7 +85,7 @@ public class GameController : MonoBehaviour {
                 EnableNextPlayer();
 
             }
-            if (GameManager.Instance.GameData.SelectedMapIndex != 0 && playerCount == 1 && currentPlayer != null)
+            if (GameManager.Instance.GameData.SelectedMapIndex != 0 && GameManager.Instance.NumberOfPlayers == 1 && currentPlayer != null)
             {
                 cameraMessage.text = "Game over! " + currentPlayer.tag + " (" + currentPlayer.name + ") wins! Returning to Menu.";
                 DisableEveryone();
@@ -112,6 +113,7 @@ public class GameController : MonoBehaviour {
 
     public void EnableNextPlayer()
     {
+        
         if (gameOver)
         {
             return;
@@ -127,8 +129,10 @@ public class GameController : MonoBehaviour {
         DisableEveryone();
         currentPlayer = players[totalTurnsDone % players.Count];
         GameManager.Instance.GameData.ActivePlayerIndex = totalTurnsDone % players.Count;
+        
         if (currentPlayer != null)
         {
+            TurnSelector.GetComponent<TurnSelector>().UpdateUI();
             currentPlayer.GetComponent<FuelController>().ReplenishFuel();
             UICanvas.UpdateUI(currentPlayer);
             mainCamera.GetComponent<CameraController>().SetFocus(currentPlayer);
@@ -137,8 +141,9 @@ public class GameController : MonoBehaviour {
             currentPlayer.GetComponent<PlayerController>().enabled = true;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = true;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().InstantiateShot();
-       //     currentPlayer.GetComponent<Tank>().PowerUpRepository.OnTurnExcute();
-            changeTurn();
+            //     currentPlayer.GetComponent<Tank>().PowerUpRepository.OnTurnExcute();
+            //Change UI for turn
+            
             //Debug.Log(currentPlayer.name + "'s turn.");
         }
         else
@@ -158,12 +163,6 @@ public class GameController : MonoBehaviour {
         yield return new WaitForSeconds(3f);
         //cameraMessage.text = "";
     }
-
-    private void changeTurn()
-    {
-        TurnSelector.GetComponent<TurnSelector>().ChangePlayer();
-    }
-
 
     public void EndTurn()
     {
