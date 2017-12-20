@@ -32,10 +32,11 @@ public class ChangeFocusByContact : MonoBehaviour
         if (other.gameObject.tag == "Crate")
         {
             other.gameObject.GetComponent<Crate>().HitPoint -= 1;
-            Debug.Log(other.gameObject.GetComponent<Crate>().HitPoint);
+          //  Debug.Log(other.gameObject.GetComponent<Crate>().HitPoint);
             if(other.gameObject.GetComponent<Crate>().HitPoint == 0)
             {
                 other.gameObject.GetComponent<Crate>().SpawnPowerUps();
+                GameManager.Instance.GameData.NumberOfCratesOnMap--;
                 Destroy(other.gameObject);
                 return;
             }

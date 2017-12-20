@@ -146,6 +146,7 @@ public class GameController : MonoBehaviour {
         //Check if the cycle just Enter;
         if (totalTurnsDone % players.Count == 0)
         {
+            Debug.Log("Turn Enter");
             this.GetComponentInParent<StageManager02>().OnExit();
             this.GetComponentInParent<StageManager02>().OnEnter();
         }
@@ -165,7 +166,7 @@ public class GameController : MonoBehaviour {
             currentPlayer.GetComponent<PlayerController>().enabled = true;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = true;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().InstantiateShot();
-            //     currentPlayer.GetComponent<Tank>().PowerUpRepository.OnTurnExcute();
+            currentPlayer.GetComponent<Tank>().PowerUpRepository.OnTurnEnter();
             //Change UI for turn
             
             //Debug.Log(currentPlayer.name + "'s turn.");

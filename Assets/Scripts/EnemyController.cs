@@ -59,7 +59,7 @@ public class EnemyController : MonoBehaviour
                 GetComponent<FuelController>().UseFuel(2f);
             }
 
-            Damage(collision.gameObject.GetComponent<ProjectileController>().baseDamage, collision.gameObject);
+            Damage((int)(collision.gameObject.GetComponent<ProjectileController>().baseDamage * collision.gameObject.GetComponent<ProjectileController>().attacker.GetComponent<Tank>().DamageModifier), collision.gameObject);
             if (collision.gameObject.GetComponent<ProjectileController>().attacker == this.gameObject)
             {
                 Debug.Log(this.gameObject.name + " attacked itself");

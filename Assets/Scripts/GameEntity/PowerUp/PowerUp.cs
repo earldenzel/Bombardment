@@ -25,6 +25,7 @@ public class PowerUp : MonoBehaviour{
             {
                 case PowerUpType.IncreaseDamage:
                     applyTo.DamageModifier = Value;
+                    Debug.Log("New damage modifier: " + applyTo.DamageModifier);
                     break;
                 case PowerUpType.Fuel:
                     applyTo.CurrentFuelLevel += Value;

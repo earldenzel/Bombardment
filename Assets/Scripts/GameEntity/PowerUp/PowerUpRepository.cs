@@ -84,6 +84,14 @@ public class PowerUpRepository{
 
     public void RemovePowerUp(PowerUp.PowerUpType type)
     {
+        if (type == PowerUp.PowerUpType.IncreaseDamage)
+        {
+            if (tank.DamageModifier > 1)
+            {
+                tank.DamageModifier -= 1;
+            }
+
+        }
         powerUps.Remove(type);
       //  Debug.Log("Power Up: " + type + " has been removed.");
     }

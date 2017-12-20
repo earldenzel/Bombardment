@@ -5,12 +5,16 @@ using UnityEngine.UI;
 
 public class CrateManager : MonoBehaviour {
     
-    public static int MaxCratePerTurn = 5;
-    public static int MinCratePerTurn = 2;
+    public static int MaxCratePerTurn = 2;
+    public static int MinCratePerTurn = 1;
 
     public bool spawn;
 
     public GameObject Crate;
+    public int MaxCratesPerGame = 5;
+    
+
+    public Transform[] spawningPoints;
   //  public GameObject[] crates;
 
   //  public Sprite[] PowerUpSprites;
@@ -19,35 +23,39 @@ public class CrateManager : MonoBehaviour {
     private float maxSpawnX;
 
 	// Use this for initialization
-	void Start () {
-        minSpawnX = GameManager.Instance.GameData.CameraSettings.ViewPort.x;
-        maxSpawnX = GameManager.Instance.GameData.CameraSettings.ViewPort.x + GameManager.Instance.GameData.CameraSettings.ViewPort.width;
+	void Awake () {
+        //    minSpawnX = GameManager.Instance.GameData.CameraSettings.ViewPort.x;
+        //   maxSpawnX = GameManager.Instance.GameData.CameraSettings.ViewPort.x + GameManager.Instance.GameData.CameraSettings.ViewPort.width;
+
+        int numOfPoints = this.transform.GetChild(0).childCount;
+        spawningPoints = new Transform[numOfPoints];
+        for (int i = 0; i < numOfPoints; i++)
+        {
+            spawningPoints[i] = this.transform.GetChild(0).GetChild(i);
+        }
     }
 
     public void SpawnCrates()
     {
-        if (spawn)
+        if (spawn && GameManager.Instance.GameData.NumberOfCratesOnMap < MaxCratesPerGame)
         {
             int numOfCrate = Random.Range(MinCratePerTurn, MaxCratePerTurn);
 
             for (int i = 0; i < numOfCrate; i++)
             {
-                Instantiate(Crate, new Vector3(Random.Range(minSpawnX, maxSpawnX), 10, 0), Quaternion.identity);
+                Instantiate(Crate, getPoint(), Quaternion.identity);
+                GameManager.Instance.GameData.NumberOfCratesOnMap++;
             }
         }
         
     }
-/*
-    public void SpawnCrates()
-    {
-        int numOfCrate = Random.Range(MinCratePerTurn, MaxCratePerTurn);
 
-        for (int i = 0; i < numOfCrate; i++)
-        {
-            Instantiate(crates[Random.Range(0, crates.Length)], new Vector3(Random.Range(minSpawnX, maxSpawnX), 10, 0), Quaternion.identity);
-        }
+    private Vector3 getPoint()
+    {
+        int pointIndex = Random.Range(0, spawningPoints.Length);
+        Vector3 point = spawningPoints[pointIndex].position;
+        return point;
     }
-*/
 
 
 }

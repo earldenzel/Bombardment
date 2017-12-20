@@ -8,6 +8,8 @@ public class Crate : MonoBehaviour {
 
     public int MaxHitPoint = 3;
 
+    private bool landed;
+
     private int hitPoint;
     public int HitPoint
     {
@@ -42,7 +44,8 @@ public class Crate : MonoBehaviour {
         HitPoint = MaxHitPoint;
         hpSlider.maxValue = HitPoint;
         hpSlider.value = hpSlider.maxValue;
-	}
+        landed = false;
+    }
 	
 	// Update is called once per frame
 
@@ -78,5 +81,15 @@ public class Crate : MonoBehaviour {
         {
             hpSlider.transform.GetChild(1).GetChild(0).GetComponent<Image>().color = Color.green;
         }
+    }
+
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (!landed)
+        {
+            this.transform.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 3, ForceMode2D.Impulse);
+            landed = true;
+        }
+        
     }
 }

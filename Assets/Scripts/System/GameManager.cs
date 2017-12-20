@@ -49,6 +49,9 @@ public class GameData
         }
     }
     public bool ToNextPlayer;
+
+    public int NumberOfCratesOnMap;
+
     public List<GameObject> Players { get; }
     public CameraSetting CameraSettings { get; }
 
@@ -59,6 +62,7 @@ public class GameData
         CameraSettings = new CameraSetting();
         CameraSettings.ViewPort = new Rect(0, 0, 16, 8);
         ActivePlayerIndex = 0;
+        NumberOfCratesOnMap = 0;
     }
 }
 

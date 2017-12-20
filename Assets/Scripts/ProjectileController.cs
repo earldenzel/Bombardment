@@ -17,10 +17,13 @@ public class ProjectileController : MonoBehaviour {
     public int baseDamage;
     
     //public GameObject projectileExplosion;
-
+    void Awake()
+    {
+        rb2d = GetComponent<Rigidbody2D>();
+    }
     // Use this for initialization
     void Start () {
-        rb2d = GetComponent<Rigidbody2D>();
+        
         wind = GameObject.FindGameObjectWithTag("Environment");
         currentMap = GameObject.FindGameObjectWithTag("Terrain").GetComponent<Tilemap>();
     }
@@ -36,10 +39,10 @@ public class ProjectileController : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Vector3 spawnOriginate = transform.position;
         if (!cannon.onShot)
         {
-            Vector3Int gridCenterOfImpact = currentMap.WorldToCell(spawnOriginate);
+            Vector2 finalDirection = rb2d.velocity.normalized;
+            Vector3Int gridCenterOfImpact = currentMap.WorldToCell(transform.position);
             for (int x = -collateralDamageSize; x <= collateralDamageSize; x++)
             {
                 for (int y = -collateralDamageSize; y <= collateralDamageSize; y++)

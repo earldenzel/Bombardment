@@ -10,7 +10,7 @@ public class StageManager02 : MonoBehaviour, IStage {
     public bool FirstEnter { get; private set; }
 
     // Use this for initialization
-    void Start () {
+    void Awake () {
         FirstEnter = true;
 	}
 	
@@ -24,6 +24,7 @@ public class StageManager02 : MonoBehaviour, IStage {
         if (FirstEnter)
         {
             FirstEnter = false;
+            return;
         }
         else
         {
