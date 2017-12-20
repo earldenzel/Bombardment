@@ -4,14 +4,23 @@ using UnityEngine;
 
 public class DeathByFalling : MonoBehaviour {
 
+    private int dbf;
+
 	// Use this for initialization
 	void Start () {
-		
+		if(GameManager.Instance.GameData.SelectedMapIndex == 2)
+        {
+            dbf = -50;
+        }
+        else
+        {
+            dbf = -10;
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (transform.position.y < -10)
+        if (transform.position.y < dbf)
         {
             if (gameObject.GetComponent<ChangeFocusByContact>() != null)
             {
