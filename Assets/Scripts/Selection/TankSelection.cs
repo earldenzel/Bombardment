@@ -11,6 +11,7 @@ public class TankSelection : MonoBehaviour {
     public GameObject[] tanks;
     public Sprite[] tankSprites;
     public GridLayoutGroup selectedList;
+    public GridLayoutGroup tankList;
     private Tank.Class[] selectedTankList;
     private int selectedTankIndex = 0;
     private int currentPlayerIndex = 0;
@@ -18,6 +19,7 @@ public class TankSelection : MonoBehaviour {
     // Use this for initialization
 
     public Text headerText;
+    public Text selectionHeaderText;
     
 	void Start () {
         selectedTankList = new Tank.Class[GameManager.Instance.NumberOfPlayers];
@@ -36,8 +38,22 @@ public class TankSelection : MonoBehaviour {
         GameManager.Instance.GameData.TankPrefab = tanks;
     }
 	
-	// Update is called once per frame
-	void Update () {
+    private void setHeaderText()
+    {
+        selectionHeaderText.text = "Player " + (currentPlayerIndex + 1) + " is selecting...";
+        selectionHeaderText.GetComponent<ObjectEffect>().EnableFade = true;
+    }
+
+    private void setSelectionHeaderText(int index)
+    {
+        selectionHeaderText.GetComponent<ObjectEffect>().SetAlpha(1);
+        selectionHeaderText.GetComponent<ObjectEffect>().EnableFade = false;
+        selectionHeaderText.text = "Player " + (currentPlayerIndex + 1) + " selected " + (Tank.Class)index;
+        
+    }
+
+    // Update is called once per frame
+    void Update () {
         
     }
     
@@ -49,8 +65,7 @@ public class TankSelection : MonoBehaviour {
         if (currentPlayerIndex < GameManager.Instance.NumberOfPlayers - 1)
         {
             currentPlayerIndex++;
-            headerText.GetComponent<ObjectEffect>().EnableFade = true;
-            headerText.text = "Player " + (currentPlayerIndex + 1) + " is selecting...";
+            setHeaderText();
         }
         else
         {
@@ -89,11 +104,25 @@ public class TankSelection : MonoBehaviour {
     public void SetSelectedTank(int index)
     {
         updateSelectionUI();
+        int children = tankList.transform.childCount;
+        for (int i = 0; i < children; i++)
+        {
+            if (tankList.transform.GetChild(i).gameObject.activeSelf)
+            {
+                if (i == index)
+                {
+                    tankList.transform.GetChild(i).GetComponent<ObjectEffect>().EnableFade = true;
+                }
+                else
+                {
+                    tankList.transform.GetChild(i).GetComponent<ObjectEffect>().EnableFade = false;
+                    tankList.transform.GetChild(i).GetComponent<ObjectEffect>().SetAlpha(1);
+                }
+            }
+        }
         if (index >= 0 && index < Enum.GetNames(typeof(Tank.Class)).Length)
         {
-            headerText.GetComponent<ObjectEffect>().SetAlpha(1);
-            headerText.GetComponent<ObjectEffect>().EnableFade = false;
-            headerText.text = "Player " + (currentPlayerIndex + 1) + " selected " + (Tank.Class)index;
+            setSelectionHeaderText(index);
             selectedTankIndex = index;
         }
     }
