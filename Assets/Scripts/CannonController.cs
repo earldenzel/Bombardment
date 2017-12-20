@@ -181,11 +181,11 @@ public class CannonController : MonoBehaviour {
             //this only applies to archer's and trebuchet's shots
             if (currentProjectile.tag == "Arrow")
             {
-                StartCoroutine(MoreShots(forceVec, currentProjectile, 2, 0.3f));
+                StartCoroutine(MoreShots(forceVec, cannon.shot2, 2, 0.3f));
             }
             else if (currentProjectile.tag == "Trebuchet")
             {
-                StartCoroutine(MoreShots(forceVec, currentProjectile, UnityEngine.Random.Range(1,3), 0.2f));
+                StartCoroutine(MoreShots(forceVec, cannon.shot1, UnityEngine.Random.Range(1,3), 0.2f));
             }
             //Change the target state for the camera
             if (cameraController != null)

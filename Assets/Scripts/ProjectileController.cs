@@ -36,11 +36,10 @@ public class ProjectileController : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        Vector3 spawnOriginate = transform.position;
         if (!cannon.onShot)
         {
-            Vector2 finalDirection = rb2d.velocity.normalized;
-
-            Vector3Int gridCenterOfImpact = currentMap.WorldToCell(transform.position);
+            Vector3Int gridCenterOfImpact = currentMap.WorldToCell(spawnOriginate);
             for (int x = -collateralDamageSize; x <= collateralDamageSize; x++)
             {
                 for (int y = -collateralDamageSize; y <= collateralDamageSize; y++)
