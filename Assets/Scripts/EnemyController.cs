@@ -29,14 +29,16 @@ public class EnemyController : MonoBehaviour
             if (suicide)
             {
                 //also have to announce suicide!!
-                StartCoroutine(SuicideSequence());
+                //StartCoroutine(SuicideSequence());
+                GameManager.Instance.StageController.MakeAnnouncement(this.gameObject.tag + " - " + this.gameObject.name + " has committed SUICIDE!", 3);
+                GameManager.Instance.GameData.ToNextPlayer = true;
             }
             Destroy(this.gameObject);
             //if (GetComponent<PlayerController>() != null)
             //{
             //    GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
             //}
-            GameManager.Instance.GameData.Players.Remove(this.gameObject);
+      //      GameManager.Instance.GameData.Players.Remove(this.gameObject);
             //GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
             //after this is where you instantiate the explosion
         }
@@ -62,7 +64,7 @@ public class EnemyController : MonoBehaviour
             Damage((int)(collision.gameObject.GetComponent<ProjectileController>().baseDamage * collision.gameObject.GetComponent<ProjectileController>().attacker.GetComponent<Tank>().DamageModifier), collision.gameObject);
             if (collision.gameObject.GetComponent<ProjectileController>().attacker == this.gameObject)
             {
-                Debug.Log(this.gameObject.name + " attacked itself");
+//                Debug.Log(this.gameObject.name + " attacked itself");
                 suicide = true;
             }
         }
@@ -70,7 +72,8 @@ public class EnemyController : MonoBehaviour
 
     public void Damage(int damage, GameObject target)
     {
-        Debug.Log(this.gameObject.name + " received " + damage + " damage.");
+        GameManager.Instance.StageController.MakeAnnouncement(this.gameObject.tag + " got hit by " + target.gameObject.GetComponent<ProjectileController>().attacker.tag + " and received " + damage + " damage.", 3);
+        target.gameObject.GetComponent<ProjectileController>().attacker.GetComponent<Tank>().TotalDamageDealt += damage;
         //if (damageVisualizer!=null)
         //{
         //    GameObject go = Instantiate(damageVisualizer, target.transform.position, Quaternion.identity);

@@ -6,8 +6,20 @@ public class Tank : MonoBehaviour {
 
     public enum Class { Archer, Boomer, Pirate, Scorch, Gladiator, Trebuchet }
 
+    private static uint nextAvaliableId;
+
+    public int ID;
+
+    public uint NextAvaliableId
+    {
+        get
+        {
+            return ++nextAvaliableId;
+        }
+    }
+
     private PowerUpRepository powerUps;
-//    public string TankName;
+    //    public string TankName;
 
     [TextArea]
     public string Description;
@@ -72,8 +84,11 @@ public class Tank : MonoBehaviour {
     public GameObject Shot2;
     public int Shot2Count = 1;
 
+    public float TotalDamageDealt;
+
     void Awake()
     {
+        ID = (int)NextAvaliableId;
         powerUps = new PowerUpRepository(this);
     }
 

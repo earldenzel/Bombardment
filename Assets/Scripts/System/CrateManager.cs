@@ -14,7 +14,7 @@ public class CrateManager : MonoBehaviour {
     public int MaxCratesPerGame = 5;
     
 
-    public Transform[] spawningPoints;
+    private Transform[] spawningPoints;
   //  public GameObject[] crates;
 
   //  public Sprite[] PowerUpSprites;
@@ -27,11 +27,11 @@ public class CrateManager : MonoBehaviour {
         //    minSpawnX = GameManager.Instance.GameData.CameraSettings.ViewPort.x;
         //   maxSpawnX = GameManager.Instance.GameData.CameraSettings.ViewPort.x + GameManager.Instance.GameData.CameraSettings.ViewPort.width;
 
-        int numOfPoints = this.transform.GetChild(0).childCount;
+        int numOfPoints = this.transform.GetChild(1).childCount;
         spawningPoints = new Transform[numOfPoints];
         for (int i = 0; i < numOfPoints; i++)
         {
-            spawningPoints[i] = this.transform.GetChild(0).GetChild(i);
+            spawningPoints[i] = this.transform.GetChild(1).GetChild(i);
         }
     }
 
@@ -39,6 +39,7 @@ public class CrateManager : MonoBehaviour {
     {
         if (spawn && GameManager.Instance.GameData.NumberOfCratesOnMap < MaxCratesPerGame)
         {
+            GameManager.Instance.StageController.MakeAnnouncement("Deploying crates...", 3);
             int numOfCrate = Random.Range(MinCratePerTurn, MaxCratePerTurn);
 
             for (int i = 0; i < numOfCrate; i++)

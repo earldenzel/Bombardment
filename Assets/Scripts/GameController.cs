@@ -29,7 +29,7 @@ public class GameController : MonoBehaviour {
     {
         //Before anything else, set controls to proper axes
         //players = new List<GameObject>();
-        players = GameManager.Instance.GameData.Players;
+   //     players = GameManager.Instance.GameData.Players;
 
         for (int i = 1; i <= GameManager.Instance.NumberOfPlayers; i++)
         {
@@ -131,7 +131,7 @@ public class GameController : MonoBehaviour {
     {
         showGameResult();
         yield return new WaitForSeconds(5.0f);
-        GameManager.Instance.ResetPlayers();
+    //    GameManager.Instance.ResetPlayers();
         SceneManager.LoadScene("Menu");
     }
 

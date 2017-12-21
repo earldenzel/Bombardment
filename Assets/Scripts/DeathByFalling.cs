@@ -18,8 +18,7 @@ public class DeathByFalling : MonoBehaviour {
         }
 	}
 	
-	// Update is called once per frame
-	void Update () {
+	void LateUpdate () {
         if (transform.position.y < dbf)
         {
             if (gameObject.GetComponent<ChangeFocusByContact>() != null)
@@ -28,6 +27,10 @@ public class DeathByFalling : MonoBehaviour {
             }
             else
             {
+                // GameManager.Instance.StageController.EliminatePlayer(this.transform.GetComponent<Tank>().ID);
+                GameManager.Instance.StageController.MakeAnnouncement(gameObject.tag + " falling of the map!", 3);
+                GameManager.Instance.GameData.ToNextPlayer = true;
+                Destroy(this.gameObject);
                 //this means the enemy or the gameplayer dieded. Focus on its destruction should be put here
                 //insert script to temporarily focus here
                 //if (gameObject.GetComponent<PlayerController>() != null)
@@ -36,10 +39,12 @@ public class DeathByFalling : MonoBehaviour {
                 //    GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
                 //}
                 // GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
-                
-                GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
-                GameManager.Instance.RemoveActivePlayer();
-                Destroy(this.gameObject);
+
+                //   
+
+                //   GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
+                //    GameManager.Instance.StageController.RemovePlayer(this.gameObject);
+                //    
             }
         }
     }

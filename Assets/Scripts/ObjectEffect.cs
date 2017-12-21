@@ -21,10 +21,13 @@ public class ObjectEffect : MonoBehaviour {
     public Text text;
 
     public bool EnableFade;
+    public bool ResetAlphaOnFadeIn;
     public bool fadeSpriteColor = true;
     public bool fadeTextColor = false;
 
     public bool ResetAlpha = false;
+
+   
 
     private bool zoomTrigger = false;
     private bool fadeTrigger = false;
@@ -138,6 +141,11 @@ public class ObjectEffect : MonoBehaviour {
 
     private void fade()
     {
+        if (ResetAlphaOnFadeIn && alphaValue <= 0)
+        {
+            EnableFade = false;
+            return;
+        }
         if (fadeSpriteColor && this.GetComponent<SpriteRenderer>() != null)
         {
             this.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, alphaValue);
@@ -149,6 +157,10 @@ public class ObjectEffect : MonoBehaviour {
         if (fadeTextColor && this.GetComponent<Text>() != null)
         {
             this.GetComponent<Text>().color = new Color(this.GetComponent<Text>().color.r, this.GetComponent<Text>().color.g, this.GetComponent<Text>().color.b, alphaValue);
+        }
+        if (fadeTextColor && text != null)
+        {
+            text.color = new Color(text.color.r, text.color.g, text.color.b, alphaValue);
         }
     }
 

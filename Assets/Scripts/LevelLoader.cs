@@ -18,7 +18,7 @@ public class LevelLoader : MonoBehaviour {
         }
 
         //Clear player list;
-        GameManager.Instance.ResetPlayers();
+ //       GameManager.Instance.ResetPlayers();
 
         /** Testing Only - Remove/Comment after done **/
 
@@ -36,7 +36,7 @@ public class LevelLoader : MonoBehaviour {
             GameObject player = Instantiate(GameManager.Instance.GameData.TankPrefab[(int)tankClass], getValidPoint(), Quaternion.identity);
             player.tag = "Player" + (i + 1);
             //Add new player object to Players
-            GameManager.Instance.GameData.Players.Add(player);
+     //       GameManager.Instance.GameData.Players.Add(player);
         }
     }
 

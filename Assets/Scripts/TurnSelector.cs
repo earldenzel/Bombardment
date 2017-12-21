@@ -4,14 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class TurnSelector : MonoBehaviour {
-
-    // Use this for initialization
-
-    private List<GameObject> players;
-
+    
     void Start()
     {
-        ResetUI();
+        
     }
 	// Update is called once per frame
 	void Update () {
@@ -20,30 +16,35 @@ public class TurnSelector : MonoBehaviour {
 
     public void ResetUI()
     {
-        players = GameManager.Instance.GameData.Players;
-        for (int i = 0; i < GameManager.Instance.MAX_PLAYER; i++)
+        if (GameManager.Instance.StageController.Players != null)
         {
-            Transform trans = this.transform.GetChild(i);
-            if (i < GameManager.Instance.NumberOfPlayers)
+            GameObject[] players = GameManager.Instance.StageController.Players;
+            //Set active sprite
+            for (int i = 0; i < players.Length; i++)
             {
-                trans.gameObject.SetActive(true);
-                trans.GetComponent<Image>().sprite = GameManager.Instance.GameData.Players[i].GetComponent<Tank>().Sprite;
+                Transform trans = this.transform.GetChild(i);
+                if (players[i] != null)
+                {
+                    trans.gameObject.SetActive(true);
+                    trans.GetComponent<Image>().sprite = players[i].GetComponent<Tank>().Sprite;
+                }
+                else
+                {
+                    trans.gameObject.SetActive(false);
+                }
+
             }
-            else
-            {
-                trans.gameObject.SetActive(false);
-            }
-            
         }
+
     }
 
     public void UpdateUI()
     {
         ResetUI();
-        for (int i = 0; i < GameManager.Instance.NumberOfPlayers; i++)
+        for (int i = 0; i < GameManager.Instance.StageController.Players.Length; i++)
         {
             Image image = this.transform.GetChild(i).GetComponent<Image>();
-            if (i == GameManager.Instance.GameData.ActivePlayerIndex)
+            if (i == GameManager.Instance.StageController.ActivePlayerIndex)
             {
                 image.color = new Color(1f, 1f, 1f, 1f);
             }

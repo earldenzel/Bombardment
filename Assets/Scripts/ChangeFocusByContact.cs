@@ -70,8 +70,7 @@ public class ChangeFocusByContact : MonoBehaviour
         //controller.SetCameraState(); // default fixed
         
     //    landed = true;
-
-        
+    
         Destroy(this.gameObject);
     }
 }

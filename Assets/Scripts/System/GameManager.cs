@@ -19,7 +19,7 @@ public class GameData
         }
         set
         {
-            if(value < Players.Count)
+            if(value < Players.Length)
             {
                 activePlayerIndex = value;
             }
@@ -52,12 +52,12 @@ public class GameData
 
     public int NumberOfCratesOnMap;
 
-    public List<GameObject> Players { get; }
+    public GameObject[] Players { get; }
     public CameraSetting CameraSettings { get; }
 
-    public GameData()
+    public GameData(int maxPlayer)
     {
-        Players = new List<GameObject>();
+        Players = new GameObject[maxPlayer];
         SelectedTankClass = new List<Tank.Class>();
         CameraSettings = new CameraSetting();
         CameraSettings.ViewPort = new Rect(0, 0, 16, 8);
@@ -79,7 +79,11 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance;
 
-    public GameData GameData { get; }
+    public StageController StageController;
+
+    public GameData GameData { get; private set; }
+
+    public int NumberOfPlayersOnStart;
 
     private int numberOfPlayers;
 
@@ -104,30 +108,31 @@ public class GameManager : MonoBehaviour
 
     public GameManager()
     {
-        GameData = new GameData();
+       
     }
 
-    public void AddPlayer(GameObject player)
-    {
-        GameData.Players.Add(player);
-    }
+    //public void AddPlayer(GameObject player)
+    //{
+    //    GameData.Players.Add(player);
+    //}
 
-    public void RemoveActivePlayer()
-    {
-        GameData.Players.RemoveAt(GameData.ActivePlayerIndex);
-        numberOfPlayers--;
-    }
+    //public void RemoveActivePlayer()
+    //{
+    //    GameData.Players.RemoveAt(GameData.ActivePlayerIndex);
+    //    numberOfPlayers--;
+    //}
 
-    public void ResetPlayers()
-    {
-        GameData.Players.Clear();
-    }
+    //public void ResetPlayers()
+    //{
+    //    GameData.Players.Clear();
+    //}
 
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+            GameData = new GameData(MAX_PLAYER);
         }
         else if (Instance != this)
         {
