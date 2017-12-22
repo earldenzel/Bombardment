@@ -25,7 +25,7 @@ public class CanvasController : MonoBehaviour {
 
     public void UpdateUI()
     {
-        GameObject go = GameManager.Instance.GameData.Players[GameManager.Instance.GameData.ActivePlayerIndex];
+        GameObject go = GameManager.Instance.StageController.Players[GameManager.Instance.StageController.CurrentPlayerIndex];
         UpdateUI(go);
     }
 
@@ -77,8 +77,12 @@ public class CanvasController : MonoBehaviour {
         hPSlider.maxValue = currentPlayer.GetComponent<Tank>().MaxHitPoint;
         hPSlider.value = currentPlayer.GetComponent<Tank>().CurrentHipPoint;
 
+        hPSlider.transform.GetChild(1).GetChild(1).GetComponent<Text>().text = currentPlayer.GetComponent<Tank>().CurrentHipPoint + "/" + currentPlayer.GetComponent<Tank>().MaxHitPoint;
+
         fuelSlider.maxValue = currentPlayer.GetComponent<Tank>().MaxFuelLevel;
         fuelSlider.value = currentPlayer.GetComponent<Tank>().CurrentFuelLevel;
+
+        fuelSlider.transform.GetChild(1).GetChild(1).GetComponent<Text>().text = currentPlayer.GetComponent<Tank>().CurrentFuelLevel + "/" + currentPlayer.GetComponent<Tank>().MaxFuelLevel;
 
         //PowerUp[] pus = currentPlayer.GetComponent<Tank>().PowerUpRepository.PowerUps;
         //int counter = 0;
@@ -98,7 +102,7 @@ public class CanvasController : MonoBehaviour {
         //            child.gameObject.SetActive(true);
         //            child.gameObject.GetComponent<Image>().sprite = powerUpSprites[(int)pus[counter].Type];
         //        }
-                
+
         //    }
         //    counter++;
         //}

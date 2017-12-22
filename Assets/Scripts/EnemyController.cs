@@ -45,12 +45,12 @@ public class EnemyController : MonoBehaviour
         suicide = false;
     }
 
-    private IEnumerator SuicideSequence()
-    {
-        cameraMessage.text = this.gameObject.tag + " - " + this.gameObject.name + " has committed SUICIDE!";
-        yield return new WaitForSeconds(3.0f);
-        GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
-    }
+    //private IEnumerator SuicideSequence()
+    //{
+    //    cameraMessage.text = this.gameObject.tag + " - " + this.gameObject.name + " has committed SUICIDE!";
+    //    yield return new WaitForSeconds(3.0f);
+    //    GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
+    //}
 
     private void OnCollisionEnter2D(Collision2D collision)
     {

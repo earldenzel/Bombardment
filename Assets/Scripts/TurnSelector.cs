@@ -44,7 +44,7 @@ public class TurnSelector : MonoBehaviour {
         for (int i = 0; i < GameManager.Instance.StageController.Players.Length; i++)
         {
             Image image = this.transform.GetChild(i).GetComponent<Image>();
-            if (i == GameManager.Instance.StageController.ActivePlayerIndex)
+            if (i == GameManager.Instance.StageController.CurrentPlayerIndex)
             {
                 image.color = new Color(1f, 1f, 1f, 1f);
             }

@@ -10,22 +10,22 @@ public class GameData
 
     public List<Tank.Class> SelectedTankClass;
     public GameObject[] TankPrefab;
-    private int activePlayerIndex;
-    public int ActivePlayerIndex
+    private int currentPlayerIndex;
+    public int CurrentPlayerIndex
     {
         get
         {
-            return activePlayerIndex;
+            return currentPlayerIndex;
         }
         set
         {
-            if(value < Players.Length)
+            if(value >= GameManager.Instance.MAX_PLAYER)
             {
-                activePlayerIndex = value;
+                currentPlayerIndex = 0;
             }
-            else if (value < 0)
+            else
             {
-                activePlayerIndex = 0;
+                currentPlayerIndex = value;
             }
         }
     }
@@ -61,7 +61,7 @@ public class GameData
         SelectedTankClass = new List<Tank.Class>();
         CameraSettings = new CameraSetting();
         CameraSettings.ViewPort = new Rect(0, 0, 16, 8);
-        ActivePlayerIndex = 0;
+        CurrentPlayerIndex = 0;
         NumberOfCratesOnMap = 0;
     }
 }

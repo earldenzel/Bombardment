@@ -120,12 +120,17 @@ public class CannonController : MonoBehaviour {
 
     private void LoadStrongerShot()
     {
+        if (!canLoadStrongerShot)
+        {
+            GameManager.Instance.StageController.MakeAnnouncement("Insufficient amount of fuel to load stronger shot!", 2);
+        }
         shot1 = false;
         UICanvas.UpdateUI(transform.root.gameObject);
     }
 
     public void LoadWeakerShot()
     {
+
         shot1 = true;
         UICanvas.UpdateUI(transform.root.gameObject);
     }
@@ -200,11 +205,11 @@ public class CannonController : MonoBehaviour {
       //  StartCoroutine(NextPlayer());
     }
 
-    private IEnumerator NextPlayer()
-    {
-        yield return new WaitForSeconds(1.0f);
-        GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
-    }
+    //private IEnumerator NextPlayer()
+    //{
+    //    yield return new WaitForSeconds(1.0f);
+    //    GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
+    //}
 
     private IEnumerator MoreShots(Vector2 shotStrength, GameObject currentShot, int shotCount, float waitTime)
     {

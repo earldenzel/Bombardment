@@ -8,7 +8,6 @@ public class StageController : MonoBehaviour, IStage
 
     //public List<GameObject> Players { get; private set; }
     public GameObject[] Players;
-    private List<int> eliminatedPlayers;
     private bool firstEnter;
 
     public bool FirstEnter
@@ -33,6 +32,7 @@ public class StageController : MonoBehaviour, IStage
     public GameObject InGameMenuPanel;
     public GameObject GameResultPanel;
     public GameObject AnnouncementPanel;
+    public GameObject QuickGuidePanel;
 
     private LevelLoader levelLoader;
 
@@ -42,7 +42,25 @@ public class StageController : MonoBehaviour, IStage
     
     public int PlayerRemaining { get; private set; }
 
-    public int ActivePlayerIndex { get; private set; }
+    private int currentPlayerIndex;
+    public int CurrentPlayerIndex
+    {
+        get
+        {
+            return currentPlayerIndex;
+        }
+        set
+        {
+            if (value >= GameManager.Instance.MAX_PLAYER)
+            {
+                currentPlayerIndex = 0;
+            }
+            else
+            {
+                currentPlayerIndex = value;
+            }
+        }
+    }
 
     public void UpdatePlayerRemaing()
     {
@@ -116,12 +134,12 @@ public class StageController : MonoBehaviour, IStage
     }
 
     /** Level Loader **/
-
+     
     void Awake()
     {
-        GameManager.Instance.StageController = this;
+        
         Players = new GameObject[4]; //GameManager.Instance.GameData.Players;
-        eliminatedPlayers = new List<int>();
+
         instantiatePlayers();
         //Set controls to proper axes
         for (int i = 1; i <= PlayerRemaining; i++)
@@ -135,6 +153,7 @@ public class StageController : MonoBehaviour, IStage
             player.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().switchShot = "Switch_P" + i.ToString();
         }
     }
+
     void Start()
     {
         
@@ -150,25 +169,13 @@ public class StageController : MonoBehaviour, IStage
             Players[i] = Players[randomIndex];
             Players[randomIndex] = temp;
         }
-        //Announce turn list
-        string message = PlayerRemaining + " players ready to fight. Turn list: ";
-        foreach (GameObject player in Players)
-        {
-            if (player != null)
-            {
-                message += player.tag + " ";
-            }
-           
-        }
-
-        MakeAnnouncement(message, 5);
         
+
         totalTurnsDone = -1;
         firstEnter = true;
+        GameManager.Instance.StageController = this;
 
-        
-
-        EnableNextPlayer();
+        StartCoroutine(ShowQuickGuide());
     }
 
    
@@ -193,9 +200,14 @@ public class StageController : MonoBehaviour, IStage
     void Update()
     {
         //Show In Game Menu
-        if (Input.GetKeyUp(KeyCode.Escape))
+        //if (Input.GetKeyUp(KeyCode.Escape))
+        //{
+        //    InGameMenuPanel.SetActive(!InGameMenuPanel.activeSelf);
+        //}
+
+        if (Input.GetKeyUp(KeyCode.G) && !firstEnter)
         {
-            InGameMenuPanel.SetActive(!InGameMenuPanel.activeSelf);
+            QuickGuidePanel.SetActive(!QuickGuidePanel.activeInHierarchy);
         }
 
         //If menu isn't active update the game
@@ -220,7 +232,7 @@ public class StageController : MonoBehaviour, IStage
         }
     }
 
-    private void showGameResult()
+    private void showGameResult(bool isDraw)
     {
         if (!GameResultPanel.activeSelf)
         {
@@ -232,7 +244,7 @@ public class StageController : MonoBehaviour, IStage
             Text tankName = content.GetChild(0).GetChild(0).GetComponent<Text>();
             Text description = content.GetChild(1).GetComponent<Text>();
 
-            if (PlayerRemaining == 0)
+            if (isDraw)
             {
                 //Show draw result
                 playerName.text = "Draw";
@@ -253,9 +265,9 @@ public class StageController : MonoBehaviour, IStage
 
     
 
-    IEnumerator GameFinish()
+    IEnumerator GameFinish(bool isDraw)
     {
-        showGameResult();
+        showGameResult(isDraw);
         yield return new WaitForSeconds(5.0f);
         SceneManager.LoadScene("Menu");
     }
@@ -270,16 +282,33 @@ public class StageController : MonoBehaviour, IStage
         return true;
     }
 
-    private int nextAlivePlayer()
+    private int nextAlivePlayerIndex()
     {
-        for(int i = ActivePlayerIndex; i < Players.Length; i++)
+        //check all player after current player
+        for(int i = CurrentPlayerIndex; i < Players.Length; i++)
         {
             if (Players[i] != null)
             {
+                //Debug.Log("After: " + i);
                 return i;
             }
         }
-        for (int i = 0; i < ActivePlayerIndex; i++)
+        //check all player before current player
+        for (int i = 0; i < CurrentPlayerIndex; i++)
+        {
+            if (Players[i] != null)
+            {
+                //Debug.Log("Before: " + i);
+                return i;
+            }
+        }
+        //no player alive means draw
+        return -1;
+    }
+
+    private int firstAlivePlayer()
+    {
+        for(int i = 0; i < Players.Length; i++)
         {
             if (Players[i] != null)
             {
@@ -292,17 +321,13 @@ public class StageController : MonoBehaviour, IStage
     public void EnableNextPlayer()
     {
         UpdatePlayerRemaing();
-        totalTurnsDone++;
-        ActivePlayerIndex = totalTurnsDone % Players.Length;
-        //if (Players[ActivePlayerIndex] == null)
-        //{
-        //    ActivePlayerIndex = nextAlivePlayer();
-        //}
         
-        currentPlayer = Players[ActivePlayerIndex];
+
+        CurrentPlayerIndex = nextAlivePlayerIndex();
+        currentPlayer = Players[CurrentPlayerIndex];
         if (IsGameOver())
         {
-            StartCoroutine(GameFinish());
+            StartCoroutine(GameFinish(CurrentPlayerIndex < 0));
             return;
         }
         //Check Winning Condition
@@ -310,7 +335,7 @@ public class StageController : MonoBehaviour, IStage
 
         DisableEveryone();
         //Check if the cycle just Enter;
-        if (totalTurnsDone % PlayerRemaining == 0)
+        if (CurrentPlayerIndex == firstAlivePlayer())
         {
             OnExit();
             OnEnter();
@@ -319,24 +344,17 @@ public class StageController : MonoBehaviour, IStage
         
         
         
-        
-        if (currentPlayer != null)
-        {
-            TurnSelector.GetComponent<TurnSelector>().UpdateUI();
-            currentPlayer.GetComponent<FuelController>().ReplenishFuel();
-            UICanvasController.UpdateUI(currentPlayer);
-            mainCamera.GetComponent<CameraController>().SetFocus(currentPlayer);
-            currentPlayer.GetComponent<OrientationChecker>().onTurn = true;
-            currentPlayer.GetComponent<PlayerController>().enabled = true;
-            currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = true;
-            currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().InstantiateShot();
-            currentPlayer.GetComponent<Tank>().PowerUpRepository.OnTurnEnter();
-        }
-        else
-        {
-            EnableNextPlayer();
-        }
-        
+        TurnSelector.GetComponent<TurnSelector>().UpdateUI();
+        currentPlayer.GetComponent<FuelController>().ReplenishFuel();
+        UICanvasController.UpdateUI(currentPlayer);
+        mainCamera.GetComponent<CameraController>().SetFocus(currentPlayer);
+        currentPlayer.GetComponent<OrientationChecker>().onTurn = true;
+        currentPlayer.GetComponent<PlayerController>().enabled = true;
+        currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = true;
+        currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().InstantiateShot();
+        currentPlayer.GetComponent<Tank>().PowerUpRepository.OnTurnEnter();
+    
+        CurrentPlayerIndex++;
 
     }
 
@@ -382,14 +400,6 @@ public class StageController : MonoBehaviour, IStage
         
     //}
 
-    public void RemovePlayerById(int id)
-    {
-        if (!eliminatedPlayers.Contains(id))
-        {
-            eliminatedPlayers.Add(id);
-        }
-    }
-
     public void EliminatePlayer(int id)
     {
         int index = -1;
@@ -417,6 +427,27 @@ public class StageController : MonoBehaviour, IStage
         {
             this.GetComponentInParent<CrateManager>().SpawnCrates();
         }
+    }
+
+    IEnumerator ShowQuickGuide()
+    {
+        QuickGuidePanel.SetActive(true);
+        yield return new WaitForSeconds(3);
+        QuickGuidePanel.SetActive(false);
+        //Announce turn list
+        string message = PlayerRemaining + " players ready to fight. Turn list: ";
+        foreach (GameObject player in Players)
+        {
+            if (player != null)
+            {
+                message += player.tag + " ";
+            }
+
+        }
+
+        MakeAnnouncement(message, 5);
+
+        EnableNextPlayer();
     }
 
 

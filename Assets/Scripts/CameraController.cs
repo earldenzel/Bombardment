@@ -8,7 +8,7 @@ public class CameraConfig
 {
     public enum CameraMode { Focus, Free };
     public CameraMode State = CameraMode.Focus;
-    public float MaxZoomingSize = 10;
+    public float MaxZoomingSize = 12;
     public float MinZoomingSize = 5;
     public float MouseWheelZoomingSpeed = 5;
     public float FreeMovementSpeed = 0.3f;
