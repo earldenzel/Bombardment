@@ -485,6 +485,7 @@ public class StageController : MonoBehaviour, IStage
     {
         if (GameManager.Instance.GameData.SelectedMapIndex == 0)
         {
+            currentPlayer.GetComponent<Tank>().CurrentHipPoint = currentPlayer.GetComponent<Tank>().MaxHitPoint;
             currentPlayer.GetComponent<Tank>().CurrentFuelLevel = currentPlayer.GetComponent<Tank>().MaxFuelLevel;
         }
     }
