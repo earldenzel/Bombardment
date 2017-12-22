@@ -26,6 +26,12 @@ public class StageController : MonoBehaviour, IStage
     private bool gameOver;
     public Camera mainCamera;
 
+    public bool hasObjective;
+    public Objective objective;
+
+    [TextArea]
+    public string announcementAtStart;
+
     //UI panels
     public GameObject UICanvas;
     public GameObject TurnSelector;
@@ -230,6 +236,11 @@ public class StageController : MonoBehaviour, IStage
             //    gameOver = true;
             //}
         }
+
+        if (currentPlayer != null)
+        {
+            OnStage();
+        }
     }
 
     private void showGameResult(bool isDraw)
@@ -239,27 +250,36 @@ public class StageController : MonoBehaviour, IStage
             GameResultPanel.SetActive(true);
             Transform header = GameResultPanel.transform.GetChild(0).GetChild(0);
             Transform content = GameResultPanel.transform.GetChild(0).GetChild(1);
-            Text playerName = header.GetChild(0).GetComponent<Text>();
-            Image tankSprite = content.GetChild(0).GetComponent<Image>();
-            Text tankName = content.GetChild(0).GetChild(0).GetComponent<Text>();
-            Text description = content.GetChild(1).GetComponent<Text>();
-
-            if (isDraw)
+            Text headerText = header.GetChild(0).GetComponent<Text>();
+            if (GameManager.Instance.GameData.SelectedMapIndex != 0)
             {
-                //Show draw result
-                playerName.text = "Draw";
-                tankSprite.gameObject.SetActive(false);
-                tankName.gameObject.SetActive(false);
-                description.gameObject.SetActive(false);
+                Image tankSprite = content.GetChild(0).GetComponent<Image>();
+                Text tankName = content.GetChild(0).GetChild(0).GetComponent<Text>();
+                Text description = content.GetChild(1).GetComponent<Text>();
+
+                if (isDraw)
+                {
+                    //Show draw result
+                    headerText.text = "Draw";
+                    tankSprite.gameObject.SetActive(false);
+                    tankName.gameObject.SetActive(false);
+                    description.gameObject.SetActive(false);
+                }
+                else
+                {
+                    headerText.text = "Congratulations! " + currentPlayer.tag;
+                    tankSprite.sprite = currentPlayer.GetComponent<Tank>().Sprite;
+                    tankName.text = "MVP: " + currentPlayer.GetComponent<Tank>().name;
+                    int totalDamageDealt = (int)currentPlayer.GetComponent<Tank>().TotalDamageDealt;
+                    description.text = "Total damage dealt: " + totalDamageDealt;
+                }
             }
             else
             {
-                playerName.text = "Congratulations! " + currentPlayer.tag;
-                tankSprite.sprite = currentPlayer.GetComponent<Tank>().Sprite;
-                tankName.text = "MVP: " + currentPlayer.GetComponent<Tank>().name;
-                int totalDamageDealt = (int)currentPlayer.GetComponent<Tank>().TotalDamageDealt;
-                description.text = "Total damage dealt: " + totalDamageDealt;
+                headerText.text = "Tutorial Ends";
+                content.gameObject.SetActive(false);
             }
+            
         }
     }
 
@@ -274,8 +294,11 @@ public class StageController : MonoBehaviour, IStage
 
     public bool IsGameOver()
     {
-        
-        if (PlayerRemaining > 1)
+        if (hasObjective && objective.Achieved)
+        {
+            return true;
+        }
+        if (GameManager.Instance.GameData.SelectedMapIndex == 0 || PlayerRemaining > 1)
         {
             return false;
         }
@@ -340,7 +363,7 @@ public class StageController : MonoBehaviour, IStage
             OnExit();
             OnEnter();
         }
-        OnStage();
+        
         
         
         
@@ -434,18 +457,27 @@ public class StageController : MonoBehaviour, IStage
         QuickGuidePanel.SetActive(true);
         yield return new WaitForSeconds(3);
         QuickGuidePanel.SetActive(false);
-        //Announce turn list
-        string message = PlayerRemaining + " players ready to fight. Turn list: ";
-        foreach (GameObject player in Players)
+
+        if (GameManager.Instance.GameData.SelectedMapIndex == 0)
         {
-            if (player != null)
+            MakeAnnouncement("Destroy all the crates", 5);
+        }
+        else
+        {
+            //Announce turn list
+            string message = PlayerRemaining + " players ready to fight. Turn list: ";
+            foreach (GameObject player in Players)
             {
-                message += player.tag + " ";
+                if (player != null)
+                {
+                    message += player.tag + " ";
+                }
+
             }
 
+            MakeAnnouncement(message, 5);
         }
-
-        MakeAnnouncement(message, 5);
+        
 
         EnableNextPlayer();
     }
@@ -453,7 +485,10 @@ public class StageController : MonoBehaviour, IStage
 
     public void OnStage()
     {
-        
+        if (GameManager.Instance.GameData.SelectedMapIndex == 0)
+        {
+            currentPlayer.GetComponent<Tank>().CurrentFuelLevel = currentPlayer.GetComponent<Tank>().MaxFuelLevel;
+        }
     }
 
     public void OnExit()

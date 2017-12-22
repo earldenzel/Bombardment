@@ -8,6 +8,8 @@ public class Crate : MonoBehaviour {
 
     public int MaxHitPoint = 3;
 
+    public bool SpwanPowerUp = true;
+
     private bool landed;
 
     private int hitPoint;
@@ -51,7 +53,7 @@ public class Crate : MonoBehaviour {
 
     public void SpawnPowerUps()
     {
-        if (HitPoint == 0)
+        if (SpwanPowerUp && HitPoint == 0)
         {
             int numOfCrate = Random.Range(CrateManager.MinCratePerTurn, CrateManager.MaxCratePerTurn);
 
