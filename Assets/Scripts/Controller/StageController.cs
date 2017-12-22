@@ -92,7 +92,6 @@ public class StageController : MonoBehaviour, IStage
     private void instantiatePlayers()
     {
         ClearPlayers();
-
         //Get Spawning Points;
         int numOfPoints = this.transform.GetChild(0).childCount;
         spawningPoints = new Transform[numOfPoints];
@@ -143,10 +142,10 @@ public class StageController : MonoBehaviour, IStage
      
     void Awake()
     {
-        
         Players = new GameObject[4]; //GameManager.Instance.GameData.Players;
 
         instantiatePlayers();
+        
         //Set controls to proper axes
         for (int i = 1; i <= PlayerRemaining; i++)
         {
@@ -162,7 +161,6 @@ public class StageController : MonoBehaviour, IStage
 
     void Start()
     {
-        
         //determine game variables
         //enemies = GameObject.FindGameObjectsWithTag("Enemy");
         gameOver = false;

@@ -22,6 +22,8 @@ public class TankSelection : MonoBehaviour {
     public Text selectionHeaderText;
     
 	void Start () {
+        //Clear up selected tank
+        GameManager.Instance.GameData.SelectedTankClass.Clear();
         selectedTankList = new Tank.Class[GameManager.Instance.NumberOfPlayers];
         headerText.text = "Player " + (currentPlayerIndex + 1) + " is selecting...";
         headerText.GetComponent<ObjectEffect>().EnableFade = true;
