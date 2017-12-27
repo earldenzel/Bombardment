@@ -28,6 +28,7 @@ public class CannonController : MonoBehaviour {
     private CameraController cameraController;
     public bool fired;
     public bool canLoadStrongerShot;
+    public bool tookShot;
 
     public string vertical;
     public string shoot;
@@ -39,6 +40,7 @@ public class CannonController : MonoBehaviour {
     // Use this for initialization
     void Start () {
         onShot = false;
+        tookShot = false;
         trajectory = GetComponent<LineRenderer>();
         powerBar = transform.GetChild(1).GetComponent<SpriteRenderer>();
         originalScale = powerBar.transform.localScale;
@@ -54,9 +56,14 @@ public class CannonController : MonoBehaviour {
         }
         LoadWeakerShot();        
     }
-	
-	// Update is called once per frame
-	void FixedUpdate ()
+
+    void OnEnable()
+    {
+        tookShot = false;
+    }
+
+    // Update is called once per frame
+    void Update ()
     {
         UICanvas.UpdatePower(powerBar.transform.localScale.x/3);
         if (onShot)
@@ -104,9 +111,10 @@ public class CannonController : MonoBehaviour {
                 //shot ends and cannot be shot anymore
                 ShootProjectile();
                 transform.root.GetComponent<PlayerController>().movable = true;
-                StartCoroutine(ShowLastPower());
                 onShot = false;
-                fired = true;                
+                tookShot = true;
+                fired = true;
+                StartCoroutine(ShowLastPower());
             }
             else
             {
@@ -151,7 +159,6 @@ public class CannonController : MonoBehaviour {
 
     public void LoadWeakerShot()
     {
-
         shot1 = true;
         UICanvas.UpdateUI(transform.root.gameObject);
     }
@@ -224,14 +231,7 @@ public class CannonController : MonoBehaviour {
         {
             onShot = false;
         }
-      //  StartCoroutine(NextPlayer());
     }
-
-    //private IEnumerator NextPlayer()
-    //{
-    //    yield return new WaitForSeconds(1.0f);
-    //    GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
-    //}
 
     private IEnumerator MoreShots(Vector2 shotStrength, GameObject currentShot, int shotCount, float waitTime)
     {
@@ -243,8 +243,6 @@ public class CannonController : MonoBehaviour {
             SetProjectileProperties(shot);
             shot.GetComponent<Rigidbody2D>().AddForce(shotStrength, ForceMode2D.Impulse);
         }
-        yield return new WaitForSeconds(0.3f);
-        onShot = false;
     }
 
     private void LoadShotOne(bool shot1)

@@ -14,15 +14,12 @@ public class OrientationChecker : MonoBehaviour {
     public bool onTurn;
     public bool isGrounded;
 
-    private Rigidbody2D tankBody;
-
     // Use this for initialization
     void Start()
     {
         thisPlayer = GetComponent<PlayerController>();
         rightDirection = true;
         horizontal = thisPlayer.horizontal;
-        tankBody = GetComponent<Rigidbody2D>();
     }
     
     void FixedUpdate ()

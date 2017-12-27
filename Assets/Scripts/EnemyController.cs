@@ -19,7 +19,6 @@ public class EnemyController : MonoBehaviour
         cameraMessage = GameObject.FindGameObjectWithTag("Environment").transform.GetChild(0).GetChild(0).GetComponent<Text>();
         canvas = GameObject.FindGameObjectWithTag("Environment").transform.GetChild(0);
         tank = GetComponent<Tank>();
-
     }
 
     void FixedUpdate()
@@ -34,23 +33,10 @@ public class EnemyController : MonoBehaviour
                 GameManager.Instance.GameData.ToNextPlayer = true;
             }
             Destroy(this.gameObject);
-            //if (GetComponent<PlayerController>() != null)
-            //{
-            //    GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
-            //}
-      //      GameManager.Instance.GameData.Players.Remove(this.gameObject);
-            //GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().ReducePlayers();
             //after this is where you instantiate the explosion
         }
         suicide = false;
     }
-
-    //private IEnumerator SuicideSequence()
-    //{
-    //    cameraMessage.text = this.gameObject.tag + " - " + this.gameObject.name + " has committed SUICIDE!";
-    //    yield return new WaitForSeconds(3.0f);
-    //    GameObject.FindGameObjectWithTag("Environment").GetComponent<GameController>().EnableNextPlayer();
-    //}
 
     private void OnCollisionEnter2D(Collision2D collision)
     {

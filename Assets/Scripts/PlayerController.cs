@@ -14,7 +14,6 @@ public class PlayerController : MonoBehaviour {
     public bool onJump;
     public bool slopeInFront;
     public OrientationChecker orientation;
-    private float time;
     
     private Transform wheelFront;
 
@@ -94,11 +93,10 @@ public class PlayerController : MonoBehaviour {
         //if movement is pressed, and tank is movable, and is currently a ground, then a move must happen
         if (Mathf.Abs(Input.GetAxis(horizontal)) > 0.4f && movable && orientation.isGrounded)
         {
-            time = 0f;
             direction = tankBody.transform.right * Input.GetAxis(horizontal);
             if (slopeInFront)
             {
-                tankBody.AddTorque(30f * Input.GetAxis(horizontal));
+                tankBody.AddTorque(20f * Input.GetAxis(horizontal));
                 direction = direction + 0.4f * transform.up;
             }
             else
@@ -113,21 +111,5 @@ public class PlayerController : MonoBehaviour {
         {
             tankBody.velocity = Vector2.zero;
         }
-        //if (tankBody.velocity != Vector2.zero)
-        //{
-        //    //RotateWheels();
-        //}
     }
-
-    //rotates wheels during movement
-    //void RotateWheels()
-    //{
-    //    foreach (Transform t in transform)
-    //    {
-    //        if (t.tag == "Wheels")
-    //        {
-    //            t.Rotate(new Vector3(0, 0, -tankBody.velocity.magnitude));
-    //        }
-    //    }
-    //}
 }

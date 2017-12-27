@@ -20,10 +20,10 @@ public class StageController : MonoBehaviour, IStage
 
     public int totalTurnsDone;
     private int playerCount;
+    private float time;
     private GameObject[] enemies;
     private CanvasController UICanvasController;
     private GameObject currentPlayer;
-    private bool gameOver;
     public Camera mainCamera;
 
     public bool hasObjective;
@@ -113,8 +113,6 @@ public class StageController : MonoBehaviour, IStage
                 //Set new player object to Players
                 Players[i] = player;
             }
-           
-
         }
         UpdatePlayerRemaing();
     }
@@ -162,8 +160,6 @@ public class StageController : MonoBehaviour, IStage
     void Start()
     {
         //determine game variables
-        //enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        gameOver = false;
         UICanvasController = UICanvas.GetComponent<CanvasController>();
         //shuffle player list
         for (int i = 0; i < PlayerRemaining; i++)
@@ -174,15 +170,12 @@ public class StageController : MonoBehaviour, IStage
             Players[randomIndex] = temp;
         }
         
-
-        totalTurnsDone = -1;
+        totalTurnsDone = 0;
         firstEnter = true;
         GameManager.Instance.StageController = this;
 
         StartCoroutine(ShowQuickGuide());
-    }
-
-   
+    }   
 
     public void MakeAnnouncement(string message, float delay)
     {
@@ -220,19 +213,21 @@ public class StageController : MonoBehaviour, IStage
             if (GameManager.Instance.GameData.ToNextPlayer)
             {
                GameManager.Instance.GameData.ToNextPlayer = false;
-               EnableNextPlayer();
+                //don't delete these. these are my indicators as to why it skips
+                if (currentPlayer == null)
+                {
+                    Debug.Log("Player committed a suicide");
+                }
+                else if (currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().tookShot)
+                {
+                    Debug.Log("Player took a shot before turn ended");
+                }
+                else
+                {
+                    Debug.Log("Player DID NOT TAKE A SHOT");
+                }
+               StartCoroutine(EnableNextPlayer());
             }
-            //if (GameManager.Instance.GameData.SelectedMapIndex != 0 && GameManager.Instance.NumberOfPlayers == 1 && currentPlayer != null)
-            //{
-            //    //   cameraMessage.text = "Game over! " + currentPlayer.tag + " (" + currentPlayer.name + ") wins! Returning to Menu.";
-            //    DisableEveryone();
-            //    gameOver = true;
-            //    //    Debug.Log(playerCount);
-            //}
-            //else if (GameManager.Instance.GameData.SelectedMapIndex != 0 && playerCount == 0 && currentPlayer == null)
-            //{
-            //    gameOver = true;
-            //}
         }
 
         if (currentPlayer != null)
@@ -279,9 +274,7 @@ public class StageController : MonoBehaviour, IStage
             }
             
         }
-    }
-
-    
+    }    
 
     IEnumerator GameFinish(bool isDraw)
     {
@@ -339,20 +332,25 @@ public class StageController : MonoBehaviour, IStage
         return -1;
     }
 
-    public void EnableNextPlayer()
+    public IEnumerator EnableNextPlayer()
     {
-        UpdatePlayerRemaing();
-        
+        yield return new WaitForSeconds(0.5f);
+        //wind changes every 8 turns, irregardless of what happens
+        totalTurnsDone++;
+        if ((totalTurnsDone % 8) == 0){
+            GameObject.FindGameObjectWithTag("Environment").GetComponent<WindSpawner>().ChangeWind();
+        }
+
+        UpdatePlayerRemaing();        
 
         CurrentPlayerIndex = nextAlivePlayerIndex();
         currentPlayer = Players[CurrentPlayerIndex];
         if (IsGameOver())
         {
             StartCoroutine(GameFinish(CurrentPlayerIndex < 0));
-            return;
+            //return;
         }
         //Check Winning Condition
-
 
         DisableEveryone();
         //Check if the cycle just Enter;
@@ -360,10 +358,7 @@ public class StageController : MonoBehaviour, IStage
         {
             OnExit();
             OnEnter();
-        }
-        
-        
-        
+        }        
         
         TurnSelector.GetComponent<TurnSelector>().UpdateUI();
         currentPlayer.GetComponent<FuelController>().ReplenishFuel();
@@ -386,7 +381,6 @@ public class StageController : MonoBehaviour, IStage
 
     private void DisableEveryone()
     {
-
         //disable all players
         for(int i = 0; i < Players.Length; i++)
         {
@@ -396,30 +390,9 @@ public class StageController : MonoBehaviour, IStage
                 player.GetComponent<PlayerController>().enabled = false;
                 player.GetComponent<OrientationChecker>().onTurn = false;
                 player.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = false;
-            }
-            
+            }            
         }
     }
-
-    //private void removeEliminatedPlayers()
-    //{
-    //    if (eliminatedPlayers.Count > 0)
-    //    {
-    //        for (int i = 0; i < eliminatedPlayers.Count; i++)
-    //        {
-    //            for(int j = 0; j < Players.Count; i++)
-    //            {
-    //                if (Players[i].GetComponent<Tank>().ID == eliminatedPlayers[i])
-    //                {
-    //                    Players.RemoveAt(i);
-    //                    return;
-    //                }
-    //            }
-    //        }
-    //        eliminatedPlayers.Clear();
-    //    }
-        
-    //}
 
     public void EliminatePlayer(int id)
     {
@@ -477,9 +450,8 @@ public class StageController : MonoBehaviour, IStage
         }
         
 
-        EnableNextPlayer();
+        StartCoroutine(EnableNextPlayer());
     }
-
 
     public void OnStage()
     {
