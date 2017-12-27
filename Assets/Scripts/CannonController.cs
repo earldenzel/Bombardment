@@ -34,10 +34,12 @@ public class CannonController : MonoBehaviour {
     public string switchShot;
 
     private CanvasController UICanvas;
+    private LineRenderer trajectory;
     
     // Use this for initialization
     void Start () {
         onShot = false;
+        trajectory = GetComponent<LineRenderer>();
         powerBar = transform.GetChild(1).GetComponent<SpriteRenderer>();
         originalScale = powerBar.transform.localScale;
         originalPosition = powerBar.transform.localPosition;
@@ -70,6 +72,7 @@ public class CannonController : MonoBehaviour {
                 powerBar.transform.localScale = new Vector3(3f * powerCurve.Evaluate(myTime), originalScale.y, originalScale.z);
                 powerBar.transform.localPosition = new Vector3(0.75f * powerCurve.Evaluate(myTime), 0, 0);
             }
+            RenderTrajectory(powerBar.transform.localScale.x * cannon.launchSpeed);
         }
         if (Input.GetButtonDown(switchShot) && !onShot && canLoadStrongerShot && shot1)
         {
@@ -117,6 +120,24 @@ public class CannonController : MonoBehaviour {
             }
         }
     }
+    private void RenderTrajectory(float strength)
+    {
+        trajectory.enabled = true;
+        Vector2 initialDirection = (transform.GetChild(0).position - this.transform.position).normalized;
+        Vector2 initialPosition = this.transform.position;
+        Vector2 initialVelocity = initialDirection * strength;
+        Vector3[] positions = new Vector3[100];
+        float t = 0;
+        for (int i = 0; i <= 99; i++)
+        {
+            t += Time.deltaTime;
+
+            float dx = initialVelocity.x * t;
+            float dy = initialVelocity.y * t - (0.5f * (Physics2D.gravity.magnitude) * (t * t));
+            positions[i] = new Vector3(initialPosition.x + dx, initialPosition.y + dy, 1);
+        }
+        trajectory.SetPositions(positions);
+    }
 
     private void LoadStrongerShot()
     {
@@ -144,6 +165,7 @@ public class CannonController : MonoBehaviour {
     {
         yield return new WaitForSeconds(1.0f);
         powerBar.enabled = false;
+        trajectory.enabled = false;
     }
 
     private void ShootProjectile()
