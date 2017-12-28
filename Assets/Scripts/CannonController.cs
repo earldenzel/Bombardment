@@ -28,7 +28,6 @@ public class CannonController : MonoBehaviour {
     private CameraController cameraController;
     public bool fired;
     public bool canLoadStrongerShot;
-    public bool tookShot;
 
     public string vertical;
     public string shoot;
@@ -40,7 +39,6 @@ public class CannonController : MonoBehaviour {
     // Use this for initialization
     void Start () {
         onShot = false;
-        tookShot = false;
         trajectory = GetComponent<LineRenderer>();
         powerBar = transform.GetChild(1).GetComponent<SpriteRenderer>();
         originalScale = powerBar.transform.localScale;
@@ -55,11 +53,6 @@ public class CannonController : MonoBehaviour {
             cameraController = Camera.main.GetComponent<CameraController>();
         }
         LoadWeakerShot();        
-    }
-
-    void OnEnable()
-    {
-        tookShot = false;
     }
 
     // Update is called once per frame
@@ -112,7 +105,6 @@ public class CannonController : MonoBehaviour {
                 ShootProjectile();
                 transform.root.GetComponent<PlayerController>().movable = true;
                 onShot = false;
-                tookShot = true;
                 fired = true;
                 StartCoroutine(ShowLastPower());
             }

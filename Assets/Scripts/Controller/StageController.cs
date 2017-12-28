@@ -21,6 +21,7 @@ public class StageController : MonoBehaviour, IStage
     public int totalTurnsDone;
     private int playerCount;
     private float time;
+    private bool isEnablingPlayer;
     private GameObject[] enemies;
     private CanvasController UICanvasController;
     private GameObject currentPlayer;
@@ -173,9 +174,8 @@ public class StageController : MonoBehaviour, IStage
         totalTurnsDone = 0;
         firstEnter = true;
         GameManager.Instance.StageController = this;
-
         StartCoroutine(ShowQuickGuide());
-    }   
+    }
 
     public void MakeAnnouncement(string message, float delay)
     {
@@ -212,21 +212,13 @@ public class StageController : MonoBehaviour, IStage
         {
             if (GameManager.Instance.GameData.ToNextPlayer)
             {
-               GameManager.Instance.GameData.ToNextPlayer = false;
-                //don't delete these. these are my indicators as to why it skips
-                if (currentPlayer == null)
+                GameManager.Instance.GameData.ToNextPlayer = false;
+                //does not call another player if currently enabling another player
+                if (!isEnablingPlayer)
                 {
-                    Debug.Log("Player committed a suicide");
+                    GameManager.Instance.GameData.ToNextPlayer = true;
+                    StartCoroutine(EnableNextPlayer());
                 }
-                else if (currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().tookShot)
-                {
-                    Debug.Log("Player took a shot before turn ended");
-                }
-                else
-                {
-                    Debug.Log("Player DID NOT TAKE A SHOT");
-                }
-               StartCoroutine(EnableNextPlayer());
             }
         }
 
@@ -334,7 +326,8 @@ public class StageController : MonoBehaviour, IStage
 
     public IEnumerator EnableNextPlayer()
     {
-        yield return new WaitForSeconds(0.5f);
+        isEnablingPlayer = true;
+        yield return new WaitForSeconds(1f);
         //wind changes every 8 turns, irregardless of what happens
         totalTurnsDone++;
         if ((totalTurnsDone % 8) == 0){
@@ -371,6 +364,7 @@ public class StageController : MonoBehaviour, IStage
         currentPlayer.GetComponent<Tank>().PowerUpRepository.OnTurnEnter();
     
         CurrentPlayerIndex++;
+        isEnablingPlayer = false;
 
     }
 
