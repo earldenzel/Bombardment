@@ -214,7 +214,7 @@ public class StageController : MonoBehaviour, IStage
             {
                 GameManager.Instance.GameData.ToNextPlayer = false;
                 //does not call another player if currently enabling another player
-                if (!isEnablingPlayer)
+                if (!isEnablingPlayer && GameManager.Instance.GameData.TotalProjectile == 0)
                 {
                     GameManager.Instance.GameData.ToNextPlayer = true;
                     StartCoroutine(EnableNextPlayer());

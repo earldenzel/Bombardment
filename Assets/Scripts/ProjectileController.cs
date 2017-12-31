@@ -15,6 +15,10 @@ public class ProjectileController : MonoBehaviour {
     public float windEffect;
     public int collateralDamageSize;
     public int baseDamage;
+    public AudioClip spawnAudio;
+    public AudioClip hitEnemyAudio;
+    public AudioClip hitGroundAudio;
+    private int hit;
     
     //public GameObject projectileExplosion;
     void Awake()
@@ -26,6 +30,8 @@ public class ProjectileController : MonoBehaviour {
         
         wind = GameObject.FindGameObjectWithTag("Environment");
         currentMap = GameObject.FindGameObjectWithTag("Terrain").GetComponent<Tilemap>();
+        AudioSource.PlayClipAtPoint(spawnAudio, this.transform.position);
+        hit = 1;
     }
 	
 	// Update is called once per frame
@@ -39,6 +45,19 @@ public class ProjectileController : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (gameObject.tag == "Reflective" && hit > 0)
+        {
+            hit = 0;
+            AudioSource.PlayClipAtPoint(spawnAudio, collision.transform.position);
+        }
+        if (collision.gameObject.layer == 9)
+        {
+            AudioSource.PlayClipAtPoint(hitEnemyAudio, this.transform.position);
+        }
+        else
+        {
+            AudioSource.PlayClipAtPoint(hitGroundAudio, this.transform.position);
+        }
         if (!cannon.onShot)
         {
             Vector2 finalDirection = rb2d.velocity.normalized;
