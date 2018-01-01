@@ -337,7 +337,10 @@ public class StageController : MonoBehaviour, IStage
         UpdatePlayerRemaing();        
 
         CurrentPlayerIndex = nextAlivePlayerIndex();
-        currentPlayer = Players[CurrentPlayerIndex];
+        if (CurrentPlayerIndex != -1)
+        {
+            currentPlayer = Players[CurrentPlayerIndex];
+        }
         if (IsGameOver())
         {
             StartCoroutine(GameFinish(CurrentPlayerIndex < 0));
@@ -351,17 +354,20 @@ public class StageController : MonoBehaviour, IStage
         {
             OnExit();
             OnEnter();
-        }        
-        
-        TurnSelector.GetComponent<TurnSelector>().UpdateUI();
-        currentPlayer.GetComponent<FuelController>().ReplenishFuel();
-        UICanvasController.UpdateUI(currentPlayer);
-        mainCamera.GetComponent<CameraController>().SetFocus(currentPlayer);
-        currentPlayer.GetComponent<OrientationChecker>().onTurn = true;
-        currentPlayer.GetComponent<PlayerController>().enabled = true;
-        currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = true;
-        currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().InstantiateShot();
-        currentPlayer.GetComponent<Tank>().PowerUpRepository.OnTurnEnter();
+        }
+
+        if (CurrentPlayerIndex != -1)
+        {
+            TurnSelector.GetComponent<TurnSelector>().UpdateUI();
+            currentPlayer.GetComponent<FuelController>().ReplenishFuel();
+            UICanvasController.UpdateUI(currentPlayer);
+            mainCamera.GetComponent<CameraController>().SetFocus(currentPlayer);
+            currentPlayer.GetComponent<OrientationChecker>().onTurn = true;
+            currentPlayer.GetComponent<PlayerController>().enabled = true;
+            currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = true;
+            currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().InstantiateShot();
+            currentPlayer.GetComponent<Tank>().PowerUpRepository.OnTurnEnter();
+        }
     
         CurrentPlayerIndex++;
         isEnablingPlayer = false;
