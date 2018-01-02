@@ -25,6 +25,7 @@ public class StageController : MonoBehaviour, IStage
     private GameObject[] enemies;
     private CanvasController UICanvasController;
     private GameObject currentPlayer;
+    private GameObject lastPlayer;
     public Camera mainCamera;
 
     public bool hasObjective;
@@ -36,17 +37,20 @@ public class StageController : MonoBehaviour, IStage
     //UI panels
     public GameObject UICanvas;
     public GameObject TurnSelector;
+    public GameObject UIManager;
     public GameObject InGameMenuPanel;
     public GameObject GameResultPanel;
     public GameObject AnnouncementPanel;
     public GameObject QuickGuidePanel;
+
+    public GameObject BtnEndTurn;
 
     private LevelLoader levelLoader;
 
     /** Level Loader **/
     private Transform[] spawningPoints;
     private int loopCount;
-    
+
     public int PlayerRemaining { get; private set; }
 
     private int currentPlayerIndex;
@@ -103,7 +107,7 @@ public class StageController : MonoBehaviour, IStage
 
         for (int i = 0; i < GameManager.Instance.MAX_PLAYER; i++)
         {
-            if(i < GameManager.Instance.GameData.SelectedTankClass.Count)
+            if (i < GameManager.Instance.GameData.SelectedTankClass.Count)
             {
                 Tank.Class tankClass = GameManager.Instance.GameData.SelectedTankClass[i];
                 //Instantiate player based on prefab
@@ -138,13 +142,13 @@ public class StageController : MonoBehaviour, IStage
     }
 
     /** Level Loader **/
-     
+
     void Awake()
     {
         Players = new GameObject[4]; //GameManager.Instance.GameData.Players;
 
         instantiatePlayers();
-        
+
         //Set controls to proper axes
         for (int i = 1; i <= PlayerRemaining; i++)
         {
@@ -170,7 +174,7 @@ public class StageController : MonoBehaviour, IStage
             Players[i] = Players[randomIndex];
             Players[randomIndex] = temp;
         }
-        
+
         totalTurnsDone = 0;
         firstEnter = true;
         GameManager.Instance.StageController = this;
@@ -219,6 +223,14 @@ public class StageController : MonoBehaviour, IStage
                     GameManager.Instance.GameData.ToNextPlayer = true;
                     StartCoroutine(EnableNextPlayer());
                 }
+            }
+        }
+
+        if (currentPlayer != null)
+        {
+            if (currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().onShot)
+            {
+                BtnEndTurn.GetComponent<Button>().interactable = false;
             }
         }
 
@@ -327,7 +339,11 @@ public class StageController : MonoBehaviour, IStage
     public IEnumerator EnableNextPlayer()
     {
         isEnablingPlayer = true;
-        yield return new WaitForSeconds(1f);
+        if (!FirstEnter)
+        {
+            yield return new WaitForSeconds(1f);
+            BtnEndTurn.GetComponent<Button>().interactable = true;
+        }
         //wind changes every 8 turns, irregardless of what happens
         totalTurnsDone++;
         if ((totalTurnsDone % 8) == 0){
@@ -356,9 +372,22 @@ public class StageController : MonoBehaviour, IStage
             OnEnter();
         }
 
+        if (lastPlayer != null)
+        {
+            currentPlayer.GetComponent<Tank>().PowerUpRepository.OnTurnExit();
+        }
+
+        lastPlayer = currentPlayer;
+        
+
         if (CurrentPlayerIndex != -1)
         {
+            currentPlayer.GetComponent<Tank>().PowerUpRepository.OnTurnEnter();
             TurnSelector.GetComponent<TurnSelector>().UpdateUI();
+            if (UIManager != null)
+            {
+                UIManager.GetComponent<UIManager>().UpdateUI(currentPlayer.GetComponent<Tank>(), false);
+            }
             currentPlayer.GetComponent<FuelController>().ReplenishFuel();
             UICanvasController.UpdateUI(currentPlayer);
             mainCamera.GetComponent<CameraController>().SetFocus(currentPlayer);
@@ -366,7 +395,6 @@ public class StageController : MonoBehaviour, IStage
             currentPlayer.GetComponent<PlayerController>().enabled = true;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = true;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().InstantiateShot();
-            currentPlayer.GetComponent<Tank>().PowerUpRepository.OnTurnEnter();
         }
     
         CurrentPlayerIndex++;
@@ -376,7 +404,13 @@ public class StageController : MonoBehaviour, IStage
 
     public void EndTurn()
     {
-        GameManager.Instance.GameData.ToNextPlayer = true;
+        if (currentPlayer != null)
+        {
+            GameManager.Instance.GameData.ToNextPlayer = true;
+            isEnablingPlayer = false;
+            MakeAnnouncement(currentPlayer.tag + " decided to end current turn.", 3);
+        }
+        
     }
 
     private void DisableEveryone()

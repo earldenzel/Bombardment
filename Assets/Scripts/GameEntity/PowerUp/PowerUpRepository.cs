@@ -36,30 +36,31 @@ public class PowerUpRepository{
     //Called when turn enter
     public void OnTurnEnter()
     {
-        foreach(PowerUp pu in powerUps.Values)
+        LifeTimeCheck();
+        foreach (PowerUp pu in powerUps.Values)
         {
             pu.OnApplyEnter(tank);
         }
-        LifeTimeCheck();
     }
 
     public void OnTurnExcute()
     {
+        LifeTimeCheck();
         foreach (PowerUp pu in powerUps.Values)
         {
             pu.OnApply(tank);
         }
-        LifeTimeCheck();
     }
 
     //Called then turn exit
     public void OnTurnExit()
     {
+        LifeTimeCheck();
         foreach (PowerUp pu in powerUps.Values)
         {
             pu.OnApplyExit(tank);
         }
-        LifeTimeCheck();
+        RemoveExpiredPowerUps();
     }
 
     //Remove all the power ups with 0 life time
@@ -73,8 +74,12 @@ public class PowerUpRepository{
                 expiredPowerUps.Add(pu.Type);
             }
         }
+    }
+
+    private void RemoveExpiredPowerUps()
+    {
         //remove
-        foreach(PowerUp.PowerUpType type in expiredPowerUps)
+        foreach (PowerUp.PowerUpType type in expiredPowerUps)
         {
             RemovePowerUp(type);
         }

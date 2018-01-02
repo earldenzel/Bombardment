@@ -118,10 +118,10 @@ public class Tank : MonoBehaviour {
         {
             PowerUp pu = other.gameObject.GetComponent<PowerUp>();
             GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
-            //canvas.GetComponent<CanvasController>().UpdateUI();
             powerUps.AddPowerUp(pu);
             powerUps.OnTurnExcute();
             Destroy(other.gameObject);
+            GameManager.Instance.StageController.UIManager.GetComponent<UIManager>().UpdateUI(this, false);
         }
     }
 

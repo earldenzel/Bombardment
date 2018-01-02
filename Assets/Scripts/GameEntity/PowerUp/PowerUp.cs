@@ -7,6 +7,7 @@ public class PowerUp : MonoBehaviour{
     public enum PowerUpType { IncreaseDamage, Fuel, Repair }
     public enum ApplyMode { NextTurn, Immediately }
 
+    public Sprite Sprite;
     public float Value;
     public bool EnableModifier;
     public bool EnableStack;
@@ -25,7 +26,7 @@ public class PowerUp : MonoBehaviour{
             {
                 case PowerUpType.IncreaseDamage:
                     applyTo.DamageModifier = Value;
-                    Debug.Log("New damage modifier: " + applyTo.DamageModifier);
+                 //   Debug.Log("New damage modifier: " + applyTo.DamageModifier);
                     break;
                 case PowerUpType.Fuel:
                     applyTo.CurrentFuelLevel += Value;
@@ -35,7 +36,8 @@ public class PowerUp : MonoBehaviour{
                     break;
             }
             LifeTime -= 1;
-            Debug.Log("Power Up: " + Type + " applied on turn enter");
+            GameManager.Instance.StageController.UIManager.GetComponent<UIManager>().UpdateUI(applyTo, true);
+        //    Debug.Log("Power Up: " + Type + " applied on turn enter");
         }
     }
 

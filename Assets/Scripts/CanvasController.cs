@@ -44,33 +44,13 @@ public class CanvasController : MonoBehaviour {
         canvasImage.GetComponent<Image>().preserveAspect = true;
         canvasImage.GetComponent<Image>().color = currentProjectile.GetComponent<SpriteRenderer>().color;
         shotName.text = currentProjectile.name;
-        string strength = "Damage: " + currentProjectile.GetComponent<ProjectileController>().baseDamage;
+        string strength = "Damage: " + currentProjectile.GetComponent<ProjectileController>().baseDamage + (currentPlayer.GetComponent<Tank>().DamageModifier > 1 ? " * " + currentPlayer.GetComponent<Tank>().DamageModifier : "");
         if (currentProjectile.name == "Triple Strafe") strength += "x3";
         else if (currentProjectile.name == "Falling Stars") strength += "x?";
         shotStrength.text = strength;
         //shows tank info
         tankInfo.text = currentPlayer.tag + "\n" + currentPlayer.name;
         tankImage.GetComponent<Image>().sprite = currentPlayer.GetComponent<Tank>().Sprite;
-        //switch (currentPlayer.name)
-        //{
-        //    case "Archer":
-        //        tankImage.GetComponent<Image>().sprite = spriteList[0];
-        //        break;
-        //    case "Boomer":
-        //        tankImage.GetComponent<Image>().sprite = spriteList[1];
-        //        break;
-        //    case "Pirate":
-        //        tankImage.GetComponent<Image>().sprite = spriteList[2];
-        //        break;
-        //    case "Scorch":
-        //        tankImage.GetComponent<Image>().sprite = spriteList[3];
-        //        break;
-        //    case "Gladiator":
-        //        tankImage.GetComponent<Image>().sprite = spriteList[4];
-        //        break;
-        //    default:
-        //        break;
-        //}
         tankImage.GetComponent<Image>().preserveAspect = true;
 
         //show tank hp and fuel
@@ -83,29 +63,7 @@ public class CanvasController : MonoBehaviour {
         fuelSlider.value = currentPlayer.GetComponent<Tank>().CurrentFuelLevel;
 
         fuelSlider.transform.GetChild(1).GetChild(1).GetComponent<Text>().text = currentPlayer.GetComponent<Tank>().CurrentFuelLevel + "/" + currentPlayer.GetComponent<Tank>().MaxFuelLevel;
-
-        //PowerUp[] pus = currentPlayer.GetComponent<Tank>().PowerUpRepository.PowerUps;
-        //int counter = 0;
-
-        ////remove powerUps;
-        //foreach (Transform child in powerUps.transform)
-        //{
-        //    if(pus.Length > counter)
-        //    {
-        //        if (pus[counter].Mode != PowerUp.ApplyMode.NextTurn)
-        //        {
-        //            child.gameObject.SetActive(false);
-        //            child.gameObject.GetComponent<Image>().sprite = null;
-        //        }
-        //        else
-        //        {
-        //            child.gameObject.SetActive(true);
-        //            child.gameObject.GetComponent<Image>().sprite = powerUpSprites[(int)pus[counter].Type];
-        //        }
-
-        //    }
-        //    counter++;
-        //}
+        
     }
     public void UpdatePower(float currentPower)
     {

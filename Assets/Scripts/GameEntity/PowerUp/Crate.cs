@@ -59,17 +59,42 @@ public class Crate : MonoBehaviour {
 
             for (int i = 0; i < numOfCrate; i++)
             {
+                //Instantiate(powerUps[0], this.transform.position, Quaternion.identity);
                 Instantiate(powerUps[Random.Range(0, powerUps.Length)], this.transform.position, Quaternion.identity);
             }
         }
     }
 
-    IEnumerator DecayHitPoint()
+    public void ApplyDamageByHitCount(int hitCount, float tick)
     {
-        while (hpSlider.value > 0)
+        StartCoroutine(DecayHitPoint(tick));
+    }
+
+    public void Decay(float tick)
+    {
+        StartCoroutine(DecayHitPoint(tick));
+    }
+
+    public void ApplyDamage(int damage)
+    {
+        if (hitPoint - damage > 0)
         {
-            yield return new WaitForSeconds(1);
-            hpSlider.value -= 1;
+            hitPoint -= damage;
+        }
+        else
+        {
+            hitPoint = 0;
+        }
+        ChangeColorByHitPoint();
+    }
+
+    IEnumerator DecayHitPoint(float tick)
+    {
+        while (HitPoint > 0)
+        {
+            yield return new WaitForSeconds(tick);
+            HitPoint -= 1;
+            hpSlider.value = hitPoint;
         }
     }
 
