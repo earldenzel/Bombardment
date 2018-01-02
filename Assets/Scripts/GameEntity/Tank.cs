@@ -117,7 +117,6 @@ public class Tank : MonoBehaviour {
         if (other.gameObject.tag == "PowerUp")
         {
             PowerUp pu = other.gameObject.GetComponent<PowerUp>();
-            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
             powerUps.AddPowerUp(pu);
             powerUps.OnTurnExcute();
             Destroy(other.gameObject);

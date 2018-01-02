@@ -36,6 +36,8 @@ public class EnemyController : MonoBehaviour
             //after this is where you instantiate the explosion
         }
         suicide = false;
+
+        HP.value = tank.CurrentHipPoint;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -67,6 +69,5 @@ public class EnemyController : MonoBehaviour
         //    //go.transform.parent = GameObject.FindGameObjectWithTag("Environment").transform.GetChild(0);
         //}
         tank.CurrentHipPoint -= damage;
-        HP.value = tank.CurrentHipPoint;
     }
 }

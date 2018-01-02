@@ -238,6 +238,12 @@ public class StageController : MonoBehaviour, IStage
         {
             OnStage();
         }
+
+        //prevent re-calling of end turn while enabling another end turn
+        if (isEnablingPlayer)
+        {
+            BtnEndTurn.GetComponent<Button>().interactable = false;
+        }
     }
 
     private void showGameResult(bool isDraw)
