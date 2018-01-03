@@ -54,6 +54,7 @@ public class FuelController : MonoBehaviour {
                 if (!thisCannon.onShot)
                 {
                     thisCannon.LoadWeakerShot();
+
                 }
             }
             else

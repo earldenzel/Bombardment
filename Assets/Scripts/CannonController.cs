@@ -74,9 +74,16 @@ public class CannonController : MonoBehaviour {
             }
             RenderTrajectory(powerBar.transform.localScale.x * cannon.launchSpeed);
         }
-        if (Input.GetButtonDown(switchShot) && !onShot && canLoadStrongerShot && shot1)
+        if (Input.GetButtonDown(switchShot) && !onShot && shot1)
         {
-            LoadStrongerShot();
+            if (canLoadStrongerShot)
+            {
+                LoadStrongerShot();
+            }
+            else
+            {
+                GameManager.Instance.StageController.MakeAnnouncement("Insufficient amount of fuel to load stronger shot!", 2);
+            }
         }
         else if (Input.GetButtonDown(switchShot) && !onShot && !shot1)
         {
@@ -141,10 +148,6 @@ public class CannonController : MonoBehaviour {
 
     private void LoadStrongerShot()
     {
-        if (!canLoadStrongerShot)
-        {
-            GameManager.Instance.StageController.MakeAnnouncement("Insufficient amount of fuel to load stronger shot!", 2);
-        }
         shot1 = false;
         UICanvas.UpdateUI(transform.root.gameObject);
     }

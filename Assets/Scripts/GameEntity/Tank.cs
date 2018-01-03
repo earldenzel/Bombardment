@@ -121,6 +121,7 @@ public class Tank : MonoBehaviour {
             powerUps.OnTurnExcute();
             Destroy(other.gameObject);
             GameManager.Instance.StageController.UIManager.GetComponent<UIManager>().UpdateUI(this, false);
+            GameManager.Instance.StageController.MakeAnnouncement(this.gameObject.tag + " picked up " + pu.PowerUpName+ ".", 3);
         }
     }
 

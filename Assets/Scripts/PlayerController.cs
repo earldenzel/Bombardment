@@ -69,9 +69,10 @@ public class PlayerController : MonoBehaviour {
         {
             movable = true;
         }
-
+        //if tank is both grounded and on jump, then a tank cannot be on a jump
+       
         //if jump is pressed, tank can move, and is currently not jumping, then a jump must happen
-        if (Input.GetButtonDown(jump) && movable && !onJump)
+        if (Input.GetButtonDown(jump) && movable && orientation.isGrounded)
         {
             onJump = true;
             if (orientation.rightDirection)
@@ -84,11 +85,11 @@ public class PlayerController : MonoBehaviour {
             }
         }
 
-        //if tank is both grounded and on jump, then a tank cannot be on a jump
         if (orientation.isGrounded && onJump)
         {
             onJump = false;
         }
+
 
         //if movement is pressed, and tank is movable, and is currently a ground, then a move must happen
         if (Mathf.Abs(Input.GetAxis(horizontal)) > 0.4f && movable && orientation.isGrounded)

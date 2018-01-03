@@ -5,14 +5,15 @@ using UnityEngine;
 public class PowerUp : MonoBehaviour{
 
     public enum PowerUpType { IncreaseDamage, Fuel, Repair }
-    public enum ApplyMode { NextTurn, Immediately }
+    public enum ApplyOn { NextTurn, Immediately }
 
+    public string PowerUpName;
     public Sprite Sprite;
     public float Value;
     public bool EnableModifier;
     public bool EnableStack;
     public PowerUpType Type;
-    public ApplyMode Mode;
+    public ApplyOn On;
 
     //Turn based life time or apply it immediately
     public int LifeTime = 1;
@@ -20,7 +21,7 @@ public class PowerUp : MonoBehaviour{
     public void OnApplyEnter(Tank applyTo)
     {
         //if the power up has turn based type then it will apply on the next turn
-        if(Mode == ApplyMode.NextTurn)
+        if(On == ApplyOn.NextTurn)
         {
             switch (Type)
             {
@@ -43,7 +44,7 @@ public class PowerUp : MonoBehaviour{
 
     public void OnApply(Tank applyTo)
     {
-        if (Mode == ApplyMode.Immediately)
+        if (On == ApplyOn.Immediately)
         {
             switch (Type)
             {

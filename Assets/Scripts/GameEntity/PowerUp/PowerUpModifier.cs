@@ -3,8 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+[Serializable]
 public class PowerUpModifier {
-    public int Value { get; }
+
+    public enum ApplyMode { Multiple, Addition }
+
+    public ApplyMode Mode;
+
+    public float Value { set;  get; }
 
     public PowerUpModifier(int value)
     {

@@ -414,6 +414,7 @@ public class StageController : MonoBehaviour, IStage
         {
             GameManager.Instance.GameData.ToNextPlayer = true;
             isEnablingPlayer = false;
+            currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = false;
             MakeAnnouncement(currentPlayer.tag + " decided to end current turn.", 3);
         }
         
