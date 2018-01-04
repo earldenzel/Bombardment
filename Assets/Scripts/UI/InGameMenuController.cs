@@ -13,6 +13,7 @@ public class InGameMenuController : MonoBehaviour {
 
     public void BackToMenu()
     {
+        GameManager.Instance.StageController.Pause(false);
         SceneManager.LoadScene("Menu");
     }
 

@@ -20,10 +20,15 @@ public class DeathByFalling : MonoBehaviour {
         }
         startPoint = transform.position;
 	}
-	
-	void LateUpdate () {
+
+    void LateUpdate() {
         if (transform.position.y < dbf)
         {
+            if (this.tag == "Crate" || this.tag == "PowerUp")
+            {
+                Destroy(this.gameObject);
+                return;
+            }
            
                 if (gameObject.GetComponent<ChangeFocusByContact>() != null)
                 {

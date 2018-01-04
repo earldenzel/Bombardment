@@ -179,6 +179,7 @@ public class StageController : MonoBehaviour, IStage
         firstEnter = true;
         GameManager.Instance.StageController = this;
         StartCoroutine(ShowQuickGuide());
+        Time.timeScale = 1;
     }
 
     public void MakeAnnouncement(string message, float delay)
@@ -197,6 +198,11 @@ public class StageController : MonoBehaviour, IStage
 
     void Update()
     {
+        if (IsGameOver())
+        {
+            StartCoroutine(GameFinish(CurrentPlayerIndex < 0));
+            //return;
+        }
         //Show In Game Menu
         if (Input.GetKeyUp(KeyCode.Escape))
         {
@@ -371,11 +377,6 @@ public class StageController : MonoBehaviour, IStage
         if (CurrentPlayerIndex != -1)
         {
             currentPlayer = Players[CurrentPlayerIndex];
-        }
-        if (IsGameOver())
-        {
-            StartCoroutine(GameFinish(CurrentPlayerIndex < 0));
-            //return;
         }
         //Check Winning Condition
 
