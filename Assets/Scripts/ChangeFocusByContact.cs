@@ -37,6 +37,7 @@ public class ChangeFocusByContact : MonoBehaviour
             {
                 other.gameObject.GetComponent<Crate>().SpawnPowerUps();
                 GameManager.Instance.GameData.NumberOfCratesOnMap--;
+                this.GetComponent<ProjectileController>().attacker.GetComponent<Tank>().Achievement.NumberOfCratesDestroyed++;
                 Destroy(other.gameObject);
                 return;
             }
@@ -50,10 +51,11 @@ public class ChangeFocusByContact : MonoBehaviour
         {
             ChangeFocusAndDestroy();
         }
-        //if (!landed)
-        //{
-            
-        //}
+        if (other.gameObject.tag.Contains("Player"))
+        {
+            int distance = (int)Vector2.Distance(this.GetComponent<ProjectileController>().attacker.transform.position, other.transform.position);
+            this.GetComponent<ProjectileController>().attacker.GetComponent<Tank>().Achievement.LongestShot = distance;
+        }
     }
 
     private void ReflectShot(Vector2 lastVelocity)
@@ -68,9 +70,7 @@ public class ChangeFocusByContact : MonoBehaviour
      //   Debug.Log(GameManager.Instance.GameData.TotalProjectile);
         controller.CameraDelay(DelayTime);
         //controller.SetCameraState(); // default fixed
-        
     //    landed = true;
-    
         Destroy(this.gameObject);
     }
 }

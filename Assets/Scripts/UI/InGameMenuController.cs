@@ -8,6 +8,7 @@ public class InGameMenuController : MonoBehaviour {
     public void Resume()
     {
         gameObject.SetActive(false);
+        GameManager.Instance.StageController.Pause(false);
     }
 
     public void BackToMenu()

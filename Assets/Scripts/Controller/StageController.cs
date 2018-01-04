@@ -191,9 +191,6 @@ public class StageController : MonoBehaviour, IStage
         AnnouncementPanel.gameObject.SetActive(true);
         AnnouncementPanel.transform.GetChild(0).GetComponent<Text>().text = message;
         yield return new WaitForSeconds(delay);
-        //AnnouncementPanel.GetComponent<ObjectEffect>().SetAlpha(1);
-        //AnnouncementPanel.GetComponent<ObjectEffect>().Enabled = true;
-        //AnnouncementPanel.GetComponent<ObjectEffect>().EnableFade = true;
         AnnouncementPanel.gameObject.SetActive(false);
         AnnouncementPanel.transform.GetChild(0).GetComponent<Text>().text = "";
     }
@@ -201,10 +198,11 @@ public class StageController : MonoBehaviour, IStage
     void Update()
     {
         //Show In Game Menu
-        //if (Input.GetKeyUp(KeyCode.Escape))
-        //{
-        //    InGameMenuPanel.SetActive(!InGameMenuPanel.activeSelf);
-        //}
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            InGameMenuPanel.SetActive(!InGameMenuPanel.activeSelf);
+            Pause(InGameMenuPanel.activeSelf);
+        }
 
         if (Input.GetKeyUp(KeyCode.G) && !firstEnter)
         {
@@ -273,8 +271,7 @@ public class StageController : MonoBehaviour, IStage
                     headerText.text = "Congratulations! " + currentPlayer.tag;
                     tankSprite.sprite = currentPlayer.GetComponent<Tank>().Sprite;
                     tankName.text = "MVP: " + currentPlayer.GetComponent<Tank>().name;
-                    int totalDamageDealt = (int)currentPlayer.GetComponent<Tank>().TotalDamageDealt;
-                    description.text = "Total damage dealt: " + totalDamageDealt;
+                    description.text = currentPlayer.GetComponent<Tank>().Achievement.ToString();
                 }
             }
             else
@@ -340,6 +337,18 @@ public class StageController : MonoBehaviour, IStage
             }
         }
         return -1;
+    }
+
+    public void Pause(bool b)
+    {
+        if (b)
+        {
+            Time.timeScale = 0;
+        }
+        else
+        {
+            Time.timeScale = 1;
+        }
     }
 
     public IEnumerator EnableNextPlayer()

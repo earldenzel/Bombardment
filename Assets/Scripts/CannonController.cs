@@ -221,6 +221,7 @@ public class CannonController : MonoBehaviour {
             {
                 cameraController.ObjectTracer.SetFoucs(currentProjectile);
             }
+            this.transform.root.GetComponent<Tank>().Achievement.ProjectileThrown++;
         }
         else
         {
@@ -237,6 +238,7 @@ public class CannonController : MonoBehaviour {
             shot = Instantiate(currentShot, transform.GetChild(0).position, spawnRotation) as GameObject;
             SetProjectileProperties(shot);
             shot.GetComponent<Rigidbody2D>().AddForce(shotStrength, ForceMode2D.Impulse);
+            this.transform.root.GetComponent<Tank>().Achievement.ProjectileThrown++;
         }
     }
 

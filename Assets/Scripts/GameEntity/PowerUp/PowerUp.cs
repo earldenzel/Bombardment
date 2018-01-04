@@ -59,8 +59,8 @@ public class PowerUp : MonoBehaviour{
                     break;
             }
             LifeTime -= 1;
-            Debug.Log("Power Up: " + Type + " applied on current turn");
         }
+        GameManager.Instance.StageController.UICanvas.GetComponent<CanvasController>().UpdateUI(applyTo.gameObject);
     }
 
     public void OnApplyExit(Tank applyTo)

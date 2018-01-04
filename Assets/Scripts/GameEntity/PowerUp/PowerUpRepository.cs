@@ -45,11 +45,13 @@ public class PowerUpRepository{
 
     public void OnTurnExcute()
     {
-        LifeTimeCheck();
         foreach (PowerUp pu in powerUps.Values)
         {
             pu.OnApply(tank);
         }
+        LifeTimeCheck();
+        RemoveExpiredPowerUps();
+        GameManager.Instance.StageController.UIManager.GetComponent<UIManager>().UpdateUI(tank, false);
     }
 
     //Called then turn exit

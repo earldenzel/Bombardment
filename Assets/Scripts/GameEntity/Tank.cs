@@ -2,6 +2,40 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public class Achievement
+{
+    public float TotalDamageDealt = 0;
+    private int longestShot = 0;
+    public int LongestShot
+    {
+        get
+        {
+            return longestShot;
+        }
+
+        set
+        {
+            if (value > longestShot) {
+                longestShot = value;
+            }
+
+        }
+    }
+    public int NumberOfPowerUpsPickedUp = 0;
+    public int NumberOfCratesDestroyed = 0;
+    public int ProjectileThrown = 0;
+
+    public override string ToString()
+    {
+        string result = "";
+        result = "Total Damage Dealt: " + TotalDamageDealt +
+            "\nLongest Shot: " + LongestShot +
+            " unit\nNumber of Power Ups Picked Up: " + NumberOfPowerUpsPickedUp +
+            "\nNumber of Crates Destroyed: " + NumberOfCratesDestroyed +
+            "\nProjectiles Thrown: " + ProjectileThrown;
+        return result;
+    }
+}
 public class Tank : MonoBehaviour {
 
     public enum Class { Archer, Boomer, Pirate, Scorch, Gladiator, Trebuchet }
@@ -39,7 +73,7 @@ public class Tank : MonoBehaviour {
             {
                 currentHipPoint = 0;
             }
-            else if (value > MaxHitPoint)
+            else if (value >= MaxHitPoint)
             {
                 currentHipPoint = MaxHitPoint;
             }
@@ -65,7 +99,7 @@ public class Tank : MonoBehaviour {
             {
                 currentFuelLevel = 0;
             }
-            else if (value > MaxFuelLevel)
+            else if (value >= MaxFuelLevel)
             {
                 currentFuelLevel = MaxFuelLevel;
             }
@@ -84,12 +118,13 @@ public class Tank : MonoBehaviour {
     public GameObject Shot2;
     public int Shot2Count = 1;
 
-    public float TotalDamageDealt;
+    public Achievement Achievement;
 
     void Awake()
     {
         ID = (int)NextAvaliableId;
         powerUps = new PowerUpRepository(this);
+        Achievement = new Achievement();
     }
 
     void Start () {
@@ -121,7 +156,8 @@ public class Tank : MonoBehaviour {
             powerUps.OnTurnExcute();
             Destroy(other.gameObject);
             GameManager.Instance.StageController.UIManager.GetComponent<UIManager>().UpdateUI(this, false);
-            GameManager.Instance.StageController.MakeAnnouncement(this.gameObject.tag + " picked up " + pu.PowerUpName+ ".", 3);
+            GameManager.Instance.StageController.MakeAnnouncement(this.gameObject.tag + " picked up " + (pu.On == PowerUp.ApplyOn.Immediately ? "and used " : "") + pu.PowerUpName+ (pu.On == PowerUp.ApplyOn.NextTurn ? " and will be apply on the next turn." : "."), 3);
+            this.Achievement.NumberOfPowerUpsPickedUp++;
         }
     }
 

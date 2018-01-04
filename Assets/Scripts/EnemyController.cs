@@ -61,7 +61,7 @@ public class EnemyController : MonoBehaviour
     public void Damage(int damage, GameObject target)
     {
         GameManager.Instance.StageController.MakeAnnouncement(this.gameObject.tag + " got hit by " + target.gameObject.GetComponent<ProjectileController>().attacker.tag + " and received " + damage + " damage.", 3);
-        target.gameObject.GetComponent<ProjectileController>().attacker.GetComponent<Tank>().TotalDamageDealt += damage;
+        target.gameObject.GetComponent<ProjectileController>().attacker.GetComponent<Tank>().Achievement.TotalDamageDealt += damage;
         //if (damageVisualizer!=null)
         //{
         //    GameObject go = Instantiate(damageVisualizer, target.transform.position, Quaternion.identity);
