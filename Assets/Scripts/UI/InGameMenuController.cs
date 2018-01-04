@@ -14,6 +14,7 @@ public class InGameMenuController : MonoBehaviour {
     public void BackToMenu()
     {
         GameManager.Instance.StageController.Pause(false);
+        GameManager.Instance.GameData.SelectedMapIndex = -1;
         SceneManager.LoadScene("Menu");
     }
 

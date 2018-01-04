@@ -131,6 +131,7 @@ public class TankSelection : MonoBehaviour {
 
     public void BackToMenu()
     {
+        GameManager.Instance.GameData.SelectedMapIndex = -1;
         SceneManager.LoadScene("Menu");
     }
 

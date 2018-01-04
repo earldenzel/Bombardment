@@ -180,6 +180,7 @@ public class StageController : MonoBehaviour, IStage
         GameManager.Instance.StageController = this;
         StartCoroutine(ShowQuickGuide());
         Time.timeScale = 1;
+        GameManager.Instance.AudioManager.ChangeBackgroundMusicBasedOnScene();
     }
 
     public void MakeAnnouncement(string message, float delay)
@@ -293,6 +294,7 @@ public class StageController : MonoBehaviour, IStage
     {
         showGameResult(isDraw);
         yield return new WaitForSeconds(5.0f);
+        GameManager.Instance.GameData.SelectedMapIndex = -1;
         SceneManager.LoadScene("Menu");
     }
 

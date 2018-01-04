@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class GameData
 {
-    public int SelectedMapIndex = 0;
+    public int SelectedMapIndex = -1;
 
     public List<Tank.Class> SelectedTankClass;
     public GameObject[] TankPrefab;
@@ -81,6 +81,8 @@ public class GameManager : MonoBehaviour
 
     public StageController StageController;
 
+    public AudioManager AudioManager;
+
     public GameData GameData { get; private set; }
 
     public int NumberOfPlayersOnStart;
@@ -145,7 +147,6 @@ public class GameManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-       
     }
 
     public void BackToMenu()

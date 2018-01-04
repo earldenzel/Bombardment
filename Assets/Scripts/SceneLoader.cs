@@ -13,6 +13,7 @@ public class SceneLoader : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        GameManager.Instance.AudioManager.ChangeBackgroundMusicBasedOnScene();
         if (EnableTimeTransition)
         {
             StartCoroutine(ToNextScene(NextScene, timeToNextScene));
