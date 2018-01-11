@@ -304,7 +304,7 @@ public class StageController : MonoBehaviour, IStage
         {
             return true;
         }
-        if (GameManager.Instance.GameData.SelectedMapIndex == 0 || PlayerRemaining > 1)
+        if (GameManager.Instance.GameData.SelectedMapIndex == 0 || GameManager.Instance.GameData.SelectedMapIndex == -1 || PlayerRemaining > 1)
         {
             return false;
         }
@@ -428,6 +428,10 @@ public class StageController : MonoBehaviour, IStage
             isEnablingPlayer = false;
             currentPlayer.transform.GetChild(0).GetChild(0).GetComponent<CannonController>().enabled = false;
             MakeAnnouncement(currentPlayer.tag + " decided to end current turn.", 3);
+            if (Camera.main != null && Camera.main.GetComponent<CameraController>() != null)
+            {
+                Camera.main.GetComponent<CameraController>().cameraConfig.State = CameraConfig.CameraMode.Focus;
+            }
         }
         
     }

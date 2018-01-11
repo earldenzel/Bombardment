@@ -7,12 +7,38 @@ using UnityEngine;
 public class CameraConfig
 {
     public enum CameraMode { Focus, Free };
-    public CameraMode State = CameraMode.Focus;
+    private CameraMode state;
+    public CameraMode State {
+        get
+        {
+            return state;
+        }
+        set
+        {
+            state = value;
+            switch (value)
+            {
+                case CameraMode.Free:
+                    if (FreeModeArrows != null)
+                    {
+                        FreeModeArrows.SetActive(true);
+                    }
+                    break;
+                case CameraMode.Focus:
+                    if (FreeModeArrows != null)
+                    {
+                        FreeModeArrows.SetActive(false);
+                    }
+                    break;
+            }
+        }
+    }
     public float MaxZoomingSize = 12;
     public float MinZoomingSize = 5;
     public float MouseWheelZoomingSpeed = 5;
     public float FreeMovementSpeed = 0.3f;
     public Rect CameraBoundary = new Rect(-15, 10, 50, 10);
+    public GameObject FreeModeArrows;
 }
 [Serializable]
 public class ObjectTracerController
@@ -51,6 +77,7 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         offset = new Vector3(0, 0, transform.position.z);
+        cameraConfig.FreeModeArrows.SetActive(false);
     }
 
     public void SetFocus(GameObject go)
@@ -81,7 +108,6 @@ public class CameraController : MonoBehaviour
                     ObjectTracer.Enabled = false;
                     break;
             }
-            
         }
     }
 
