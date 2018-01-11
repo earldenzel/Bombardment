@@ -9,6 +9,8 @@ public class EnemyController : MonoBehaviour
     public bool suicide;
     public GameObject damageVisualizer;
     private Text cameraMessage;
+    public GameObject explosion;
+    public AudioClip explosionSound;
 
     private Transform canvas;
 
@@ -33,7 +35,8 @@ public class EnemyController : MonoBehaviour
                 GameManager.Instance.GameData.ToNextPlayer = true;
             }
             Destroy(this.gameObject);
-            //after this is where you instantiate the explosion
+            Instantiate(explosion, transform.position, Quaternion.identity);
+            AudioSource.PlayClipAtPoint(explosionSound, this.transform.position);
         }
         suicide = false;
 

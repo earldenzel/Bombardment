@@ -74,6 +74,10 @@ public class CannonController : MonoBehaviour {
             }
             RenderTrajectory(powerBar.transform.localScale.x * cannon.launchSpeed);
         }
+        if(Input.GetButtonDown(switchShot) && onShot)
+        {
+            GameManager.Instance.StageController.MakeAnnouncement("Cannot switch shots while trying to shoot!", 2);
+        }
         if (Input.GetButtonDown(switchShot) && !onShot && shot1)
         {
             if (canLoadStrongerShot)
