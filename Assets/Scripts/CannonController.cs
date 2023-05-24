@@ -137,9 +137,9 @@ public class CannonController : MonoBehaviour {
         Vector2 initialDirection = (transform.GetChild(0).position - this.transform.position).normalized;
         Vector2 initialPosition = this.transform.position;
         Vector2 initialVelocity = initialDirection * strength;
-        Vector3[] positions = new Vector3[100];
+        Vector3[] positions = new Vector3[1000];
         float t = 0;
-        for (int i = 0; i <= 99; i++)
+        for (int i = 0; i <= 999; i++)
         {
             t += Time.deltaTime;
 
